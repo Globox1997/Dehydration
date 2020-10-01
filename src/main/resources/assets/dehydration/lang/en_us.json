@@ -1,0 +1,19 @@
+{
+  "death.attack.dehydration": "%1$s died of thirst",
+  "death.attack.thirst": "%1$s died of thirst",
+
+  "effect.dehydration.dehydration_effect": "Dehydration",
+
+  "text.autoconfig.dehydration.title": "Dehydration Config",
+  "text.autoconfig.dehydration.option.no_armor_debuff": "No armor heating up",
+  "text.autoconfig.dehydration.option.dehydration_damage": "Dehydration damage",
+  "text.autoconfig.dehydration.option.dehydration_damage_interval.@PrefixText": "Duration in ticks (1s = 20ticks)",
+  "text.autoconfig.dehydration.option.dehydration_damage_interval": "Dehydration damage interval",
+  "text.autoconfig.dehydration.option.dehydration_damage_effect_time": "Dehydration effect time",
+  "text.autoconfig.dehydration.option.dehydration_tick_interval": "Dehydration tick interval",
+  "text.autoconfig.dehydration.option.cooling_down_interval": "Cooldown interval",
+  "text.autoconfig.dehydration.option.cooling_down_tick_decrease": "Cooldown tick decrease",
+  "text.autoconfig.dehydration.option.heat_icon_x.@PrefixText": "HUD heat icon position",
+  "text.autoconfig.dehydration.option.heat_icon_x": "x position",
+  "text.autoconfig.dehydration.option.heat_icon_y": "y position"
+}

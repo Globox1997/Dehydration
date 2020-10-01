@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "dehydration",
+  "version": "1.0.0",
+  "name": "Dehydration",
+  "description": "Stay hydrated",
+  "authors": [
+    "Globox_Z"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/hydration",
+    "sources": "https://github.com/Globox1997/Hydration"
+  },
+  "license": "GLPv3",
+  "icon": "assets/dehydration/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.dehydration.DehydrationMain"
+    ],
+    "client": [
+      "net.dehydration.DehydrationClient"
+    ],
+    "modmenu": [
+      "net.dehydration.config.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "dehydration.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}
