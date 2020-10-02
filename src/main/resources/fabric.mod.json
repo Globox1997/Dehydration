@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "dehydration",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "Dehydration",
   "description": "Stay hydrated",
   "authors": [
@@ -9,7 +9,8 @@
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/hydration",
-    "sources": "https://github.com/Globox1997/Hydration"
+    "sources": "https://github.com/Globox1997/Dehydration",
+    "issues": "https://github.com/Globox1997/Dehydration/issues"
   },
   "license": "GLPv3",
   "icon": "assets/dehydration/icon.png",
