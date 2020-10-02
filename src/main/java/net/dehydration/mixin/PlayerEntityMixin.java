@@ -39,7 +39,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
     Object object = this;
     PlayerEntity playerEntity = (PlayerEntity) object;
     if (!playerEntity.isCreative()) {
-      if (this.world.getBiome(this.getBlockPos()).getTemperature() >= 2.0F && DehydrationEffect.wearsArmor(this)) {
+      if (this.world.getBiome(this.getBlockPos()).getTemperature() >= 2.0F && DehydrationEffect.wearsArmor(this)
+          && !this.isTouchingWaterOrRain()) {
         if (this.world.isSkyVisible(this.getBlockPos()) && this.world.isDay()) {
           dehydrationTimer++;
           if (dehydrationTimer % 40 == 0) {
@@ -58,7 +59,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
       }
       if (this.hasStatusEffect(EffectInit.DEHYDRATION)) {
         if (this.world.isNight() || this.world.getBiome(this.getBlockPos()).getTemperature() <= 0.0F
-            || thirstManager.getThirstLevel() > 17) {
+            || thirstManager.getThirstLevel() > 17 || this.isTouchingWaterOrRain()) {
           coolingDownTimer++;
           if (coolingDownTimer >= ConfigInit.CONFIG.cooling_down_interval) {
             int coldDuration = this.getStatusEffect(EffectInit.DEHYDRATION).getDuration();
