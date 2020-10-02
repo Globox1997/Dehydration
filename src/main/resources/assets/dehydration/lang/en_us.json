@@ -14,6 +14,7 @@
   "text.autoconfig.dehydration.option.cooling_down_interval": "Cooldown interval",
   "text.autoconfig.dehydration.option.cooling_down_tick_decrease": "Cooldown tick decrease",
   "text.autoconfig.dehydration.option.heat_icon_x.@PrefixText": "HUD heat icon position",
-  "text.autoconfig.dehydration.option.heat_icon_x": "x position",
-  "text.autoconfig.dehydration.option.heat_icon_y": "y position"
+  "text.autoconfig.dehydration.option.heat_icon_x": "X position",
+  "text.autoconfig.dehydration.option.heat_icon_y": "Y position",
+  "text.autoconfig.dehydration.option.enable_black_outline": "Enable black outline"
 }

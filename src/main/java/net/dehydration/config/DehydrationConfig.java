@@ -19,4 +19,5 @@ public class DehydrationConfig implements ConfigData {
   @ConfigEntry.Gui.PrefixText
   public int heat_icon_x = 5;
   public int heat_icon_y = 55;
+  public boolean enable_black_outline = false;
 }

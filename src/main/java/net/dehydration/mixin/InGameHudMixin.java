@@ -22,6 +22,7 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tag.FluidTags;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -90,13 +91,22 @@ public abstract class InGameHudMixin extends DrawableHelper {
           if (this.ticks % (thirst * 3 + 1) == 0) {
             variable_three = height + (client.world.random.nextInt(3) - 1); // bouncy
           }
+          int airplayer = playerEntity.getAir();
+          int airplayermax = playerEntity.getMaxAir();
+          if (playerEntity.isSubmergedIn(FluidTags.WATER) || airplayer < airplayermax) {
+            variable_three = variable_three - 10;
+          }
+          int uppderCoord = 0;
+          if (ConfigInit.CONFIG.enable_black_outline) {
+            uppderCoord = uppderCoord + 9;
+          }
           variable_two = width - variable_one * 8 - 9;
           this.client.getTextureManager().bindTexture(THIRST_ICON);
           if (variable_one * 2 + 1 < thirst) {
-            this.drawTexture(matrices, variable_two, variable_three, 0, 0, 9, 9); // Big icon
+            this.drawTexture(matrices, variable_two, variable_three, 0, uppderCoord, 9, 9); // Big icon
           }
           if (variable_one * 2 + 1 == thirst) {
-            this.drawTexture(matrices, variable_two, variable_three, 9, 0, 9, 9); // Small icon
+            this.drawTexture(matrices, variable_two, variable_three, 9, uppderCoord, 9, 9); // Small icon
           }
         }
       }
