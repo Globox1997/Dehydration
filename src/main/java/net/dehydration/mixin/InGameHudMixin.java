@@ -39,9 +39,14 @@ public abstract class InGameHudMixin extends DrawableHelper {
   @Shadow
   private int scaledHeight;
 
-  private float smoothRendering;
+  private static float smoothRendering;
   private static final Identifier HEATING_ICON = new Identifier("dehydration:textures/misc/dehydration.png");
   private static final Identifier THIRST_ICON = new Identifier("dehydration:textures/misc/thirst.png");
+  private static int wearsArmorModifier = ConfigInit.CONFIG.wears_armor_modifier;
+  private static int dehydrationTickInterval = ConfigInit.CONFIG.dehydration_tick_interval;
+  private static boolean enableBlackOutline = ConfigInit.CONFIG.enable_black_outline;
+  private static int heatIconX = ConfigInit.CONFIG.heat_icon_x;
+  private static int heatIconY = ConfigInit.CONFIG.heat_icon_y;
 
   public InGameHudMixin(MinecraftClient client) {
     this.client = client;
@@ -52,10 +57,13 @@ public abstract class InGameHudMixin extends DrawableHelper {
     PlayerEntity playerEntity = client.player;
     if (!playerEntity.isCreative()) {
       if (playerEntity.world.getBiome(playerEntity.getBlockPos()).getTemperature() >= 2.0F
-          && DehydrationEffect.wearsArmor(playerEntity) && playerEntity.world.isSkyVisible(playerEntity.getBlockPos())
-          && playerEntity.world.isDay()) {
-        if (smoothRendering < 0.995F) {
-          smoothRendering = smoothRendering + 0.005F;
+          && DehydrationEffect.wearsArmorModifier(playerEntity) != wearsArmorModifier * 4
+          && playerEntity.world.isSkyVisible(playerEntity.getBlockPos()) && playerEntity.world.isDay()) {
+        if (smoothRendering < 1.0F) {
+          smoothRendering = smoothRendering + (1.0F / (float) (dehydrationTickInterval + wearsArmorModifier));
+        }
+        if (smoothRendering > 1.0F) {
+          smoothRendering = 1.0F;
         }
         this.renderHeatingIconOverlay(matrixStack, smoothRendering);
       } else if (smoothRendering > 0.0F) {
@@ -69,8 +77,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
   private void renderHeatingIconOverlay(MatrixStack matrixStack, float smooth) {
     this.client.getTextureManager().bindTexture(HEATING_ICON);
     RenderSystem.color4f(1.0F, 1.0F, 1.0F, smooth);
-    DrawableHelper.drawTexture(matrixStack, (scaledWidth / 2) - ConfigInit.CONFIG.heat_icon_x,
-        scaledHeight - ConfigInit.CONFIG.heat_icon_y, 0.0F, 0.0F, 10, 10, 10, 10);
+    DrawableHelper.drawTexture(matrixStack, (scaledWidth / 2) - heatIconX, scaledHeight - heatIconY, 0.0F, 0.0F, 10, 10,
+        10, 10);
   }
 
   @Inject(method = "renderStatusBars", at = @At(value = "TAIL"))
@@ -97,7 +105,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
             variable_three = variable_three - 10;
           }
           int uppderCoord = 0;
-          if (ConfigInit.CONFIG.enable_black_outline) {
+          if (enableBlackOutline) {
             uppderCoord = uppderCoord + 9;
           }
           variable_two = width - variable_one * 8 - 9;
@@ -113,17 +121,6 @@ public abstract class InGameHudMixin extends DrawableHelper {
     }
   }
 
-  // @Inject(method =
-  // "Lnet/minecraft/client/gui/hud/InGameHud;render(Lnet/minecraft/client/util/math/MatrixStack;F)V",
-  // at = @At(value = "INVOKE", target =
-  // "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F"))
-  // private void renderMixin(MatrixStack matrices, float tickDelta, CallbackInfo
-  // info) {
-  // if (this.client.player.hasStatusEffect(EffectInit.DEHYDRATION)) {
-  // this.renderPortalOverlay(0.2F);
-  // }
-  // }
-
   @Shadow
   private PlayerEntity getCameraPlayer() {
     return null;
@@ -138,45 +135,5 @@ public abstract class InGameHudMixin extends DrawableHelper {
   private int getHeartCount(LivingEntity entity) {
     return 0;
   }
-
-  // @Shadow
-  // private void renderPortalOverlay(float f) {
-  // }
-
-  // @Inject(method =
-  // "Lnet/minecraft/client/gui/hud/InGameHud;render(Lnet/minecraft/client/util/math/MatrixStack;F)V",
-  // at = @At(value = "INVOKE", target =
-  // "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/util/math/MatrixStack;)V"))
-  // private void renderFreezingIcon(MatrixStack matrixStack, float f,
-  // CallbackInfo info) {
-  // PlayerEntity playerEntity = client.player;
-  // if (!playerEntity.isCreative()) {
-  // if (playerEntity.world.getBiome(playerEntity.getBlockPos()).getTemperature()
-  // <= 0.0F
-  // && !ColdEffect.hasWarmClothing(playerEntity) &&
-  // !ColdEffect.isWarmBlockNearBy(playerEntity)) {
-  // if (smoothRendering < 0.995F) {
-  // smoothRendering = smoothRendering + 0.0025F;
-  // }
-  // this.renderHeatingIconOverlay(matrixStack, smoothRendering);
-  // } else if (smoothRendering > 0.0F) {
-  // this.renderHeatingIconOverlay(matrixStack, smoothRendering);
-  // smoothRendering = smoothRendering - 0.01F;
-  // }
-
-  // }
-  // }
-
-  // private void renderHeatingIconOverlay(MatrixStack matrixStack, float smooth)
-  // {
-  // RenderSystem.enableBlend();
-  // int scaledWidth = this.client.getWindow().getScaledWidth();
-  // int scaledHeight = this.client.getWindow().getScaledHeight();
-  // RenderSystem.color4f(1.0F, 1.0F, 1.0F, smooth);
-  // this.client.getTextureManager().bindTexture(FREEZING_ICON);
-  // DrawableHelper.drawTexture(matrixStack, (scaledWidth / 2) - 9, scaledHeight -
-  // 55, 0.0F, 0.0F, 18, 18, 18, 18);
-  // RenderSystem.disableBlend();
-  // }
 
 }

@@ -16,5 +16,7 @@
   "text.autoconfig.dehydration.option.heat_icon_x.@PrefixText": "HUD heat icon position",
   "text.autoconfig.dehydration.option.heat_icon_x": "X position",
   "text.autoconfig.dehydration.option.heat_icon_y": "Y position",
-  "text.autoconfig.dehydration.option.enable_black_outline": "Enable black outline"
+  "text.autoconfig.dehydration.option.enable_black_outline": "Enable black outline",
+  "text.autoconfig.dehydration.option.potion_thirst_quench": "Potion thirst quench",
+  "text.autoconfig.dehydration.option.wears_armor_modifier": "Wear armor modifier"
 }
