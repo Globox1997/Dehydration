@@ -10,9 +10,9 @@
   "text.autoconfig.dehydration.option.dehydration_damage_interval.@PrefixText": "以游戏刻为单位的时间 (1秒 = 20游戏刻)",
   "text.autoconfig.dehydration.option.dehydration_damage_interval": "脱水伤害间隔",
   "text.autoconfig.dehydration.option.dehydration_damage_effect_time": "脱水状态效果时长",
-  "text.autoconfig.dehydration.option.dehydration_tick_interval": "Dehydration tick interval",
+  "text.autoconfig.dehydration.option.dehydration_tick_interval": "脱水刻间隔",
   "text.autoconfig.dehydration.option.cooling_down_interval": "降温间隔",
-  "text.autoconfig.dehydration.option.cooling_down_tick_decrease": "Cooldown tick decrease",
+  "text.autoconfig.dehydration.option.cooling_down_tick_decrease": "冷却刻削减",
   "text.autoconfig.dehydration.option.heat_icon_x.@PrefixText": "平视显示器中升温图标的位置",
   "text.autoconfig.dehydration.option.heat_icon_x": "横向位置 (x)",
   "text.autoconfig.dehydration.option.heat_icon_y": "纵向位置 (y)"
