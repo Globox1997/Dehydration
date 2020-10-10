@@ -1,0 +1,22 @@
+{
+  "death.attack.dehydration": "%1$s 因脱水而亡",
+  "death.attack.thirst": "%1$s 因脱水而亡",
+
+  "effect.dehydration.dehydration_effect": "脱水",
+
+  "text.autoconfig.dehydration.title": "脱水配置 §6(Dehydration)",
+  "text.autoconfig.dehydration.option.no_armor_debuff": "禁用盔甲升温",
+  "text.autoconfig.dehydration.option.dehydration_damage": "脱水伤害",
+  "text.autoconfig.dehydration.option.dehydration_damage_interval.@PrefixText": "以游戏刻为单位的时间 (1秒 = 20游戏刻)",
+  "text.autoconfig.dehydration.option.dehydration_damage_interval": "脱水伤害间隔",
+  "text.autoconfig.dehydration.option.dehydration_damage_effect_time": "脱水状态效果时长",
+  "text.autoconfig.dehydration.option.dehydration_tick_interval": "脱水刻间隔",
+  "text.autoconfig.dehydration.option.cooling_down_interval": "降温间隔",
+  "text.autoconfig.dehydration.option.cooling_down_tick_decrease": "冷却刻削减",
+  "text.autoconfig.dehydration.option.heat_icon_x.@PrefixText": "平视显示器中升温图标的位置",
+  "text.autoconfig.dehydration.option.heat_icon_x": "横向位置 (x)",
+  "text.autoconfig.dehydration.option.heat_icon_y": "纵向位置 (y)",
+  "text.autoconfig.dehydration.option.enable_black_outline": "启用黑色轮廓",
+  "text.autoconfig.dehydration.option.potion_thirst_quench": "药水解渴",
+  "text.autoconfig.dehydration.option.wears_armor_modifier": "盔甲修正"
+}
