@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " dd",
+    "d d",
+    " d "
+  ],
+  "key": {
+    "d": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "item": "dehydration:leather_flask"
+  }
+}

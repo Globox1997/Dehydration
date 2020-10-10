@@ -9,7 +9,9 @@ public class DehydrationMain implements ModInitializer {
   public void onInitialize() {
     ConfigInit.init();
     EffectInit.init();
+    ItemInit.init();
     LootInit.init();
+    SoundInit.init();
     TagInit.init();
   }
 
