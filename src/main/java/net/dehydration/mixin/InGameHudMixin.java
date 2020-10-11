@@ -39,7 +39,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
   @Shadow
   private int scaledHeight;
 
-  private static float smoothRendering;
+  private float smoothThirstRendering;
   private static final Identifier HEATING_ICON = new Identifier("dehydration:textures/misc/dehydration.png");
   private static final Identifier THIRST_ICON = new Identifier("dehydration:textures/misc/thirst.png");
   private static int wearsArmorModifier = ConfigInit.CONFIG.wears_armor_modifier;
@@ -59,16 +59,17 @@ public abstract class InGameHudMixin extends DrawableHelper {
       if (playerEntity.world.getBiome(playerEntity.getBlockPos()).getTemperature() >= 2.0F
           && DehydrationEffect.wearsArmorModifier(playerEntity) != wearsArmorModifier * 4
           && playerEntity.world.isSkyVisible(playerEntity.getBlockPos()) && playerEntity.world.isDay()) {
-        if (smoothRendering < 1.0F) {
-          smoothRendering = smoothRendering + (1.0F / (float) (dehydrationTickInterval + wearsArmorModifier));
+        if (smoothThirstRendering < 1.0F) {
+          smoothThirstRendering = smoothThirstRendering
+              + (1.0F / (float) (dehydrationTickInterval + wearsArmorModifier));
         }
-        if (smoothRendering > 1.0F) {
-          smoothRendering = 1.0F;
+        if (smoothThirstRendering > 1.0F) {
+          smoothThirstRendering = 1.0F;
         }
-        this.renderHeatingIconOverlay(matrixStack, smoothRendering);
-      } else if (smoothRendering > 0.0F) {
-        this.renderHeatingIconOverlay(matrixStack, smoothRendering);
-        smoothRendering = smoothRendering - 0.01F;
+        this.renderHeatingIconOverlay(matrixStack, smoothThirstRendering);
+      } else if (smoothThirstRendering > 0.0F) {
+        this.renderHeatingIconOverlay(matrixStack, smoothThirstRendering);
+        smoothThirstRendering = smoothThirstRendering - 0.01F;
       }
 
     }
