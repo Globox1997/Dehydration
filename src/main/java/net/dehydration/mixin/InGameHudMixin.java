@@ -14,12 +14,15 @@ import net.fabricmc.api.Environment;
 import net.dehydration.access.ThristManagerAccess;
 import net.dehydration.effect.DehydrationEffect;
 import net.dehydration.init.ConfigInit;
+import net.dehydration.init.EnchantmentInit;
 import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tag.FluidTags;
@@ -58,7 +61,9 @@ public abstract class InGameHudMixin extends DrawableHelper {
     if (!playerEntity.isCreative()) {
       if (playerEntity.world.getBiome(playerEntity.getBlockPos()).getTemperature() >= 2.0F
           && DehydrationEffect.wearsArmorModifier(playerEntity) != wearsArmorModifier * 4
-          && playerEntity.world.isSkyVisible(playerEntity.getBlockPos()) && playerEntity.world.isDay()) {
+          && playerEntity.world.isSkyVisible(playerEntity.getBlockPos()) && playerEntity.world.isDay()
+          && EnchantmentHelper.getLevel(EnchantmentInit.HYDRATION_ENCHANTMENT,
+              playerEntity.getEquippedStack(EquipmentSlot.CHEST)) == 0) {
         if (smoothThirstRendering < 1.0F) {
           smoothThirstRendering = smoothThirstRendering
               + (1.0F / (float) (dehydrationTickInterval + wearsArmorModifier));

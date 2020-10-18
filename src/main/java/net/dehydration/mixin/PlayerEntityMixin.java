@@ -10,8 +10,11 @@ import net.dehydration.access.ThristManagerAccess;
 import net.dehydration.effect.DehydrationEffect;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.EffectInit;
+import net.dehydration.init.EnchantmentInit;
 import net.dehydration.thirst.ThirstManager;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,7 +50,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
       if (this.world.getBiome(this.getBlockPos()).getTemperature() >= 2.0F
           && DehydrationEffect.wearsArmorModifier(playerEntity) != wearsArmorModifier * 4
           && !this.isTouchingWaterOrRain()) {
-        if (this.world.isSkyVisible(this.getBlockPos()) && this.world.isDay()) {
+        if (this.world.isSkyVisible(this.getBlockPos()) && this.world.isDay() && EnchantmentHelper
+            .getLevel(EnchantmentInit.HYDRATION_ENCHANTMENT, this.getEquippedStack(EquipmentSlot.CHEST)) == 0) {
           dehydrationTimer++;
           if (dehydrationTimer % 40 == 0) {
             thirstManager.addDehydration(0.5F);

@@ -24,5 +24,7 @@
 
   "item.dehydration.leather_flask": "Leather Flask",
   "item.dehydration.leather_flask.tooltip": "Full",
-  "item.dehydration.leather_flask_half_full.tooltip": "Half Full"
+  "item.dehydration.leather_flask_half_full.tooltip": "Half Full",
+
+  "enchantment.dehydration.hydration_enchantment": "Hydration"
 }
