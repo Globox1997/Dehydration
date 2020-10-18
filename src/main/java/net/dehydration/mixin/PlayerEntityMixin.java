@@ -19,6 +19,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
 @Mixin(PlayerEntity.class)
@@ -44,8 +46,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
 
   @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tick()V", at = @At("TAIL"))
   public void tickMixin(CallbackInfo info) {
-    Object object = this;
-    PlayerEntity playerEntity = (PlayerEntity) object;
+    PlayerEntity playerEntity = (PlayerEntity) (Object) this;
     if (!playerEntity.isCreative()) {
       if (this.world.getBiome(this.getBlockPos()).getTemperature() >= 2.0F
           && DehydrationEffect.wearsArmorModifier(playerEntity) != wearsArmorModifier * 4
@@ -89,18 +90,19 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
 
   @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;update(Lnet/minecraft/entity/player/PlayerEntity;)V", shift = Shift.AFTER))
   private void tickMixinTwo(CallbackInfo info) {
-    Object object = this;
-    PlayerEntity player = (PlayerEntity) object;
+    PlayerEntity player = (PlayerEntity) (Object) this;
     this.thirstManager.update(player);
   }
 
-  @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;setFoodLevel(I)V", shift = Shift.AFTER))
+  @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;updateItems()V", shift = Shift.BEFORE))
   private void tickMovementMixin(CallbackInfo info) {
-    Object object = this;
-    PlayerEntity player = (PlayerEntity) object;
-    this.thirstManager.update(player);
-    if (this.thirstManager.isNotFull() && this.age % 10 == 0) {
-      this.thirstManager.setThirstLevel(this.thirstManager.getThirstLevel() + 1);
+    if (this.world.getDifficulty() == Difficulty.PEACEFUL
+        && this.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)) {
+      PlayerEntity player = (PlayerEntity) (Object) this;
+      this.thirstManager.update(player);
+      if (this.thirstManager.isNotFull() && this.age % 10 == 0) {
+        this.thirstManager.setThirstLevel(this.thirstManager.getThirstLevel() + 1);
+      }
     }
   }
 
