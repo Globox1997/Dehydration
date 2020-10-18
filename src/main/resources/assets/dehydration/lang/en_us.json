@@ -21,6 +21,8 @@
   "text.autoconfig.dehydration.option.milk_thirst_quench": "Milk bucket thirst quench",
   "text.autoconfig.dehydration.option.flask_thirst_quench": "Leather flask thirst quench",
   "text.autoconfig.dehydration.option.wears_armor_modifier": "Wear armor modifier",
+  "text.autoconfig.dehydration.option.stew_thirst_quench": "Stew thirst quench",
+  "text.autoconfig.dehydration.option.food_thirst_quench": "Food thirst quench",
 
   "item.dehydration.leather_flask": "Leather Flask",
   "item.dehydration.leather_flask.tooltip": "Full",

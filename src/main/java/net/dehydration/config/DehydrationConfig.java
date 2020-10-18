@@ -21,6 +21,9 @@ public class DehydrationConfig implements ConfigData {
   public int wears_armor_modifier = 40;
   public int potion_thirst_quench = 4;
   public int milk_thirst_quench = 3;
+  public int stew_thirst_quench = 2;
+  @Comment("Applies only for food tagged with hydrating_food")
+  public int food_thirst_quench = 1;
   public int flask_thirst_quench = 6;
   @ConfigEntry.Gui.PrefixText
   public int heat_icon_x = 5;
