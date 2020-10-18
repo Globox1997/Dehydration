@@ -38,8 +38,8 @@ public class ThirstManager {
     } else {
       this.dehydrationTimer = 0;
     }
-    if (thirstLevel == 2) {
-      player.addStatusEffect(new StatusEffectInstance(StatusEffects.HASTE, 400, 0, true, false));
+    if (thirstLevel == 2 && !player.isCreative()) {
+      player.addStatusEffect(new StatusEffectInstance(StatusEffects.HASTE, 409, 0, true, false));
     }
 
   }
