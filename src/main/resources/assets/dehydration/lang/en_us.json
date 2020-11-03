@@ -6,6 +6,7 @@
 
   "text.autoconfig.dehydration.title": "Dehydration Config",
   "text.autoconfig.dehydration.option.no_armor_debuff": "No armor heating up",
+  "text.autoconfig.dehydration.option.thirst_damage": "Thirst damage",
   "text.autoconfig.dehydration.option.dehydration_damage": "Dehydration damage",
   "text.autoconfig.dehydration.option.dehydration_damage_interval.@PrefixText": "Duration in ticks (1s = 20ticks)",
   "text.autoconfig.dehydration.option.dehydration_damage_interval": "Dehydration damage interval",

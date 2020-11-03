@@ -19,8 +19,6 @@ import net.minecraft.world.World;
 
 @Mixin(Item.class)
 public class ItemMixin {
-  private static int stewThirstQuench = ConfigInit.CONFIG.stew_thirst_quench;
-  private static int foodThirstQuench = ConfigInit.CONFIG.food_thirst_quench;
 
   @Inject(method = "finishUsing", at = @At(value = "HEAD"))
   public void finishUsing(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info) {
@@ -29,10 +27,10 @@ public class ItemMixin {
       ThirstManager thirstManager = ((ThristManagerAccess) player).getThirstManager(player);
       int thirst = 0;
       if (stack.getItem() instanceof MushroomStewItem || stack.getItem() instanceof SuspiciousStewItem) {
-        thirst = stewThirstQuench;
+        thirst = ConfigInit.CONFIG.stew_thirst_quench;
       }
       if (stack.getItem().isIn(TagInit.HYDRATING_FOOD)) {
-        thirst = foodThirstQuench;
+        thirst = ConfigInit.CONFIG.food_thirst_quench;
       }
       thirstManager.add(thirst);
     }

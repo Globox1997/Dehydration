@@ -19,11 +19,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 public class DehydrationEffect extends StatusEffect {
-  private static final UUID DEHYDRATION = UUID.fromString("80e24bea-844e-4944-a36a-edb66e841e66");
-  private static int wearsArmorModifier = ConfigInit.CONFIG.wears_armor_modifier;
-  private static float dehydrationDamage = ConfigInit.CONFIG.dehydration_damage;
-  private static int dehydrationDamageInterval = ConfigInit.CONFIG.dehydration_damage_interval;
-  private static boolean noArmorDebuff = ConfigInit.CONFIG.no_armor_debuff;
+  private final UUID DEHYDRATION = UUID.fromString("80e24bea-844e-4944-a36a-edb66e841e66");
 
   public DehydrationEffect(StatusEffectType type, int color) {
     super(type, color);
@@ -32,7 +28,7 @@ public class DehydrationEffect extends StatusEffect {
   @Override
   public void applyUpdateEffect(LivingEntity entity, int amplifier) {
     DamageSource damageSource = createDamageSource();
-    entity.damage(damageSource, dehydrationDamage);
+    entity.damage(damageSource, ConfigInit.CONFIG.dehydration_damage);
     if (entity instanceof PlayerEntity) {
       PlayerEntity player = (PlayerEntity) entity;
       player.addExhaustion(0.01F);
@@ -42,7 +38,7 @@ public class DehydrationEffect extends StatusEffect {
 
   @Override
   public boolean canApplyUpdateEffect(int duration, int amplifier) {
-    return duration % dehydrationDamageInterval == 0;
+    return duration % ConfigInit.CONFIG.dehydration_damage_interval == 0;
   }
 
   @Override
@@ -75,11 +71,14 @@ public class DehydrationEffect extends StatusEffect {
   }
 
   public static int wearsArmorModifier(LivingEntity livingEntity) {
+    int wearsArmorModifier = ConfigInit.CONFIG.wears_armor_modifier;
+    boolean noArmorDebuff = ConfigInit.CONFIG.no_armor_debuff;
     int warmingModifier = 0;
     ItemStack headStack = livingEntity.getEquippedStack(EquipmentSlot.HEAD);
     ItemStack chestStack = livingEntity.getEquippedStack(EquipmentSlot.CHEST);
     ItemStack legStack = livingEntity.getEquippedStack(EquipmentSlot.LEGS);
     ItemStack feetStack = livingEntity.getEquippedStack(EquipmentSlot.FEET);
+
     if (!noArmorDebuff) {
       if (headStack.isEmpty() || headStack.getItem().isIn(TagInit.ALLOWED_ARMOR)) {
         warmingModifier = warmingModifier + wearsArmorModifier;
@@ -95,7 +94,7 @@ public class DehydrationEffect extends StatusEffect {
       }
       return warmingModifier;
     } else
-      return warmingModifier * 4;
+      return wearsArmorModifier * 4;
   }
 
 }

@@ -35,7 +35,6 @@ import net.minecraft.world.World;
 // Thanks to Pois1x for the texture
 
 public class Leather_Flask extends Item {
-  private static int flaskThirstQuench = ConfigInit.CONFIG.flask_thirst_quench;
 
   public Leather_Flask(Settings settings) {
     super(settings);
@@ -91,7 +90,7 @@ public class Leather_Flask extends Item {
             tags.putInt("leather_flask", 1);
           }
           ThirstManager thirstManager = ((ThristManagerAccess) playerEntity).getThirstManager(playerEntity);
-          thirstManager.add(flaskThirstQuench);
+          thirstManager.add(ConfigInit.CONFIG.flask_thirst_quench);
         }
       }
     }

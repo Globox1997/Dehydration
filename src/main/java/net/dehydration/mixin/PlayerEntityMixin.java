@@ -32,13 +32,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
     return this.thirstManager;
   }
 
-  private static int dehydrationTimer;
-  private static int coolingDownTimer;
-  private static int wearsArmorModifier = ConfigInit.CONFIG.wears_armor_modifier;
-  private static int dehydrationTickInterval = ConfigInit.CONFIG.dehydration_tick_interval;
-  private static int dehydrationDamageEffectTime = ConfigInit.CONFIG.dehydration_damage_effect_time;
-  private static int coolingDownInterval = ConfigInit.CONFIG.cooling_down_interval;
-  private static int coolingDownTickDecrease = ConfigInit.CONFIG.cooling_down_tick_decrease;
+  private int dehydrationTimer;
+  private int coolingDownTimer;
 
   public PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
     super(entityType, world);
@@ -49,18 +44,19 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
     PlayerEntity playerEntity = (PlayerEntity) (Object) this;
     if (!playerEntity.isCreative()) {
       if (this.world.getBiome(this.getBlockPos()).getTemperature() >= 2.0F
-          && DehydrationEffect.wearsArmorModifier(playerEntity) != wearsArmorModifier * 4
+          && DehydrationEffect.wearsArmorModifier(playerEntity) != ConfigInit.CONFIG.wears_armor_modifier * 4
           && !this.isTouchingWaterOrRain()) {
+        System.out.print(DehydrationEffect.wearsArmorModifier(playerEntity));
         if (this.world.isSkyVisible(this.getBlockPos()) && this.world.isDay() && EnchantmentHelper
             .getLevel(EnchantmentInit.HYDRATION_ENCHANTMENT, this.getEquippedStack(EquipmentSlot.CHEST)) == 0) {
           dehydrationTimer++;
           if (dehydrationTimer % 40 == 0) {
             thirstManager.addDehydration(0.5F);
           }
-          if (dehydrationTimer >= dehydrationTickInterval) {
+          if (dehydrationTimer >= ConfigInit.CONFIG.dehydration_tick_interval) {
             if (thirstManager.getThirstLevel() < 17) {
-              this.addStatusEffect(
-                  new StatusEffectInstance(EffectInit.DEHYDRATION, dehydrationDamageEffectTime, 0, true, false));
+              this.addStatusEffect(new StatusEffectInstance(EffectInit.DEHYDRATION,
+                  ConfigInit.CONFIG.dehydration_damage_effect_time, 0, true, false));
             }
             dehydrationTimer = 0;
           }
@@ -72,12 +68,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
         if (this.world.isNight() || this.world.getBiome(this.getBlockPos()).getTemperature() <= 0.0F
             || thirstManager.getThirstLevel() > 17 || this.isTouchingWaterOrRain()) {
           coolingDownTimer++;
-          if (coolingDownTimer >= coolingDownInterval) {
+          if (coolingDownTimer >= ConfigInit.CONFIG.cooling_down_interval) {
             int coldDuration = this.getStatusEffect(EffectInit.DEHYDRATION).getDuration();
             this.removeStatusEffect(EffectInit.DEHYDRATION);
-            if (coldDuration > coolingDownTickDecrease) {
+            if (coldDuration > ConfigInit.CONFIG.cooling_down_tick_decrease) {
               this.addStatusEffect(new StatusEffectInstance(EffectInit.DEHYDRATION,
-                  coldDuration - coolingDownTickDecrease, 0, true, false));
+                  coldDuration - ConfigInit.CONFIG.cooling_down_tick_decrease, 0, true, false));
               thirstManager.addDehydration(1F);
             }
             thirstManager.addDehydration(1F);
@@ -100,7 +96,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
         && this.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)) {
       PlayerEntity player = (PlayerEntity) (Object) this;
       this.thirstManager.update(player);
-      if (this.thirstManager.isNotFull() && this.age % 10 == 0) {
+      if (this.thirstManager.isNotFull() && this.age % 16 == 0) { // Test; Normal % 10
         this.thirstManager.setThirstLevel(this.thirstManager.getThirstLevel() + 1);
       }
     }

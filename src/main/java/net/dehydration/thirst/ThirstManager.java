@@ -1,5 +1,6 @@
 package net.dehydration.thirst;
 
+import net.dehydration.init.ConfigInit;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.EntityDamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -9,7 +10,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Difficulty;
 
 public class ThirstManager {
-
   private int thirstLevel = 20;
   private float dehydration;
   private int dehydrationTimer;
@@ -28,17 +28,17 @@ public class ThirstManager {
     }
     if (this.thirstLevel <= 0) {
       ++this.dehydrationTimer;
-      if (this.dehydrationTimer >= 80) {
+      if (this.dehydrationTimer >= 90) {
         if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD
             || player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL) {
-          player.damage(createDamageSource(), 1.0F);
+          player.damage(createDamageSource(), ConfigInit.CONFIG.thirst_damage);
         }
         this.dehydrationTimer = 0;
       }
     } else {
       this.dehydrationTimer = 0;
     }
-    if (thirstLevel == 2 && !player.isCreative()) {
+    if (thirstLevel == 2 && !player.isCreative() && !player.hasStatusEffect(StatusEffects.HASTE)) {
       player.addStatusEffect(new StatusEffectInstance(StatusEffects.HASTE, 409, 0, true, false));
     }
 

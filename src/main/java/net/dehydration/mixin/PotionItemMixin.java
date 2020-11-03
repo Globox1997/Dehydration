@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 
 @Mixin(PotionItem.class)
 public abstract class PotionItemMixin {
-  private static int potionThirstQuench = ConfigInit.CONFIG.potion_thirst_quench;
 
   @Inject(method = "finishUsing", at = @At(value = "HEAD"))
   public void finishUsingMixin(ItemStack stack, World world, LivingEntity user,
@@ -24,7 +23,7 @@ public abstract class PotionItemMixin {
     if (user instanceof PlayerEntity) {
       PlayerEntity player = (PlayerEntity) user;
       ThirstManager thirstManager = ((ThristManagerAccess) player).getThirstManager(player);
-      thirstManager.add(potionThirstQuench);
+      thirstManager.add(ConfigInit.CONFIG.potion_thirst_quench);
     }
   }
 

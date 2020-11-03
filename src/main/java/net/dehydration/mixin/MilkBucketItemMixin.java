@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 
 @Mixin(MilkBucketItem.class)
 public class MilkBucketItemMixin {
-  private static int milkThirstQuench = ConfigInit.CONFIG.milk_thirst_quench;
 
   @Inject(method = "finishUsing", at = @At(value = "HEAD"))
   public void finishUsingMixin(ItemStack stack, World world, LivingEntity user,
@@ -24,7 +23,7 @@ public class MilkBucketItemMixin {
     if (user instanceof PlayerEntity) {
       PlayerEntity player = (PlayerEntity) user;
       ThirstManager thirstManager = ((ThristManagerAccess) player).getThirstManager(player);
-      thirstManager.add(milkThirstQuench);
+      thirstManager.add(ConfigInit.CONFIG.milk_thirst_quench);
     }
   }
 
