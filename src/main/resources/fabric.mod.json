@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "id": "dehydration",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "name": "Dehydration",
-  "description": "Stay hydrated",
+  "description": "Stay hydrated and keep calm",
   "authors": [
     "Globox_Z"
   ],
