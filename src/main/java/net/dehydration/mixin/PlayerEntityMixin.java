@@ -46,7 +46,6 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
       if (this.world.getBiome(this.getBlockPos()).getTemperature() >= 2.0F
           && DehydrationEffect.wearsArmorModifier(playerEntity) != ConfigInit.CONFIG.wears_armor_modifier * 4
           && !this.isTouchingWaterOrRain()) {
-        System.out.print(DehydrationEffect.wearsArmorModifier(playerEntity));
         if (this.world.isSkyVisible(this.getBlockPos()) && this.world.isDay() && EnchantmentHelper
             .getLevel(EnchantmentInit.HYDRATION_ENCHANTMENT, this.getEquippedStack(EquipmentSlot.CHEST)) == 0) {
           dehydrationTimer++;

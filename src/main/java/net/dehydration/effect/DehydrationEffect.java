@@ -5,6 +5,7 @@ import java.util.UUID;
 import net.dehydration.access.ThristManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.TagInit;
+import net.dehydration.mixin.DamageSourceAccessor;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
@@ -12,13 +13,12 @@ import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.EntityDamageSource;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
-public class DehydrationEffect extends StatusEffect {
+public class DehydrationEffect extends StatusEffect implements DamageSourceAccessor {
   private final UUID DEHYDRATION = UUID.fromString("80e24bea-844e-4944-a36a-edb66e841e66");
 
   public DehydrationEffect(StatusEffectType type, int color) {
@@ -66,8 +66,9 @@ public class DehydrationEffect extends StatusEffect {
 
   }
 
-  public static DamageSource createDamageSource() {
-    return new EntityDamageSource("dehydration", null);
+  public DamageSource createDamageSource() {
+    return ((DamageSourceAccessor) ((DamageSourceAccessor) new DamageSource("dehydration")).setBypassesArmorAccess())
+        .setUnblockableAccess();
   }
 
   public static int wearsArmorModifier(LivingEntity livingEntity) {
@@ -95,6 +96,16 @@ public class DehydrationEffect extends StatusEffect {
       return warmingModifier;
     } else
       return wearsArmorModifier * 4;
+  }
+
+  @Override
+  public DamageSource setBypassesArmorAccess() {
+    throw new AssertionError("Access Error");
+  }
+
+  @Override
+  public DamageSource setUnblockableAccess() {
+    throw new AssertionError("Access Error");
   }
 
 }

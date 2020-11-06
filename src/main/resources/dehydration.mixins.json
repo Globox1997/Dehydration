@@ -8,7 +8,8 @@
     "PotionItemMixin",
     "ServerPlayerEntityMixin",
     "MilkBucketItemMixin",
-    "ItemMixin"
+    "ItemMixin",
+    "DamageSourceAccessor"
   ],
   "client": [
     "InGameHudMixin"

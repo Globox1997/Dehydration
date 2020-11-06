@@ -1,15 +1,15 @@
 package net.dehydration.thirst;
 
 import net.dehydration.init.ConfigInit;
+import net.dehydration.mixin.DamageSourceAccessor;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.EntityDamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Difficulty;
 
-public class ThirstManager {
+public class ThirstManager implements DamageSourceAccessor {
   private int thirstLevel = 20;
   private float dehydration;
   private int dehydrationTimer;
@@ -30,7 +30,7 @@ public class ThirstManager {
       ++this.dehydrationTimer;
       if (this.dehydrationTimer >= 90) {
         if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD
-            || player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL) {
+            || (player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL)) {
           player.damage(createDamageSource(), ConfigInit.CONFIG.thirst_damage);
         }
         this.dehydrationTimer = 0;
@@ -74,7 +74,22 @@ public class ThirstManager {
     this.thirstLevel = thirstLevel;
   }
 
-  public static DamageSource createDamageSource() {
-    return new EntityDamageSource("thirst", null);
+  // public static DamageSource createDamageSource() {
+  // return new EntityDamageSource("thirst", null);
+  // }
+
+  public DamageSource createDamageSource() {
+    return ((DamageSourceAccessor) ((DamageSourceAccessor) new DamageSource("thirst")).setBypassesArmorAccess())
+        .setUnblockableAccess();
+  }
+
+  @Override
+  public DamageSource setBypassesArmorAccess() {
+    throw new AssertionError("Access Error");
+  }
+
+  @Override
+  public DamageSource setUnblockableAccess() {
+    throw new AssertionError("Access Error");
   }
 }

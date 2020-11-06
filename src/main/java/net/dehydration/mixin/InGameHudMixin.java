@@ -56,7 +56,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
     if (!playerEntity.isCreative()) {
       if (playerEntity.world.getBiome(playerEntity.getBlockPos()).getTemperature() >= 2.0F
           && DehydrationEffect.wearsArmorModifier(playerEntity) != ConfigInit.CONFIG.wears_armor_modifier * 4
-          && playerEntity.world.isSkyVisible(playerEntity.getBlockPos()) && playerEntity.world.isDay()
+          && playerEntity.world.isSkyVisible(playerEntity.getBlockPos())
+          && ((int) playerEntity.world.getTimeOfDay() > 23000 || (int) playerEntity.world.getTimeOfDay() < 12000)
           && EnchantmentHelper.getLevel(EnchantmentInit.HYDRATION_ENCHANTMENT,
               playerEntity.getEquippedStack(EquipmentSlot.CHEST)) == 0) {
         if (smoothThirstRendering < 1.0F) {
