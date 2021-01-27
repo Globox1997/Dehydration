@@ -14,7 +14,7 @@
   "text.autoconfig.dehydration.option.dehydration_tick_interval": "Интервал тиков обезвоживания",
   "text.autoconfig.dehydration.option.cooling_down_interval": "Интервал остывания",
   "text.autoconfig.dehydration.option.cooling_down_tick_decrease": "Уменьшение времени остывания",
-  "text.autoconfig.dehydration.option.heat_icon_x.@PrefixText": "Позиция в HUD иконки температуры",
+  "text.autoconfig.dehydration.option.heat_icon_x.@PrefixText": "Позиция в HUD иконки жары",
   "text.autoconfig.dehydration.option.heat_icon_x": "X позиция",
   "text.autoconfig.dehydration.option.heat_icon_y": "Y позиция",
   "text.autoconfig.dehydration.option.enable_black_outline": "Включение чёрной обводки",
