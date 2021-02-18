@@ -74,10 +74,6 @@ public class ThirstManager implements DamageSourceAccessor {
     this.thirstLevel = thirstLevel;
   }
 
-  // public static DamageSource createDamageSource() {
-  // return new EntityDamageSource("thirst", null);
-  // }
-
   public DamageSource createDamageSource() {
     return ((DamageSourceAccessor) ((DamageSourceAccessor) new DamageSource("thirst")).setBypassesArmorAccess())
         .setUnblockableAccess();
