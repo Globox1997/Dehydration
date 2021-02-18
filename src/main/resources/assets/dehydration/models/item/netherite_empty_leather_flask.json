@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "dehydration:item/netherite_empty_leather_flask"
+    }
+}

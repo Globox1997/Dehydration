@@ -23,6 +23,7 @@ import net.minecraft.stat.Stats;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.UseAction;
@@ -35,9 +36,11 @@ import net.minecraft.world.World;
 // Thanks to Pois1x for the texture
 
 public class Leather_Flask extends Item {
+  private int addition;
 
-  public Leather_Flask(Settings settings) {
+  public Leather_Flask(int waterAddition, Settings settings) {
     super(settings);
+    this.addition = waterAddition;
   }
 
   @Override
@@ -57,7 +60,7 @@ public class Leather_Flask extends Item {
           if (world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
             world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.FILL_FLASK_EVENT,
                 SoundCategory.NEUTRAL, 1.0F, 1.0F);
-            tags.putInt("leather_flask", 2);
+            tags.putInt("leather_flask", 2 + addition);
             return TypedActionResult.consume(itemStack);
           }
         }
@@ -81,14 +84,15 @@ public class Leather_Flask extends Item {
         if (!playerEntity.abilities.creativeMode) {
           if (!stack.hasTag()) {
             tags = new CompoundTag();
-            tags.putInt("leather_flask", 2);
+            tags.putInt("leather_flask", 2 + addition);
             stack.setTag(tags);
           }
-          if (tags.getInt("leather_flask") == 1) {
-            tags.putInt("leather_flask", 0);
-          } else if (tags.getInt("leather_flask") == 2) {
-            tags.putInt("leather_flask", 1);
-          }
+          tags.putInt("leather_flask", tags.getInt("leather_flask") - 1);
+          // if (tags.getInt("leather_flask") == 1) {
+          // tags.putInt("leather_flask", 0);
+          // } else if (tags.getInt("leather_flask") == 2) {
+          // tags.putInt("leather_flask", 1);
+          // }
           ThirstManager thirstManager = ((ThristManagerAccess) playerEntity).getThirstManager(playerEntity);
           thirstManager.add(ConfigInit.CONFIG.flask_thirst_quench);
         }
@@ -125,14 +129,12 @@ public class Leather_Flask extends Item {
   public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
     CompoundTag tags = stack.getTag();
     if (tags != null) {
-      if (tags.getInt("leather_flask") == 2) {
-        tooltip.add(new TranslatableText("item.dehydration.leather_flask.tooltip"));
-      }
-      if (tags.getInt("leather_flask") == 1) {
-        tooltip.add(new TranslatableText("item.dehydration.leather_flask_half_full.tooltip"));
-      }
-
-    }
+      tooltip.add(
+          new TranslatableText("item.dehydration.leather_flask.tooltip", tags.getInt("leather_flask"), addition + 2)
+              .formatted(Formatting.GRAY));
+    } else
+      tooltip.add(
+          new TranslatableText("item.dehydration.leather_flask.tooltip2", addition + 2).formatted(Formatting.GRAY));
   }
 
 }

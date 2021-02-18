@@ -1,0 +1,14 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "dehydration:item/golden_leather_flask"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "empty": 1.0
+            },
+            "model": "dehydration:item/golden_empty_leather_flask"
+        }
+    ]
+}

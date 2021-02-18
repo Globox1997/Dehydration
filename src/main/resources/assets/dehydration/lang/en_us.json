@@ -26,8 +26,12 @@
   "text.autoconfig.dehydration.option.hydrating_factor": "Hydrating factor",
 
   "item.dehydration.leather_flask": "Leather Flask",
-  "item.dehydration.leather_flask.tooltip": "Full",
-  "item.dehydration.leather_flask_half_full.tooltip": "Half Full",
+  "item.dehydration.iron_leather_flask": "Iron Leather Flask",
+  "item.dehydration.golden_leather_flask": "Golden Leather Flask",
+  "item.dehydration.diamond_leather_flask": "Diamond Leather Flask",
+  "item.dehydration.netherite_leather_flask": "Netherite Leather Flask",
+  "item.dehydration.leather_flask.tooltip": "Filling Level %1$s/%2$s",
+  "item.dehydration.leather_flask.tooltip2": "Fill Capacity %1$s",
 
   "enchantment.dehydration.hydration_enchantment": "Hydration"
 }

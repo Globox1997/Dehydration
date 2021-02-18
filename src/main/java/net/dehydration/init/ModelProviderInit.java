@@ -16,5 +16,41 @@ public class ModelProviderInit {
             return 0.0F;
           }
         });
+    FabricModelPredicateProviderRegistry.register(ItemInit.IRON_LEATHER_FLASK, new Identifier("empty"),
+        (stack, world, entity) -> {
+          CompoundTag tags = stack.getTag();
+          if (entity == null || (stack.hasTag() && tags.getInt("leather_flask") == 0)) {
+            return 1.0F;
+          } else {
+            return 0.0F;
+          }
+        });
+    FabricModelPredicateProviderRegistry.register(ItemInit.GOLDEN_LEATHER_FLASK, new Identifier("empty"),
+        (stack, world, entity) -> {
+          CompoundTag tags = stack.getTag();
+          if (entity == null || (stack.hasTag() && tags.getInt("leather_flask") == 0)) {
+            return 1.0F;
+          } else {
+            return 0.0F;
+          }
+        });
+    FabricModelPredicateProviderRegistry.register(ItemInit.DIAMOND_LEATHER_FLASK, new Identifier("empty"),
+        (stack, world, entity) -> {
+          CompoundTag tags = stack.getTag();
+          if (entity == null || (stack.hasTag() && tags.getInt("leather_flask") == 0)) {
+            return 1.0F;
+          } else {
+            return 0.0F;
+          }
+        });
+    FabricModelPredicateProviderRegistry.register(ItemInit.NETHERITE_LEATHER_FLASK, new Identifier("empty"),
+        (stack, world, entity) -> {
+          CompoundTag tags = stack.getTag();
+          if (entity == null || (stack.hasTag() && tags.getInt("leather_flask") == 0)) {
+            return 1.0F;
+          } else {
+            return 0.0F;
+          }
+        });
   }
 }
