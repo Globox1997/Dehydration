@@ -5,20 +5,18 @@ import java.util.UUID;
 import net.dehydration.access.ThristManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.TagInit;
-import net.dehydration.mixin.DamageSourceAccessor;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
-public class DehydrationEffect extends StatusEffect implements DamageSourceAccessor {
+public class DehydrationEffect extends StatusEffect {
   private final UUID DEHYDRATION = UUID.fromString("80e24bea-844e-4944-a36a-edb66e841e66");
 
   public DehydrationEffect(StatusEffectType type, int color) {
@@ -27,11 +25,8 @@ public class DehydrationEffect extends StatusEffect implements DamageSourceAcces
 
   @Override
   public void applyUpdateEffect(LivingEntity entity, int amplifier) {
-    DamageSource damageSource = createDamageSource();
-    entity.damage(damageSource, ConfigInit.CONFIG.dehydration_damage);
     if (entity instanceof PlayerEntity) {
       PlayerEntity player = (PlayerEntity) entity;
-      player.addExhaustion(0.01F);
       ((ThristManagerAccess) player).getThirstManager(player).addDehydration(0.5F);
     }
   }
@@ -66,11 +61,6 @@ public class DehydrationEffect extends StatusEffect implements DamageSourceAcces
 
   }
 
-  public DamageSource createDamageSource() {
-    return ((DamageSourceAccessor) ((DamageSourceAccessor) new DamageSource("dehydration")).setBypassesArmorAccess())
-        .setUnblockableAccess();
-  }
-
   public static int wearsArmorModifier(LivingEntity livingEntity) {
     int wearsArmorModifier = ConfigInit.CONFIG.wears_armor_modifier;
     boolean noArmorDebuff = ConfigInit.CONFIG.no_armor_debuff;
@@ -96,16 +86,6 @@ public class DehydrationEffect extends StatusEffect implements DamageSourceAcces
       return warmingModifier;
     } else
       return wearsArmorModifier * 4;
-  }
-
-  @Override
-  public DamageSource setBypassesArmorAccess() {
-    throw new AssertionError("Access Error");
-  }
-
-  @Override
-  public DamageSource setUnblockableAccess() {
-    throw new AssertionError("Access Error");
   }
 
 }
