@@ -95,7 +95,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
         && this.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)) {
       PlayerEntity player = (PlayerEntity) (Object) this;
       this.thirstManager.update(player);
-      if (this.thirstManager.isNotFull() && this.age % 16 == 0) { // Test; Normal % 10
+      if (this.thirstManager.isNotFull() && this.age % 10 == 0) {
         this.thirstManager.setThirstLevel(this.thirstManager.getThirstLevel() + 1);
       }
     }
@@ -113,7 +113,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
 
   @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;addExhaustion(F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V", shift = Shift.AFTER))
   private void addExhaustionMixin(float exhaustion, CallbackInfo info) {
-    this.thirstManager.addDehydration(exhaustion);
+    this.thirstManager.addDehydration(exhaustion / ConfigInit.CONFIG.hydrating_factor);
   }
 
 }

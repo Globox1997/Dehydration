@@ -11,7 +11,6 @@ public class DehydrationConfig implements ConfigData {
 
   public boolean no_armor_debuff = false;
   public float thirst_damage = 1.0F;
-  public float dehydration_damage = 1.0F;
   @ConfigEntry.Gui.PrefixText
   public int dehydration_damage_interval = 400;
   public int dehydration_damage_effect_time = 2400;
@@ -19,6 +18,8 @@ public class DehydrationConfig implements ConfigData {
   public int dehydration_tick_interval = 400;
   public int cooling_down_interval = 100;
   public int cooling_down_tick_decrease = 400;
+  @Comment("Defines hydrating rate, higher variable = slower dehydrate")
+  public float hydrating_factor = 1.5F;
   public int wears_armor_modifier = 40;
   public int potion_thirst_quench = 4;
   public int milk_thirst_quench = 3;
@@ -29,5 +30,5 @@ public class DehydrationConfig implements ConfigData {
   @ConfigEntry.Gui.PrefixText
   public int heat_icon_x = 5;
   public int heat_icon_y = 55;
-  public boolean enable_black_outline = true;
+  public boolean old_texture = false;
 }
