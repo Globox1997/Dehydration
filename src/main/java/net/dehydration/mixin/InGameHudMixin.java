@@ -98,7 +98,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
       if (this.getHeartCount(livingEntity) == 0) {
         for (variable_one = 0; variable_one < 10; ++variable_one) {
           variable_three = height;
-          if (this.ticks % (thirst * 3 + 1) == 0) {
+          if (thirstManager.getThirstLevel() <= 0.0F && this.ticks % (thirst * 3 + 1) == 0) {
             variable_three = height + (client.world.random.nextInt(3) - 1); // bouncy
           }
           int airplayer = playerEntity.getAir();
@@ -106,12 +106,13 @@ public abstract class InGameHudMixin extends DrawableHelper {
           if (playerEntity.isSubmergedIn(FluidTags.WATER) || airplayer < airplayermax) {
             variable_three = variable_three - 10;
           }
-          int uppderCoord = 0;
-          if (ConfigInit.CONFIG.enable_black_outline) {
+          int uppderCoord = 9;
+          if (ConfigInit.CONFIG.old_texture) {
             uppderCoord = uppderCoord + 9;
           }
           variable_two = width - variable_one * 8 - 9;
           this.client.getTextureManager().bindTexture(THIRST_ICON);
+          this.drawTexture(matrices, variable_two, variable_three, 0, 0, 9, 9);
           if (variable_one * 2 + 1 < thirst) {
             this.drawTexture(matrices, variable_two, variable_three, 0, uppderCoord, 9, 9); // Big icon
           }
