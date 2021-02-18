@@ -27,7 +27,7 @@ public class DehydrationEffect extends StatusEffect {
   public void applyUpdateEffect(LivingEntity entity, int amplifier) {
     if (entity instanceof PlayerEntity) {
       PlayerEntity player = (PlayerEntity) entity;
-      ((ThristManagerAccess) player).getThirstManager(player).addDehydration(0.5F);
+      ((ThristManagerAccess) player).getThirstManager(player).addDehydration(0.5F + (float) amplifier);
     }
   }
 
@@ -46,7 +46,7 @@ public class DehydrationEffect extends StatusEffect {
       entityAttributeInstance.removeModifier(entityAttributeModifier);
       entityAttributeInstance.addPersistentModifier(
           new EntityAttributeModifier(DEHYDRATION, this.getTranslationKey() + " " + entityAttributeModifier.getValue(),
-              this.adjustModifierAmount(amplifier, entityAttributeModifier), entityAttributeModifier.getOperation()));
+              this.adjustModifierAmount(0, entityAttributeModifier), entityAttributeModifier.getOperation()));
     }
 
   }
