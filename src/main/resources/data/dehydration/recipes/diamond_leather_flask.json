@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " d ",
+        "ded",
+        " d "
+    ],
+    "key": {
+        "d": {
+            "item": "minecraft:diamond"
+        },
+        "e": {
+            "item": "dehydration:golden_leather_flask"
+        }
+    },
+    "result": {
+        "item": "dehydration:diamond_leather_flask"
+    }
+}

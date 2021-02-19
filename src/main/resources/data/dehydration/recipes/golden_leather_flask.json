@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " d ",
+        "ded",
+        " d "
+    ],
+    "key": {
+        "d": {
+            "item": "minecraft:gold_ingot"
+        },
+        "e": {
+            "item": "dehydration:iron_leather_flask"
+        }
+    },
+    "result": {
+        "item": "dehydration:golden_leather_flask"
+    }
+}
