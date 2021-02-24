@@ -14,6 +14,11 @@ minecraft {
 	accessWidener "src/main/resources/dehydration.aw"
 }
 
+// repositories {
+//     maven { url = 'https://dl.bintray.com/ladysnake/mods'}
+// 	maven { url = "https://dl.bintray.com/ladysnake/libs" }
+// }
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -37,6 +42,12 @@ dependencies {
 	modCompile "io.github.prospector:modmenu:${project.mod_menu_version}",{
 			exclude(group: "net.fabricmc.fabric-api")
 	}
+	//Requiem
+	// 	modImplementation "io.github.ladysnake:requiem-api:${requiem_version}"
+	//    // modRuntime "io.github.ladysnake:requiem:${requiem_version}"
+	// 	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:2.7.12"
+	//     include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:2.7.12"
+	//	//requiem_version = 1.4.4
 }
 
 processResources {
