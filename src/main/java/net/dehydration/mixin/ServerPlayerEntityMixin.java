@@ -15,7 +15,7 @@ import net.dehydration.access.ThristManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.network.ThirstUpdateS2CPacket;
 import net.dehydration.thirst.ThirstManager;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -37,7 +37,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         && !ConfigInit.CONFIG.excluded_names.contains(this.getName().asString())) {
       PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
       data.writeIntArray(new int[] { this.getEntityId(), thirstManager.getThirstLevel() });
-      ServerSidePacketRegistry.INSTANCE.sendToPlayer(this, ThirstUpdateS2CPacket.THIRST_UPDATE, data);
+      ServerPlayNetworking.send((ServerPlayerEntity) (Object) this, ThirstUpdateS2CPacket.THIRST_UPDATE, data);
       this.syncedThirstLevel = thirstManager.getThirstLevel();
     }
   }
