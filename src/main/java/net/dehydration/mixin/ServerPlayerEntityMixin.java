@@ -12,6 +12,7 @@ import io.netty.buffer.Unpooled;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.dehydration.access.ThristManagerAccess;
+import net.dehydration.init.ConfigInit;
 import net.dehydration.network.ThirstUpdateS2CPacket;
 import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -32,7 +33,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
   @Inject(method = "playerTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;tick()V", shift = Shift.AFTER))
   public void playerTickMixin(CallbackInfo info) {
-    if (this.syncedThirstLevel != this.thirstManager.getThirstLevel()) {
+    if (this.syncedThirstLevel != this.thirstManager.getThirstLevel()
+        && !ConfigInit.CONFIG.excluded_names.contains(this.getName().asString())) {
       PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
       data.writeIntArray(new int[] { this.getEntityId(), thirstManager.getThirstLevel() });
       ServerSidePacketRegistry.INSTANCE.sendToPlayer(this, ThirstUpdateS2CPacket.THIRST_UPDATE, data);

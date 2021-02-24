@@ -24,6 +24,7 @@
   "text.autoconfig.dehydration.option.stew_thirst_quench": "Stew thirst quench",
   "text.autoconfig.dehydration.option.food_thirst_quench": "Food thirst quench",
   "text.autoconfig.dehydration.option.hydrating_factor": "Hydrating factor",
+  "text.autoconfig.dehydration.option.excluded_names": "Excluded names",
 
   "item.dehydration.leather_flask": "Leather Flask",
   "item.dehydration.iron_leather_flask": "Iron Leather Flask",

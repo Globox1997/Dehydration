@@ -42,7 +42,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
   @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tick()V", at = @At("TAIL"))
   public void tickMixin(CallbackInfo info) {
     PlayerEntity playerEntity = (PlayerEntity) (Object) this;
-    if (!playerEntity.isCreative()) {
+    if (!playerEntity.isCreative() && !ConfigInit.CONFIG.excluded_names.contains(playerEntity.getName().asString())) {
       if (this.world.getBiome(this.getBlockPos()).getTemperature() >= 2.0F
           && DehydrationEffect.wearsArmorModifier(playerEntity) != ConfigInit.CONFIG.wears_armor_modifier * 4
           && !this.isTouchingWaterOrRain()) {
@@ -85,14 +85,16 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
 
   @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;update(Lnet/minecraft/entity/player/PlayerEntity;)V", shift = Shift.AFTER))
   private void tickMixinTwo(CallbackInfo info) {
-    PlayerEntity player = (PlayerEntity) (Object) this;
-    this.thirstManager.update(player);
+    if (!ConfigInit.CONFIG.excluded_names.contains(this.getName().asString())) {
+      this.thirstManager.update((PlayerEntity) (Object) this);
+    }
   }
 
   @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;updateItems()V", shift = Shift.BEFORE))
   private void tickMovementMixin(CallbackInfo info) {
     if (this.world.getDifficulty() == Difficulty.PEACEFUL
-        && this.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)) {
+        && this.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)
+        && !ConfigInit.CONFIG.excluded_names.contains(this.getName().asString())) {
       PlayerEntity player = (PlayerEntity) (Object) this;
       this.thirstManager.update(player);
       if (this.thirstManager.isNotFull() && this.age % 10 == 0) {
@@ -113,7 +115,10 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
 
   @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;addExhaustion(F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V", shift = Shift.AFTER))
   private void addExhaustionMixin(float exhaustion, CallbackInfo info) {
-    this.thirstManager.addDehydration(exhaustion / ConfigInit.CONFIG.hydrating_factor);
+    if (!ConfigInit.CONFIG.excluded_names.contains(this.getName().asString())) {
+      this.thirstManager.addDehydration(exhaustion / ConfigInit.CONFIG.hydrating_factor);
+    }
+
   }
 
 }

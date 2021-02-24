@@ -1,5 +1,8 @@
 package net.dehydration.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
 import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.Comment;
@@ -31,4 +34,5 @@ public class DehydrationConfig implements ConfigData {
   public int heat_icon_x = 5;
   public int heat_icon_y = 55;
   public boolean old_texture = false;
+  public List<String> excluded_names = new ArrayList<>();
 }
