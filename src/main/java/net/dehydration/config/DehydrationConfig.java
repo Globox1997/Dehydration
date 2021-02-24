@@ -34,5 +34,6 @@ public class DehydrationConfig implements ConfigData {
   public int heat_icon_x = 5;
   public int heat_icon_y = 55;
   public boolean old_texture = false;
+  @Comment("Playernames won't have thirst")
   public List<String> excluded_names = new ArrayList<>();
 }
