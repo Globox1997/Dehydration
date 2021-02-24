@@ -53,7 +53,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
   @Inject(method = "Lnet/minecraft/client/gui/hud/InGameHud;render(Lnet/minecraft/client/util/math/MatrixStack;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/util/math/MatrixStack;)V"))
   private void renderHeatingIcon(MatrixStack matrixStack, float f, CallbackInfo info) {
     PlayerEntity playerEntity = client.player;
-    if (!playerEntity.isCreative() && !ConfigInit.CONFIG.excluded_names.contains(playerEntity.getName().asString())) {
+    if (!playerEntity.isCreative() && !ConfigInit.CONFIG.excluded_names.contains(playerEntity.getName().asString())
+        && !playerEntity.isInvulnerable()) {
       if (playerEntity.world.getBiome(playerEntity.getBlockPos()).getTemperature() >= 2.0F
           && DehydrationEffect.wearsArmorModifier(playerEntity) != ConfigInit.CONFIG.wears_armor_modifier * 4
           && playerEntity.world.isSkyVisible(playerEntity.getBlockPos())
@@ -86,7 +87,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
   @Inject(method = "renderStatusBars", at = @At(value = "TAIL"))
   private void renderStatusBarsMixin(MatrixStack matrices, CallbackInfo info) {
     PlayerEntity playerEntity = this.getCameraPlayer();
-    if (playerEntity != null && !ConfigInit.CONFIG.excluded_names.contains(playerEntity.getName().asString())) {
+    if (playerEntity != null && !ConfigInit.CONFIG.excluded_names.contains(playerEntity.getName().asString())
+        && !playerEntity.isInvulnerable()) {
       ThirstManager thirstManager = ((ThristManagerAccess) playerEntity).getThirstManager(playerEntity);
       int thirst = thirstManager.getThirstLevel();
       LivingEntity livingEntity = this.getRiddenEntity();
@@ -138,5 +140,14 @@ public abstract class InGameHudMixin extends DrawableHelper {
   private int getHeartCount(LivingEntity entity) {
     return 0;
   }
+
+  // private boolean isRequiemInstalled() {
+  // FabricLoader loader = FabricLoader.getInstance();
+  // if (loader.isModLoaded("requiem")) {
+  // return true;
+  // } else
+  // return false;
+
+  // }
 
 }
