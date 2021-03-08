@@ -47,25 +47,18 @@ public class Leather_Flask extends Item {
   public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
     ItemStack itemStack = user.getStackInHand(hand);
     CompoundTag tags = itemStack.getTag();
+    HitResult hitResult = raycast(world, user, RaycastContext.FluidHandling.SOURCE_ONLY);
+    BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
+
+    if (itemStack.hasTag() && tags.getInt("leather_flask") < 2 + addition && hitResult.getType() == HitResult.Type.BLOCK
+        && world.canPlayerModifyAt(user, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
+      world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.FILL_FLASK_EVENT, SoundCategory.NEUTRAL,
+          1.0F, 1.0F);
+      tags.putInt("leather_flask", 2 + addition);
+      return TypedActionResult.consume(itemStack);
+    }
     if (itemStack.hasTag() && tags.getInt("leather_flask") == 0) {
-      HitResult hitResult = raycast(world, user, RaycastContext.FluidHandling.SOURCE_ONLY);
-      if (hitResult.getType() == HitResult.Type.MISS) {
-        return TypedActionResult.pass(itemStack);
-      } else {
-        if (hitResult.getType() == HitResult.Type.BLOCK) {
-          BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
-          if (!world.canPlayerModifyAt(user, blockPos)) {
-            return TypedActionResult.pass(itemStack);
-          }
-          if (world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
-            world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.FILL_FLASK_EVENT,
-                SoundCategory.NEUTRAL, 1.0F, 1.0F);
-            tags.putInt("leather_flask", 2 + addition);
-            return TypedActionResult.consume(itemStack);
-          }
-        }
-        return TypedActionResult.pass(itemStack);
-      }
+      return TypedActionResult.pass(itemStack);
     } else {
       return ItemUsage.consumeHeldItem(world, user, hand);
     }
@@ -88,11 +81,6 @@ public class Leather_Flask extends Item {
             stack.setTag(tags);
           }
           tags.putInt("leather_flask", tags.getInt("leather_flask") - 1);
-          // if (tags.getInt("leather_flask") == 1) {
-          // tags.putInt("leather_flask", 0);
-          // } else if (tags.getInt("leather_flask") == 2) {
-          // tags.putInt("leather_flask", 1);
-          // }
           ThirstManager thirstManager = ((ThristManagerAccess) playerEntity).getThirstManager(playerEntity);
           thirstManager.add(ConfigInit.CONFIG.flask_thirst_quench);
         }
