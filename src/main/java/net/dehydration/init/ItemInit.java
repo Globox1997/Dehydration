@@ -16,15 +16,15 @@ public class ItemInit {
   // new Item.Settings().group(ItemGroup.MISC).maxCount(1));
 
   public static final Leather_Flask LEATHER_FLASK = register("leather_flask",
-      new Leather_Flask(0, new Item.Settings().group(ItemGroup.MISC)));
+      new Leather_Flask(0, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
   public static final Leather_Flask IRON_LEATHER_FLASK = register("iron_leather_flask",
-      new Leather_Flask(1, new Item.Settings().group(ItemGroup.MISC)));
+      new Leather_Flask(1, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
   public static final Leather_Flask GOLDEN_LEATHER_FLASK = register("golden_leather_flask",
-      new Leather_Flask(2, new Item.Settings().group(ItemGroup.MISC)));
+      new Leather_Flask(2, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
   public static final Leather_Flask DIAMOND_LEATHER_FLASK = register("diamond_leather_flask",
-      new Leather_Flask(3, new Item.Settings().group(ItemGroup.MISC)));
+      new Leather_Flask(3, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
   public static final Leather_Flask NETHERITE_LEATHER_FLASK = register("netherite_leather_flask",
-      new Leather_Flask(4, new Item.Settings().group(ItemGroup.MISC).fireproof()));
+      new Leather_Flask(4, new Item.Settings().group(ItemGroup.MISC).maxCount(1).fireproof()));
   // public static void init() {
   // Registry.register(Registry.ITEM, new Identifier("dehydration",
   // "leather_flask"), LEATHER_FLASK);
