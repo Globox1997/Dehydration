@@ -12,9 +12,6 @@ import net.minecraft.util.registry.Registry;
 public class ItemInit {
   private static final Map<Identifier, Item> ITEMS = new LinkedHashMap<>();
 
-  // public static final Leather_Flask LEATHER_FLASK = new Leather_Flask(
-  // new Item.Settings().group(ItemGroup.MISC).maxCount(1));
-
   public static final Leather_Flask LEATHER_FLASK = register("leather_flask",
       new Leather_Flask(0, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
   public static final Leather_Flask IRON_LEATHER_FLASK = register("iron_leather_flask",
@@ -25,10 +22,6 @@ public class ItemInit {
       new Leather_Flask(3, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
   public static final Leather_Flask NETHERITE_LEATHER_FLASK = register("netherite_leather_flask",
       new Leather_Flask(4, new Item.Settings().group(ItemGroup.MISC).maxCount(1).fireproof()));
-  // public static void init() {
-  // Registry.register(Registry.ITEM, new Identifier("dehydration",
-  // "leather_flask"), LEATHER_FLASK);
-  // }
 
   private static <I extends Item> I register(String name, I item) {
     ITEMS.put(new Identifier("dehydration", name), item);
