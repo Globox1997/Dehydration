@@ -1,0 +1,38 @@
+{
+  "death.attack.dehydration": "%1$s umarł z odwodnienia",
+  "death.attack.thirst": "%1$s umarł z pragnienia",
+
+  "effect.dehydration.dehydration_effect": "Odwodnienie",
+
+  "text.autoconfig.dehydration.title": "Konfiguracja Dehydration",
+  "text.autoconfig.dehydration.option.no_armor_debuff": "No armor heating up",
+  "text.autoconfig.dehydration.option.thirst_damage": "Obrażenia z pragnienia",
+  "text.autoconfig.dehydration.option.dehydration_damage_interval.@PrefixText": "Duration in ticks (1s = 20ticks)",
+  "text.autoconfig.dehydration.option.dehydration_damage_interval": "Dehydration damage interval",
+  "text.autoconfig.dehydration.option.dehydration_damage_effect_time": "Dehydration effect time",
+  "text.autoconfig.dehydration.option.dehydration_tick_interval": "Dehydration tick interval",
+  "text.autoconfig.dehydration.option.cooling_down_interval": "Cooldown interval",
+  "text.autoconfig.dehydration.option.cooling_down_tick_decrease": "Cooldown tick decrease",
+  "text.autoconfig.dehydration.option.heat_icon_x.@PrefixText": "HUD heat icon position",
+  "text.autoconfig.dehydration.option.heat_icon_x": "pozycja X",
+  "text.autoconfig.dehydration.option.heat_icon_y": "pozycja Y",
+  "text.autoconfig.dehydration.option.old_texture": "Stara Tekstura",
+  "text.autoconfig.dehydration.option.potion_thirst_quench": "Potion thirst quench",
+  "text.autoconfig.dehydration.option.milk_thirst_quench": "Milk bucket thirst quench",
+  "text.autoconfig.dehydration.option.flask_thirst_quench": "Leather flask thirst quench",
+  "text.autoconfig.dehydration.option.wears_armor_modifier": "Wear armor modifier",
+  "text.autoconfig.dehydration.option.stew_thirst_quench": "Stew thirst quench",
+  "text.autoconfig.dehydration.option.food_thirst_quench": "Food thirst quench",
+  "text.autoconfig.dehydration.option.hydrating_factor": "Hydrating factor",
+  "text.autoconfig.dehydration.option.excluded_names": "Excluded names",
+
+  "item.dehydration.leather_flask": "Skurzana Manierka",
+  "item.dehydration.iron_leather_flask": "Iron Leather Flask",
+  "item.dehydration.golden_leather_flask": "Golden Leather Flask",
+  "item.dehydration.diamond_leather_flask": "Diamond Leather Flask",
+  "item.dehydration.netherite_leather_flask": "Netherite Leather Flask",
+  "item.dehydration.leather_flask.tooltip": "Filling Level %1$s/%2$s",
+  "item.dehydration.leather_flask.tooltip2": "Fill Capacity %1$s",
+
+  "enchantment.dehydration.hydration_enchantment": "Nawilżenie"
+}
