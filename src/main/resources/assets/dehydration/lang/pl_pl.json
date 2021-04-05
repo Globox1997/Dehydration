@@ -8,7 +8,7 @@
   "text.autoconfig.dehydration.option.no_armor_debuff": "Zbroja się nie nagrzewa",
   "text.autoconfig.dehydration.option.thirst_damage": "Obrażenia z pragnienia",
   "text.autoconfig.dehydration.option.dehydration_damage_interval.@PrefixText": "Czas trwania w tickach (1s = 20 ticków)",
-  "text.autoconfig.dehydration.option.dehydration_damage_interval": "Internał obrażeń odwodnienia",
+  "text.autoconfig.dehydration.option.dehydration_damage_interval": "Czas po którymnastępuje odwodnienie",
   "text.autoconfig.dehydration.option.dehydration_damage_effect_time": "Czas trwania efektu odwodnienia",
   "text.autoconfig.dehydration.option.dehydration_tick_interval": "Dehydration tick interval",
   "text.autoconfig.dehydration.option.cooling_down_interval": "Cooldown interval",
