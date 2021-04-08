@@ -1,0 +1,38 @@
+{
+  "death.attack.dehydration": "%1$s umarł z odwodnienia",
+  "death.attack.thirst": "%1$s umarł z pragnienia",
+
+  "effect.dehydration.dehydration_effect": "Odwodnienie",
+
+  "text.autoconfig.dehydration.title": "Konfiguracja Dehydration",
+  "text.autoconfig.dehydration.option.no_armor_debuff": "Zbroja się nie nagrzewa",
+  "text.autoconfig.dehydration.option.thirst_damage": "Obrażenia z pragnienia",
+  "text.autoconfig.dehydration.option.dehydration_damage_interval.@PrefixText": "Czas trwania w tickach (1s = 20 ticków)",
+  "text.autoconfig.dehydration.option.dehydration_damage_interval": "Czas po którymnastępuje odwodnienie",
+  "text.autoconfig.dehydration.option.dehydration_damage_effect_time": "Czas trwania efektu odwodnienia",
+  "text.autoconfig.dehydration.option.dehydration_tick_interval": "Dehydration tick interval",
+  "text.autoconfig.dehydration.option.cooling_down_interval": "Cooldown interval",
+  "text.autoconfig.dehydration.option.cooling_down_tick_decrease": "Cooldown tick decrease",
+  "text.autoconfig.dehydration.option.heat_icon_x.@PrefixText": "Pozycja ikony ciepła w HUD",
+  "text.autoconfig.dehydration.option.heat_icon_x": "Pozycja X",
+  "text.autoconfig.dehydration.option.heat_icon_y": "Pozycja Y",
+  "text.autoconfig.dehydration.option.old_texture": "Stara tekstura",
+  "text.autoconfig.dehydration.option.potion_thirst_quench": "Wzrost paska po wypiciu mikstury",
+  "text.autoconfig.dehydration.option.milk_thirst_quench": "Wzrost paska po wypiciu mleka",
+  "text.autoconfig.dehydration.option.flask_thirst_quench": "Wzrost paska po wypiciu z manierki",
+  "text.autoconfig.dehydration.option.wears_armor_modifier": "Wear armor modifier",
+  "text.autoconfig.dehydration.option.stew_thirst_quench": "Wzrost paska po potrawce/zupie/gulaszu",
+  "text.autoconfig.dehydration.option.food_thirst_quench": "Wzrost paska po zjedzeniu",
+  "text.autoconfig.dehydration.option.hydrating_factor": "Hydrating factor",
+  "text.autoconfig.dehydration.option.excluded_names": "Wykluczeni gracze",
+
+  "item.dehydration.leather_flask": "Skórzana manierka",
+  "item.dehydration.iron_leather_flask": "Żelazna skórzana manierka",
+  "item.dehydration.golden_leather_flask": "Złota skórzana manierka",
+  "item.dehydration.diamond_leather_flask": "Diamentowa skórzana manierka",
+  "item.dehydration.netherite_leather_flask": "Netheritowa skórzana manierka",
+  "item.dehydration.leather_flask.tooltip": "Poziom napełnienia %1$s/%2$s",
+  "item.dehydration.leather_flask.tooltip2": "Pojemność %1$s",
+
+  "enchantment.dehydration.hydration_enchantment": "Nawilżenie"
+}
