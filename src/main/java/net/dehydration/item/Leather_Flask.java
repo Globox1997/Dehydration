@@ -2,7 +2,8 @@ package net.dehydration.item;
 
 import java.util.List;
 
-import me.sargunvohra.mcmods.autoconfig1u.shadowed.blue.endless.jankson.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
+
 import net.dehydration.access.ThristManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.SoundInit;
