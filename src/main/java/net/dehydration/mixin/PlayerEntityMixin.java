@@ -1,22 +1,18 @@
 package net.dehydration.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.dehydration.access.ThristManagerAccess;
-import net.dehydration.effect.DehydrationEffect;
 import net.dehydration.init.ConfigInit;
-import net.dehydration.init.EffectInit;
-import net.dehydration.init.EnchantmentInit;
 import net.dehydration.thirst.ThirstManager;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Difficulty;
@@ -32,55 +28,13 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
     return this.thirstManager;
   }
 
-  private int dehydrationTimer;
-  private int coolingDownTimer;
+  @Shadow
+  protected HungerManager hungerManager = new HungerManager();
+  @Shadow
+  private int sleepTimer;
 
   public PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
     super(entityType, world);
-  }
-
-  @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tick()V", at = @At("TAIL"))
-  public void tickMixin(CallbackInfo info) {
-    PlayerEntity playerEntity = (PlayerEntity) (Object) this;
-    if (!playerEntity.isCreative() && !ConfigInit.CONFIG.excluded_names.contains(playerEntity.getName().asString())) {
-      if (this.world.getBiome(this.getBlockPos()).getTemperature() >= 2.0F
-          && DehydrationEffect.wearsArmorModifier(playerEntity) != ConfigInit.CONFIG.wears_armor_modifier * 4
-          && !this.isTouchingWaterOrRain()) {
-        if (this.world.isSkyVisible(this.getBlockPos()) && this.world.isDay() && EnchantmentHelper
-            .getLevel(EnchantmentInit.HYDRATION_ENCHANTMENT, this.getEquippedStack(EquipmentSlot.CHEST)) == 0) {
-          dehydrationTimer++;
-          if (dehydrationTimer % 40 == 0) {
-            thirstManager.addDehydration(0.5F);
-          }
-          if (dehydrationTimer >= ConfigInit.CONFIG.dehydration_tick_interval) {
-            if (thirstManager.getThirstLevel() < 17) {
-              this.addStatusEffect(new StatusEffectInstance(EffectInit.DEHYDRATION,
-                  ConfigInit.CONFIG.dehydration_damage_effect_time, 0, true, false));
-            }
-            dehydrationTimer = 0;
-          }
-        }
-      } else if (dehydrationTimer > 0) {
-        dehydrationTimer = 0;
-      }
-      if (this.hasStatusEffect(EffectInit.DEHYDRATION)) {
-        if (this.world.isNight() || this.world.getBiome(this.getBlockPos()).getTemperature() <= 0.0F
-            || thirstManager.getThirstLevel() > 17 || this.isTouchingWaterOrRain()) {
-          coolingDownTimer++;
-          if (coolingDownTimer >= ConfigInit.CONFIG.cooling_down_interval) {
-            int coldDuration = this.getStatusEffect(EffectInit.DEHYDRATION).getDuration();
-            this.removeStatusEffect(EffectInit.DEHYDRATION);
-            if (coldDuration > ConfigInit.CONFIG.cooling_down_tick_decrease) {
-              this.addStatusEffect(new StatusEffectInstance(EffectInit.DEHYDRATION,
-                  coldDuration - ConfigInit.CONFIG.cooling_down_tick_decrease, 0, true, false));
-              thirstManager.addDehydration(1F);
-            }
-            thirstManager.addDehydration(1F);
-            coolingDownTimer = 0;
-          }
-        }
-      }
-    }
   }
 
   @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;update(Lnet/minecraft/entity/player/PlayerEntity;)V", shift = Shift.AFTER))
@@ -117,6 +71,16 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
   private void addExhaustionMixin(float exhaustion, CallbackInfo info) {
     if (!ConfigInit.CONFIG.excluded_names.contains(this.getName().asString())) {
       this.thirstManager.addDehydration(exhaustion / ConfigInit.CONFIG.hydrating_factor);
+    }
+  }
+
+  @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;wakeUp(ZZ)V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;sleepTimer:I"))
+  public void wakeUpMixin(boolean bl, boolean updateSleepingPlayers, CallbackInfo info) {
+    if (!this.world.isClient && this.sleepTimer >= 100) {
+      int thirstLevel = this.thirstManager.getThirstLevel();
+      this.thirstManager.setThirstLevel(thirstLevel >= 4 ? thirstLevel - 4 : 0);
+      int hungerLevel = this.hungerManager.getFoodLevel();
+      this.hungerManager.setFoodLevel(hungerLevel >= 2 ? hungerLevel - 2 : 0);
     }
 
   }

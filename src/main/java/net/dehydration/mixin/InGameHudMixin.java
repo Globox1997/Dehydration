@@ -1,7 +1,5 @@
 package net.dehydration.mixin;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -12,17 +10,13 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.fabricmc.api.Environment;
 import net.dehydration.access.ThristManagerAccess;
-import net.dehydration.effect.DehydrationEffect;
 import net.dehydration.init.ConfigInit;
-import net.dehydration.init.EnchantmentInit;
 import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tag.FluidTags;
@@ -42,46 +36,10 @@ public abstract class InGameHudMixin extends DrawableHelper {
   @Shadow
   private int scaledHeight;
 
-  private float smoothThirstRendering;
-  private static final Identifier HEATING_ICON = new Identifier("dehydration:textures/misc/dehydration.png");
   private static final Identifier THIRST_ICON = new Identifier("dehydration:textures/misc/thirst.png");
 
   public InGameHudMixin(MinecraftClient client) {
     this.client = client;
-  }
-
-  @Inject(method = "Lnet/minecraft/client/gui/hud/InGameHud;render(Lnet/minecraft/client/util/math/MatrixStack;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHotbar(FLnet/minecraft/client/util/math/MatrixStack;)V"))
-  private void renderHeatingIcon(MatrixStack matrixStack, float f, CallbackInfo info) {
-    PlayerEntity playerEntity = client.player;
-    if (!playerEntity.isCreative() && !ConfigInit.CONFIG.excluded_names.contains(playerEntity.getName().asString())
-        && !playerEntity.isInvulnerable()) {
-      if (playerEntity.world.getBiome(playerEntity.getBlockPos()).getTemperature() >= 2.0F
-          && DehydrationEffect.wearsArmorModifier(playerEntity) != ConfigInit.CONFIG.wears_armor_modifier * 4
-          && playerEntity.world.isSkyVisible(playerEntity.getBlockPos())
-          && ((int) playerEntity.world.getTimeOfDay() > 23000 || (int) playerEntity.world.getTimeOfDay() < 12000)
-          && EnchantmentHelper.getLevel(EnchantmentInit.HYDRATION_ENCHANTMENT,
-              playerEntity.getEquippedStack(EquipmentSlot.CHEST)) == 0) {
-        if (smoothThirstRendering < 1.0F) {
-          smoothThirstRendering = smoothThirstRendering
-              + (1.0F / (float) (ConfigInit.CONFIG.dehydration_tick_interval + ConfigInit.CONFIG.wears_armor_modifier));
-        }
-        if (smoothThirstRendering > 1.0F) {
-          smoothThirstRendering = 1.0F;
-        }
-        this.renderHeatingIconOverlay(matrixStack, smoothThirstRendering);
-      } else if (smoothThirstRendering > 0.0F) {
-        this.renderHeatingIconOverlay(matrixStack, smoothThirstRendering);
-        smoothThirstRendering = smoothThirstRendering - 0.01F;
-      }
-
-    }
-  }
-
-  private void renderHeatingIconOverlay(MatrixStack matrixStack, float smooth) {
-    this.client.getTextureManager().bindTexture(HEATING_ICON);
-    RenderSystem.color4f(1.0F, 1.0F, 1.0F, smooth);
-    DrawableHelper.drawTexture(matrixStack, (scaledWidth / 2) - ConfigInit.CONFIG.heat_icon_x,
-        scaledHeight - ConfigInit.CONFIG.heat_icon_y, 0.0F, 0.0F, 10, 10, 10, 10);
   }
 
   @Inject(method = "renderStatusBars", at = @At(value = "TAIL"))
