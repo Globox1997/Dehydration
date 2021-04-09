@@ -12,7 +12,8 @@
     "DamageSourceAccessor"
   ],
   "client": [
-    "InGameHudMixin"
+    "InGameHudMixin",
+    "ClientPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
