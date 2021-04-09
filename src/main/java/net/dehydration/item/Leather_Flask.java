@@ -4,13 +4,16 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
+import eu.midnightdust.puddles.Puddles;
 import net.dehydration.access.ThristManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.SoundInit;
 import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -55,6 +58,12 @@ public class Leather_Flask extends Item {
         && world.canPlayerModifyAt(user, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
       world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.FILL_FLASK_EVENT, SoundCategory.NEUTRAL,
           1.0F, 1.0F);
+      if (FabricLoader.getInstance().isModLoaded("puddles")
+          && world.getBlockState(blockPos) == Puddles.Puddle.getDefaultState()) {
+        tags.putInt("leather_flask", tags.getInt("leather_flask") + 1);
+        world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
+        return TypedActionResult.consume(itemStack);
+      }
       tags.putInt("leather_flask", 2 + addition);
       return TypedActionResult.consume(itemStack);
     }
