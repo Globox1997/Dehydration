@@ -11,7 +11,7 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 @Config(name = "dehydration")
 @Config.Gui.Background("minecraft:textures/block/stone.png")
 public class DehydrationConfig implements ConfigData {
-
+  // @ConfigEntry.Category("hydration_settings")
   public boolean no_armor_debuff = false;
   public float thirst_damage = 1.0F;
   @ConfigEntry.Gui.PrefixText
@@ -30,9 +30,10 @@ public class DehydrationConfig implements ConfigData {
   @Comment("Applies only for food tagged with: hydrating_food")
   public int food_thirst_quench = 1;
   public int flask_thirst_quench = 4;
-  @ConfigEntry.Gui.PrefixText
-  public int heat_icon_x = 5;
-  public int heat_icon_y = 55;
+  @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
+  public int sleep_thirst_consumption = 4;
+  @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
+  public int sleep_hunger_consumption = 2;
   public boolean old_texture = false;
   @Comment("Players listed here won't have thirst")
   public List<String> excluded_names = new ArrayList<>();

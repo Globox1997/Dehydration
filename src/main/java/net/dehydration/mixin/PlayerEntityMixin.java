@@ -78,9 +78,11 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
   public void wakeUpMixin(boolean bl, boolean updateSleepingPlayers, CallbackInfo info) {
     if (!this.world.isClient && this.sleepTimer >= 100) {
       int thirstLevel = this.thirstManager.getThirstLevel();
-      this.thirstManager.setThirstLevel(thirstLevel >= 4 ? thirstLevel - 4 : 0);
       int hungerLevel = this.hungerManager.getFoodLevel();
-      this.hungerManager.setFoodLevel(hungerLevel >= 2 ? hungerLevel - 2 : 0);
+      int thirstConsumption = ConfigInit.CONFIG.sleep_thirst_consumption;
+      int hungerConsumption = ConfigInit.CONFIG.sleep_hunger_consumption;
+      this.thirstManager.setThirstLevel(thirstLevel >= thirstConsumption ? thirstLevel - thirstConsumption : 0);
+      this.hungerManager.setFoodLevel(hungerLevel >= hungerConsumption ? hungerLevel - hungerConsumption : 0);
     }
 
   }

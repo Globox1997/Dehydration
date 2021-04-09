@@ -13,9 +13,6 @@
   "text.autoconfig.dehydration.option.dehydration_tick_interval": "Dehydration tick interval",
   "text.autoconfig.dehydration.option.cooling_down_interval": "Cooldown interval",
   "text.autoconfig.dehydration.option.cooling_down_tick_decrease": "Cooldown tick decrease",
-  "text.autoconfig.dehydration.option.heat_icon_x.@PrefixText": "HUD heat icon position",
-  "text.autoconfig.dehydration.option.heat_icon_x": "X position",
-  "text.autoconfig.dehydration.option.heat_icon_y": "Y position",
   "text.autoconfig.dehydration.option.old_texture": "Old Texture",
   "text.autoconfig.dehydration.option.potion_thirst_quench": "Potion thirst quench",
   "text.autoconfig.dehydration.option.milk_thirst_quench": "Milk bucket thirst quench",
@@ -25,6 +22,8 @@
   "text.autoconfig.dehydration.option.food_thirst_quench": "Food thirst quench",
   "text.autoconfig.dehydration.option.hydrating_factor": "Hydrating factor",
   "text.autoconfig.dehydration.option.excluded_names": "Excluded names",
+  "text.autoconfig.dehydration.option.sleep_thirst_consumption": "Sleeping thirst consumption",
+  "text.autoconfig.dehydration.option.sleep_hunger_consumption": "Sleeping hunger consumption",
 
   "item.dehydration.leather_flask": "Leather Flask",
   "item.dehydration.iron_leather_flask": "Iron Leather Flask",
