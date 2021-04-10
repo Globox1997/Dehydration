@@ -38,8 +38,14 @@ public class ThirstManager implements DamageSourceAccessor {
     } else {
       this.dehydrationTimer = 0;
     }
-    if (thirstLevel == 2 && !player.isCreative() && !player.hasStatusEffect(StatusEffects.HASTE)) {
-      player.addStatusEffect(new StatusEffectInstance(StatusEffects.HASTE, 409, 0, true, false));
+    if (!player.isCreative()) {
+      if (thirstLevel == 2 && !player.hasStatusEffect(StatusEffects.HASTE)) {
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.HASTE, 409, 0, false, false, false));
+      }
+      if (thirstLevel == 0 && player.getHungerManager().getFoodLevel() == 0
+          && !player.hasStatusEffect(StatusEffects.MINING_FATIGUE)) {
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.MINING_FATIGUE, 409, 2, false, false, false));
+      }
     }
 
   }
