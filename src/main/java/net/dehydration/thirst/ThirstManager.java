@@ -13,7 +13,7 @@ import net.minecraft.world.Difficulty;
 
 public class ThirstManager implements DamageSourceAccessor {
   private int thirstLevel = 20;
-  private float dehydration;
+  public float dehydration;
   private int dehydrationTimer;
 
   public void add(int thirst) {
