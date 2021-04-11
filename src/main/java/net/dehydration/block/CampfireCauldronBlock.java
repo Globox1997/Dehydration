@@ -165,9 +165,13 @@ public class CampfireCauldronBlock extends Block {
                         CompoundTag tags = itemStack.getTag();
                         if (tags != null && tags.getInt("leather_flask") < 2 + ((Leather_Flask) item).addition) {
                             if (this.isFireBurning(world, pos)) {
-                                tags.putBoolean("purified_water", true);
+                                if ((tags.getInt("purified_water") == 2 || tags.getInt("leather_flask") == 0)) {
+                                    tags.putInt("purified_water", 2);
+                                } else {
+                                    tags.putInt("purified_water", 1);
+                                }
                             } else {
-                                tags.putBoolean("purified_water", false);
+                                tags.putInt("purified_water", 0);
                             }
                             tags.putInt("leather_flask", tags.getInt("leather_flask") + 1);
                             this.setLevel(world, pos, state, i - 1);
@@ -241,7 +245,6 @@ public class CampfireCauldronBlock extends Block {
                 createCuboidShape(4, 1, 12, 12, 6, 13), createCuboidShape(4, 1, 3, 12, 6, 4),
                 createCuboidShape(4, 1, 4, 5, 6, 5), createCuboidShape(11, 1, 11, 12, 6, 12),
                 Block.createCuboidShape(4, 1, 11, 5, 6, 12));
-
         Z_BASE_SHAPE = VoxelShapes.union(CAULDRON_SHAPE, createCuboidShape(7, -15, 0, 9, 14, 1),
                 createCuboidShape(7, 14, -1, 9, 16, 1), createCuboidShape(7, 14, 15, 9, 16, 17),
                 createCuboidShape(7, -15, 15, 9, 14, 16), Block.createCuboidShape(7, 14, 1, 9, 15, 15));
@@ -249,10 +252,5 @@ public class CampfireCauldronBlock extends Block {
                 createCuboidShape(15, 14, 7, 17, 16, 9), createCuboidShape(-1, 14, 7, 1, 16, 9),
                 createCuboidShape(0, -15, 7, 1, 14, 9), Block.createCuboidShape(1, 14, 7, 15, 15, 9));
     }
-
-    // VoxelShapes.combineAndSimplify(Block.makeCuboidShape(6, 3, 13, 10, 4, 14),
-    // Block.makeCuboidShape(6, 3, 2, 10, 4, 3), IBooleanFunction.OR)
-    // VoxelShapes.combineAndSimplify(Block.makeCuboidShape(2, 3, 6, 3, 4, 10),
-    // Block.makeCuboidShape(13, 3, 6, 14, 4, 10), IBooleanFunction.OR)
 
 }
