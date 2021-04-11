@@ -6,11 +6,13 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.fabricmc.api.Environment;
 import net.dehydration.access.ThristManagerAccess;
 import net.dehydration.init.ConfigInit;
+import net.dehydration.init.EffectInit;
 import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
@@ -19,7 +21,6 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -61,27 +62,34 @@ public abstract class InGameHudMixin extends DrawableHelper {
           if (thirstManager.getThirstLevel() <= 0.0F && this.ticks % (thirst * 3 + 1) == 0) {
             variable_three = height + (client.world.random.nextInt(3) - 1); // bouncy
           }
-          int airplayer = playerEntity.getAir();
-          int airplayermax = playerEntity.getMaxAir();
-          if (playerEntity.isSubmergedIn(FluidTags.WATER) || airplayer < airplayermax) {
-            variable_three = variable_three - 10;
-          }
           int uppderCoord = 9;
-          if (ConfigInit.CONFIG.old_texture) {
+          if (ConfigInit.CONFIG.other_droplet_texture) {
             uppderCoord = uppderCoord + 9;
+          }
+          int beneathCoord = 0;
+          if (playerEntity.hasStatusEffect(EffectInit.DEHYDRATION)) {
+            beneathCoord = 36;
+          }
+          if (playerEntity.hasStatusEffect(EffectInit.THIRST)) {
+            beneathCoord = 18;
           }
           variable_two = width - variable_one * 8 - 9;
           this.client.getTextureManager().bindTexture(THIRST_ICON);
           this.drawTexture(matrices, variable_two, variable_three, 0, 0, 9, 9);
           if (variable_one * 2 + 1 < thirst) {
-            this.drawTexture(matrices, variable_two, variable_three, 0, uppderCoord, 9, 9); // Big icon
+            this.drawTexture(matrices, variable_two, variable_three, beneathCoord, uppderCoord, 9, 9); // Big icon
           }
           if (variable_one * 2 + 1 == thirst) {
-            this.drawTexture(matrices, variable_two, variable_three, 9, uppderCoord, 9, 9); // Small icon
+            this.drawTexture(matrices, variable_two, variable_three, beneathCoord + 9, uppderCoord, 9, 9); // Small icon
           }
         }
       }
     }
+  }
+
+  @Inject(method = "getHeartRows", at = @At(value = "HEAD"), cancellable = true)
+  private void getHeartRowsMixin(int heartCount, CallbackInfoReturnable<Integer> info) {
+    info.setReturnValue((int) Math.ceil((double) heartCount / 10.0D) + 1);
   }
 
   @Shadow
@@ -98,14 +106,5 @@ public abstract class InGameHudMixin extends DrawableHelper {
   private int getHeartCount(LivingEntity entity) {
     return 0;
   }
-
-  // private boolean isRequiemInstalled() {
-  // FabricLoader loader = FabricLoader.getInstance();
-  // if (loader.isModLoaded("requiem")) {
-  // return true;
-  // } else
-  // return false;
-
-  // }
 
 }
