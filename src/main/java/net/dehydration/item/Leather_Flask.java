@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import eu.midnightdust.puddles.Puddles;
 import net.dehydration.access.ThristManagerAccess;
 import net.dehydration.init.ConfigInit;
+import net.dehydration.init.EffectInit;
 import net.dehydration.init.SoundInit;
 import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.api.EnvType;
@@ -16,6 +17,7 @@ import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -40,7 +42,7 @@ import net.minecraft.world.World;
 // Thanks to Pois1x for the texture
 
 public class Leather_Flask extends Item {
-  private int addition;
+  public int addition;
 
   public Leather_Flask(int waterAddition, Settings settings) {
     super(settings);
@@ -56,15 +58,18 @@ public class Leather_Flask extends Item {
 
     if (itemStack.hasTag() && tags.getInt("leather_flask") < 2 + addition && hitResult.getType() == HitResult.Type.BLOCK
         && world.canPlayerModifyAt(user, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
-      world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.FILL_FLASK_EVENT, SoundCategory.NEUTRAL,
-          1.0F, 1.0F);
+      int fillLevel = 2 + addition;
       if (FabricLoader.getInstance().isModLoaded("puddles")
           && world.getBlockState(blockPos) == Puddles.Puddle.getDefaultState()) {
-        tags.putInt("leather_flask", tags.getInt("leather_flask") + 1);
-        world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
-        return TypedActionResult.consume(itemStack);
+        if (!world.isClient) {
+          world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
+        }
+        fillLevel = 1;
       }
-      tags.putInt("leather_flask", 2 + addition);
+      world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.FILL_FLASK_EVENT, SoundCategory.NEUTRAL,
+          1.0F, 1.0F);
+      tags.putBoolean("purified_water", false);
+      tags.putInt("leather_flask", fillLevel);
       return TypedActionResult.consume(itemStack);
     }
     if (itemStack.hasTag() && tags.getInt("leather_flask") == 0) {
@@ -88,11 +93,16 @@ public class Leather_Flask extends Item {
           if (!stack.hasTag()) {
             tags = new CompoundTag();
             tags.putInt("leather_flask", 2 + addition);
+            tags.putBoolean("purified_water", true);
             stack.setTag(tags);
           }
           tags.putInt("leather_flask", tags.getInt("leather_flask") - 1);
           ThirstManager thirstManager = ((ThristManagerAccess) playerEntity).getThirstManager(playerEntity);
           thirstManager.add(ConfigInit.CONFIG.flask_thirst_quench);
+
+          if (!tags.getBoolean("purified_water") && world.random.nextFloat() >= 0.25F) {
+            playerEntity.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, 300, 0, false, false, true));
+          }
         }
       }
     }
@@ -130,6 +140,15 @@ public class Leather_Flask extends Item {
       tooltip.add(
           new TranslatableText("item.dehydration.leather_flask.tooltip", tags.getInt("leather_flask"), addition + 2)
               .formatted(Formatting.GRAY));
+      if (tags.getInt("leather_flask") != 0) {
+        String string = "Dirty";
+        Formatting formatting = Formatting.DARK_AQUA;
+        if (tags.getBoolean("purified_water")) {
+          string = "Purified";
+          formatting = Formatting.AQUA;
+        }
+        tooltip.add(new TranslatableText("item.dehydration.leather_flask.tooltip3", string).formatted(formatting));
+      }
     } else
       tooltip.add(
           new TranslatableText("item.dehydration.leather_flask.tooltip2", addition + 2).formatted(Formatting.GRAY));
