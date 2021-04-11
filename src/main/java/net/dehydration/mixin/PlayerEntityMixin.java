@@ -38,7 +38,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
   }
 
   @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;update(Lnet/minecraft/entity/player/PlayerEntity;)V", shift = Shift.AFTER))
-  private void tickMixinTwo(CallbackInfo info) {
+  private void tickMixin(CallbackInfo info) {
     if (!ConfigInit.CONFIG.excluded_names.contains(this.getName().asString())) {
       this.thirstManager.update((PlayerEntity) (Object) this);
     }
@@ -75,8 +75,9 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
   }
 
   @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;wakeUp(ZZ)V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;sleepTimer:I"))
-  public void wakeUpMixin(boolean bl, boolean updateSleepingPlayers, CallbackInfo info) {
-    if (!this.world.isClient && this.sleepTimer >= 100) {
+  private void wakeUpMixin(boolean bl, boolean updateSleepingPlayers, CallbackInfo info) {
+    if (!this.world.isClient && !ConfigInit.CONFIG.excluded_names.contains(this.getName().asString())
+        && this.sleepTimer >= 100) {
       int thirstLevel = this.thirstManager.getThirstLevel();
       int hungerLevel = this.hungerManager.getFoodLevel();
       int thirstConsumption = ConfigInit.CONFIG.sleep_thirst_consumption;
