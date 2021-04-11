@@ -6,7 +6,7 @@
     ]
   },
   "criteria": {
-    "got_the_leather_for_flask": {
+    "got_the_leather_for_dehydration": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [

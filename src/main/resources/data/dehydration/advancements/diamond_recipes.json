@@ -1,0 +1,20 @@
+{
+    "parent": "minecraft:recipes/root",
+    "rewards": {
+        "recipes": [
+            "dehydration:diamond_leather_flask"
+        ]
+    },
+    "criteria": {
+        "got_the_diamond_for_dehydration": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "item": "minecraft:diamond"
+                    }
+                ]
+            }
+        }
+    }
+}
