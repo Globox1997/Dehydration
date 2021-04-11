@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.5-SNAPSHOT'
+	id 'fabric-loom' version '0.6-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -16,6 +16,7 @@ minecraft {
 
  repositories {
 	maven { url "https://maven.shedaniel.me/" }
+	maven { url "https://www.cursemaven.com" }
 	//  maven { url = 'https://dl.bintray.com/ladysnake/mods'}
 	// 	maven { url = "https://dl.bintray.com/ladysnake/libs" }
 }
@@ -35,7 +36,11 @@ dependencies {
   	}
 	// Modmenu dev
 	modCompile "io.github.prospector:modmenu:${project.mod_menu_version}",{
-			exclude(group: "net.fabricmc.fabric-api")
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	//Puddles
+	modCompileOnly 'curse.maven:motschens-puddles-463169:3255932',{
+		exclude(group: "net.fabricmc.fabric-api")
 	}
 	//Requiem
 	// 	modImplementation "io.github.ladysnake:requiem-api:${requiem_version}"
