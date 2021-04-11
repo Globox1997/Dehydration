@@ -13,6 +13,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.world.World;
 
 @Mixin(Item.class)
@@ -26,6 +27,9 @@ public class ItemMixin {
       int thirst = 0;
       if (stack.getItem().isIn(TagInit.HYDRATING_STEW)) {
         thirst = ConfigInit.CONFIG.stew_thirst_quench;
+        if (stack.getItem() == Items.RABBIT_STEW) {
+          thirst += 3;
+        }
       }
       if (stack.getItem().isIn(TagInit.HYDRATING_FOOD)) {
         thirst = ConfigInit.CONFIG.food_thirst_quench;
