@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " d ",
+        " e ",
+        "dfd"
+    ],
+    "key": {
+        "d": {
+            "item": "minecraft:stick"
+        },
+        "e": {
+            "item": "minecraft:chain"
+        },
+        "f": {
+            "item": "minecraft:cauldron"
+        }
+    },
+    "result": {
+        "item": "dehydration:campfire_cauldron"
+    }
+}

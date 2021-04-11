@@ -9,6 +9,10 @@
     "ServerPlayerEntityMixin",
     "MilkBucketItemMixin",
     "ItemMixin",
+    "CauldronBlockMixin",
+    "CampfireBlockMixin",
+    "PotionUtilMixin",
+    "BrewingRecipeRegistryMixin",
     "DamageSourceAccessor"
   ],
   "client": [
