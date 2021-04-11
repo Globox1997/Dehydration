@@ -7,7 +7,6 @@ import net.dehydration.access.ThristManagerAccess;
 import net.dehydration.item.Leather_Flask;
 import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -58,9 +57,9 @@ public class ItemInit {
           if (thirstManager.isNotFull()) {
             if (!world.isClient) {
               thirstManager.add(ConfigInit.CONFIG.water_souce_quench);
-              world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
-              if (world.random.nextFloat() >= 0.25F) {
-                player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, 300, 0, false, false, true));
+              if (world.random.nextFloat() <= ConfigInit.CONFIG.water_sip_thirst_chance) {
+                player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST,
+                    ConfigInit.CONFIG.water_sip_thirst_duration, 0, false, false, true));
               }
             }
             world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundInit.WATER_SIP_EVENT,
