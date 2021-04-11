@@ -4,5 +4,12 @@
       "dehydration:fill_flask_1",
       "dehydration:fill_flask_2"
     ]
+  },
+  "water_sip": {
+    "sounds": [
+      "dehydration:water_sip_1",
+      "dehydration:water_sip_2",
+      "dehydration:water_sip_3"
+    ]
   }
 }
