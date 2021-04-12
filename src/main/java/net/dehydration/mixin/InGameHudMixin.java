@@ -37,7 +37,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
   @Shadow
   private int scaledHeight;
 
-  private static final Identifier THIRST_ICON = new Identifier("dehydration:textures/misc/thirst.png");
+  private static final Identifier THIRST_ICON = new Identifier("dehydration:textures/gui/thirst.png");
 
   public InGameHudMixin(MinecraftClient client) {
     this.client = client;
