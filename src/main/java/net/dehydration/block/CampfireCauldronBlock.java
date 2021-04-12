@@ -1,8 +1,12 @@
 package net.dehydration.block;
 
+import java.util.Random;
+
 import net.dehydration.init.ItemInit;
 import net.dehydration.init.SoundInit;
 import net.dehydration.item.Leather_Flask;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -227,6 +231,16 @@ public class CampfireCauldronBlock extends Block {
     @Override
     public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
         return false;
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
+        if (random.nextInt(12) == 0 && this.isFireBurning(world, pos) && (Integer) state.get(LEVEL) > 0) {
+            world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D,
+                    SoundInit.CAULDRON_BUBBLE_EVENT, SoundCategory.BLOCKS, 0.5F, random.nextFloat() * 0.4F + 0.8F,
+                    false);
+        }
     }
 
     public boolean isFireBurning(World world, BlockPos pos) {

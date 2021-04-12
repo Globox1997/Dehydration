@@ -11,5 +11,17 @@
       "dehydration:water_sip_2",
       "dehydration:water_sip_3"
     ]
+  },
+  "empty_flask": {
+    "sounds": [
+      "dehydration:empty_flask_1",
+      "dehydration:empty_flask_2"
+    ]
+  },
+  "cauldron_bubble": {
+    "sounds": [
+      "dehydration:cauldron_bubble_1",
+      "dehydration:cauldron_bubble_2"
+    ]
   }
 }

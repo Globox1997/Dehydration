@@ -56,25 +56,33 @@ public class Leather_Flask extends Item {
     HitResult hitResult = raycast(world, user, RaycastContext.FluidHandling.SOURCE_ONLY);
     BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
 
-    if (itemStack.hasTag() && tags.getInt("leather_flask") < 2 + addition && hitResult.getType() == HitResult.Type.BLOCK
-        && world.canPlayerModifyAt(user, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
-      int fillLevel = 2 + addition;
-      int waterPurity = 0;
-      if (FabricLoader.getInstance().isModLoaded("puddles")
-          && world.getBlockState(blockPos) == Puddles.Puddle.getDefaultState()) {
-        if (!world.isClient) {
-          world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
+    if (hitResult.getType() == HitResult.Type.BLOCK && world.canPlayerModifyAt(user, blockPos)
+        && world.getFluidState(blockPos).isIn(FluidTags.WATER) && itemStack.hasTag()) {
+      if (user.isSneaking() && tags.getInt("leather_flask") != 0) {
+        tags.putInt("leather_flask", 0);
+        world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.EMPTY_FLASK_EVENT, SoundCategory.NEUTRAL,
+            1.0F, 1.0F);
+        return TypedActionResult.consume(itemStack);
+      }
+      if (tags.getInt("leather_flask") < 2 + addition) {
+        int fillLevel = 2 + addition;
+        int waterPurity = 0;
+        if (FabricLoader.getInstance().isModLoaded("puddles")
+            && world.getBlockState(blockPos) == Puddles.Puddle.getDefaultState()) {
+          if (!world.isClient) {
+            world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
+          }
+          fillLevel = 1;
         }
-        fillLevel = 1;
+        if (tags.getInt("leather_flask") != 0 && tags.getInt("purified_water") != 0) {
+          waterPurity = 1;
+        }
+        world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.FILL_FLASK_EVENT, SoundCategory.NEUTRAL,
+            1.0F, 1.0F);
+        tags.putInt("purified_water", waterPurity);
+        tags.putInt("leather_flask", fillLevel);
+        return TypedActionResult.consume(itemStack);
       }
-      if (tags.getInt("leather_flask") != 0 && tags.getInt("purified_water") != 0) {
-        waterPurity = 1;
-      }
-      world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.FILL_FLASK_EVENT, SoundCategory.NEUTRAL,
-          1.0F, 1.0F);
-      tags.putInt("purified_water", waterPurity);
-      tags.putInt("leather_flask", fillLevel);
-      return TypedActionResult.consume(itemStack);
     }
     if (itemStack.hasTag() && tags.getInt("leather_flask") == 0) {
       return TypedActionResult.pass(itemStack);
