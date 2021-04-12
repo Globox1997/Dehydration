@@ -2,7 +2,6 @@
   "death.attack.dehydration": "%1$s died of thirst",
   "death.attack.thirst": "%1$s died of thirst",
 
-  "effect.dehydration.dehydration_effect": "Dehydration",
   "effect.dehydration.thirst_effect": "Thirst",
 
   "text.autoconfig.dehydration.title": "Dehydration Config",
