@@ -28,7 +28,8 @@ public abstract class PotionItemMixin {
     if (user instanceof PlayerEntity) {
       PlayerEntity player = (PlayerEntity) user;
       Potion potion = PotionUtil.getPotion(stack);
-      if (this.isBadPotion(potion) && world.random.nextFloat() >= ConfigInit.CONFIG.potion_bad_thirst_chance) {
+      if (!world.isClient && this.isBadPotion(potion)
+          && world.random.nextFloat() >= ConfigInit.CONFIG.potion_bad_thirst_chance) {
         player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.potion_bad_thirst_duration,
             0, false, false, true));
       }

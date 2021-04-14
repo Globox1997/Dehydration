@@ -115,12 +115,16 @@ public class Leather_Flask extends Item {
 
           if (tags.getInt("purified_water") == 0
               && world.random.nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance) {
-            playerEntity.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST,
-                ConfigInit.CONFIG.flask_dirty_thirst_duration, 1, false, false, true));
+            if (!world.isClient) {
+              playerEntity.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST,
+                  ConfigInit.CONFIG.flask_dirty_thirst_duration, 1, false, false, true));
+            }
           } else if (tags.getInt("purified_water") == 1
               && world.random.nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance * 0.5F) {
-            playerEntity.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST,
-                ConfigInit.CONFIG.flask_dirty_thirst_duration, 0, false, false, true));
+            if (!world.isClient) {
+              playerEntity.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST,
+                  ConfigInit.CONFIG.flask_dirty_thirst_duration, 0, false, false, true));
+            }
           }
         }
       }

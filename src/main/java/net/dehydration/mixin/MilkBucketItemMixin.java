@@ -26,7 +26,7 @@ public class MilkBucketItemMixin {
       PlayerEntity player = (PlayerEntity) user;
       ThirstManager thirstManager = ((ThristManagerAccess) player).getThirstManager(player);
       thirstManager.add(ConfigInit.CONFIG.milk_thirst_quench);
-      if (world.random.nextFloat() >= ConfigInit.CONFIG.milk_thirst_chance) {
+      if (!world.isClient && world.random.nextFloat() >= ConfigInit.CONFIG.milk_thirst_chance) {
         player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, 300, 0, false, false, true));
       }
     }
