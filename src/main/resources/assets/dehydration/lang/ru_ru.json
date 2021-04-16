@@ -31,11 +31,11 @@
   "item.dehydration.diamond_leather_flask": "Алмазная кожаная фляга",
   "item.dehydration.netherite_leather_flask": "Незеритовая кожаная фляга",
   "item.dehydration.leather_flask.tooltip": "Уровень заполнения %1$s/%2$s",
-  "item.dehydration.leather_flask.tooltip2": "Заполнение ёмкости %1$s",
+  "item.dehydration.leather_flask.tooltip2": "Возможность заполнения %1$s",
   "item.dehydration.leather_flask.tooltip3": "%1$s",
   "item.minecraft.potion.effect.purified_water": "Бутылка дистиллированной воды",
-  "item.minecraft.lingering_potion.effect.purified_water": "Оседающая бутылка дистиллированной воды",
-  "item.minecraft.splash_potion.effect.purified_water": "Взрывающаяся бутылка дистиллированной воды",
+  "item.minecraft.lingering_potion.effect.purified_water": "Туманная бутылка дистиллированной воды",
+  "item.minecraft.splash_potion.effect.purified_water": "Взрывная бутылка дистиллированной воды",
   
   "block.dehydration.campfire_cauldron": "Котел для костра"
 }
