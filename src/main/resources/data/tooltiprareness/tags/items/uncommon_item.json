@@ -1,0 +1,8 @@
+{
+    "replace": false,
+    "values": [
+        "dehydration:iron_leather_flask",
+        "dehydration:golden_leather_flask",
+        "dehydration:campfire_cauldron"
+    ]
+}

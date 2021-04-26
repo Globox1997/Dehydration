@@ -158,6 +158,7 @@ public class Leather_Flask extends Item {
   @Override
   @Environment(EnvType.CLIENT)
   public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    super.appendTooltip(stack, world, tooltip, context);
     CompoundTag tags = stack.getTag();
     if (tags != null) {
       tooltip.add(
