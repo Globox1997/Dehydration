@@ -8,6 +8,7 @@ public class DehydrationMain implements ModInitializer {
   @Override
   public void onInitialize() {
     BlockInit.init();
+    CompatInit.init();
     ConfigInit.init();
     EffectInit.init();
     ItemInit.init();

@@ -38,9 +38,14 @@ dependencies {
 	modCompile "io.github.prospector:modmenu:${project.mod_menu_version}",{
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	//Puddles
+	// Puddles
 	modCompileOnly 'curse.maven:motschens-puddles-463169:3255932',{
 		exclude(group: "net.fabricmc.fabric-api")
+	}
+	// Croptopia
+	modCompileOnly 'curse.maven:croptopia-fabric-415438:3296002',{
+		exclude(group: "net.fabricmc.fabric-api")
+		exclude(group: "io.github.prospector")
 	}
 	//Requiem
 	// 	modImplementation "io.github.ladysnake:requiem-api:${requiem_version}"
