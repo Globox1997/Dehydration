@@ -49,6 +49,8 @@ public class DehydrationConfig implements ConfigData {
   public int sleep_thirst_consumption = 4;
   @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
   public int sleep_hunger_consumption = 2;
+  @Comment("in ticks")
+  public int water_boiling_time = 100;
   @Comment("Enables alternate textures by the lead texture artist")
   public boolean other_droplet_texture = false;
   @Comment("Players listed here won't have thirst")

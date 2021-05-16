@@ -24,6 +24,9 @@
   "text.autoconfig.dehydration.option.water_sip_thirst_duration": "Water sip thirst debuff tick duration",
   "text.autoconfig.dehydration.option.other_droplet_texture": "Other droplet texture",
   "text.autoconfig.dehydration.option.thirst_effect_factor": "Thirst effect factor",
+  "text.autoconfig.dehydration.option.flask_dirty_thirst_chance": "Flask dirty water thirst chance",
+  "text.autoconfig.dehydration.option.flask_dirty_thirst_duration": "Flask dirty water thirst duration",
+  "text.autoconfig.dehydration.option.water_boiling_time": "Water boiling time",
 
   "item.dehydration.leather_flask": "Leather Flask",
   "item.dehydration.iron_leather_flask": "Iron Leather Flask",

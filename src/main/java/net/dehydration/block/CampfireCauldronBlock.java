@@ -2,6 +2,7 @@ package net.dehydration.block;
 
 import java.util.Random;
 
+import net.dehydration.block.entity.CampfireCauldronEntity;
 import net.dehydration.init.ItemInit;
 import net.dehydration.init.SoundInit;
 import net.dehydration.item.Leather_Flask;
@@ -9,10 +10,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,7 +46,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 
-public class CampfireCauldronBlock extends Block {
+public class CampfireCauldronBlock extends Block implements BlockEntityProvider {
     public static final DirectionProperty FACING;
     public static final IntProperty LEVEL;
     private static final VoxelShape Z_BASE_SHAPE;
@@ -53,6 +56,11 @@ public class CampfireCauldronBlock extends Block {
     public CampfireCauldronBlock(AbstractBlock.Settings settings) {
         super(settings);
         this.setDefaultState((BlockState) ((BlockState) this.stateManager.getDefaultState()).with(LEVEL, 0));
+    }
+
+    @Override
+    public BlockEntity createBlockEntity(BlockView view) {
+        return new CampfireCauldronEntity();
     }
 
     @Override
@@ -89,6 +97,7 @@ public class CampfireCauldronBlock extends Block {
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
             BlockHitResult hit) {
         ItemStack itemStack = player.getStackInHand(hand);
+        CampfireCauldronEntity campfireCauldronEntity = (CampfireCauldronEntity) world.getBlockEntity(pos);
         if (itemStack.isEmpty()) {
             return ActionResult.PASS;
         } else {
@@ -100,6 +109,8 @@ public class CampfireCauldronBlock extends Block {
                         player.setStackInHand(hand, new ItemStack(Items.BUCKET));
                     }
                     this.setLevel(world, pos, state, 4);
+                    campfireCauldronEntity.isBoiled = false;
+                    campfireCauldronEntity.ticker = 0;
                     world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F,
                             1.0F);
                 }
@@ -128,13 +139,13 @@ public class CampfireCauldronBlock extends Block {
                     if (i > 0 && !world.isClient) {
                         if (!player.abilities.creativeMode) {
                             itemStack.decrement(1);
-                            if (this.isFireBurning(world, pos)) {
+                            if (this.isPurifiedWater(world, pos)) {
                                 newItemStack = PotionUtil.setPotion(new ItemStack(Items.POTION),
                                         ItemInit.PURIFIED_WATER);
                             } else {
                                 newItemStack = PotionUtil.setPotion(new ItemStack(Items.POTION), Potions.WATER);
                             }
-                            if (itemStack.isEmpty()) {
+                            if (player.getStackInHand(hand).isEmpty()) {
                                 player.setStackInHand(hand, newItemStack);
                             } else if (!player.inventory.insertStack(newItemStack)) {
                                 player.dropItem(newItemStack, false);
@@ -161,6 +172,8 @@ public class CampfireCauldronBlock extends Block {
                         world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS,
                                 1.0F, 1.0F);
                         this.setLevel(world, pos, state, i + 1);
+                        campfireCauldronEntity.isBoiled = false;
+                        campfireCauldronEntity.ticker = 0;
                     }
                     return ActionResult.success(world.isClient);
 
@@ -168,7 +181,7 @@ public class CampfireCauldronBlock extends Block {
                     if (i > 0 && item instanceof Leather_Flask) {
                         CompoundTag tags = itemStack.getTag();
                         if (tags != null && tags.getInt("leather_flask") < 2 + ((Leather_Flask) item).addition) {
-                            if (this.isFireBurning(world, pos)) {
+                            if (this.isPurifiedWater(world, pos)) {
                                 if ((tags.getInt("purified_water") == 2 || tags.getInt("leather_flask") == 0)) {
                                     tags.putInt("purified_water", 2);
                                 } else {
@@ -249,6 +262,10 @@ public class CampfireCauldronBlock extends Block {
             return true;
         } else
             return false;
+    }
+
+    public boolean isPurifiedWater(World world, BlockPos pos) {
+        return ((CampfireCauldronEntity) world.getBlockEntity(pos)).isBoiled;
     }
 
     static {
