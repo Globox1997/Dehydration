@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "dehydration",
-  "version": "1.1.4",
+  "version": "${version}",
   "name": "Dehydration",
   "description": "Stay hydrated and keep calm",
   "authors": [
@@ -32,7 +32,7 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
-    "minecraft": "1.16.x"
+    "minecraft": "1.17.x"
   },
   "suggests": {
     "flamingo": "*"

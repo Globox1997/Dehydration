@@ -22,7 +22,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.stat.Stats;
@@ -52,7 +52,7 @@ public class Leather_Flask extends Item {
   @Override
   public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
     ItemStack itemStack = user.getStackInHand(hand);
-    CompoundTag tags = itemStack.getTag();
+    NbtCompound tags = itemStack.getTag();
     HitResult hitResult = raycast(world, user, RaycastContext.FluidHandling.SOURCE_ONLY);
     BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
 
@@ -94,16 +94,16 @@ public class Leather_Flask extends Item {
   @Override
   public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
     PlayerEntity playerEntity = user instanceof PlayerEntity ? (PlayerEntity) user : null;
-    CompoundTag tags = stack.getTag();
+    NbtCompound tags = stack.getTag();
     if (!stack.hasTag() || tags != null && tags.getInt("leather_flask") > 0) {
       if (playerEntity instanceof ServerPlayerEntity) {
         Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity) playerEntity, stack);
       }
       if (playerEntity != null) {
         playerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
-        if (!playerEntity.abilities.creativeMode) {
+        if (!playerEntity.isCreative()) {
           if (!stack.hasTag()) {
-            tags = new CompoundTag();
+            tags = new NbtCompound();
 
             tags.putInt("leather_flask", 2 + addition);
             tags.putInt("purified_water", 2);
@@ -139,7 +139,7 @@ public class Leather_Flask extends Item {
 
   @Override
   public UseAction getUseAction(ItemStack stack) {
-    CompoundTag tags = stack.getTag();
+    NbtCompound tags = stack.getTag();
     if (!stack.hasTag() || (tags != null && tags.getInt("leather_flask") > 0)) {
       return UseAction.DRINK;
     } else
@@ -149,7 +149,7 @@ public class Leather_Flask extends Item {
   @Override
   public void onCraft(ItemStack stack, World world, PlayerEntity player) {
     if (!stack.hasTag()) {
-      CompoundTag tags = new CompoundTag();
+      NbtCompound tags = new NbtCompound();
       tags.putInt("leather_flask", 0);
       stack.setTag(tags);
     }
@@ -159,7 +159,7 @@ public class Leather_Flask extends Item {
   @Environment(EnvType.CLIENT)
   public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
     super.appendTooltip(stack, world, tooltip, context);
-    CompoundTag tags = stack.getTag();
+    NbtCompound tags = stack.getTag();
     if (tags != null) {
       tooltip.add(
           new TranslatableText("item.dehydration.leather_flask.tooltip", tags.getInt("leather_flask"), addition + 2)

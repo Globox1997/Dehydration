@@ -3,6 +3,7 @@ package net.dehydration.init;
 import net.dehydration.block.CampfireCauldronBlock;
 import net.dehydration.block.entity.CampfireCauldronEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
@@ -25,7 +26,8 @@ public class BlockInit {
                                 CAMPFIRE_CAULDRON_BLOCK);
                 CAMPFIRE_CAULDRON_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
                                 "dehydration:campfire_cauldron_entity",
-                                BlockEntityType.Builder.create(CampfireCauldronEntity::new, CAMPFIRE_CAULDRON_BLOCK)
+                                FabricBlockEntityTypeBuilder
+                                                .create(CampfireCauldronEntity::new, CAMPFIRE_CAULDRON_BLOCK)
                                                 .build(null));
         }
 

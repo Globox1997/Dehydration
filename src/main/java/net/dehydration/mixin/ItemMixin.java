@@ -25,16 +25,16 @@ public class ItemMixin {
       PlayerEntity player = (PlayerEntity) user;
       ThirstManager thirstManager = ((ThristManagerAccess) player).getThirstManager(player);
       int thirst = 0;
-      if (stack.getItem().isIn(TagInit.HYDRATING_STEW)) {
+      if (stack.isIn(TagInit.HYDRATING_STEW)) {
         thirst = ConfigInit.CONFIG.stew_thirst_quench;
         if (stack.getItem() == Items.RABBIT_STEW) {
           thirst += 3;
         }
       }
-      if (stack.getItem().isIn(TagInit.HYDRATING_FOOD)) {
+      if (stack.isIn(TagInit.HYDRATING_FOOD)) {
         thirst = ConfigInit.CONFIG.food_thirst_quench;
       }
-      if (stack.getItem().isIn(TagInit.HYDRATING_DRINKS)) {
+      if (stack.isIn(TagInit.HYDRATING_DRINKS)) {
         thirst = ConfigInit.CONFIG.potion_thirst_quench;
       }
       thirstManager.add(thirst);

@@ -14,7 +14,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -57,14 +57,14 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThristMa
     }
   }
 
-  @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;readCustomDataFromTag(Lnet/minecraft/nbt/CompoundTag;)V", at = @At(value = "TAIL"))
-  private void readCustomDataFromTagMixin(CompoundTag tag, CallbackInfo info) {
-    this.thirstManager.fromTag(tag);
+  @Inject(method = "readCustomDataFromNbt", at = @At(value = "TAIL"))
+  private void readCustomDataFromTagMixin(NbtCompound tag, CallbackInfo info) {
+    this.thirstManager.readNbt(tag);
   }
 
-  @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;writeCustomDataToTag(Lnet/minecraft/nbt/CompoundTag;)V", at = @At(value = "TAIL"))
-  private void writeCustomDataToTagMixin(CompoundTag tag, CallbackInfo info) {
-    this.thirstManager.toTag(tag);
+  @Inject(method = "writeCustomDataToNbt", at = @At(value = "TAIL"))
+  private void writeCustomDataToTagMixin(NbtCompound tag, CallbackInfo info) {
+    this.thirstManager.writeNbt(tag);
   }
 
   @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;addExhaustion(F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V", shift = Shift.AFTER))

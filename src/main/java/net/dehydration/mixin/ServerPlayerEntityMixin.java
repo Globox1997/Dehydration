@@ -36,7 +36,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     if (this.syncedThirstLevel != this.thirstManager.getThirstLevel()
         && !ConfigInit.CONFIG.excluded_names.contains(this.getName().asString())) {
       PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-      data.writeIntArray(new int[] { this.getEntityId(), thirstManager.getThirstLevel() });
+      data.writeIntArray(new int[] { this.getId(), thirstManager.getThirstLevel() });
       ServerPlayNetworking.send((ServerPlayerEntity) (Object) this, ThirstUpdateS2CPacket.THIRST_UPDATE, data);
       this.syncedThirstLevel = thirstManager.getThirstLevel();
     }

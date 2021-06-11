@@ -1,5 +1,6 @@
 package net.dehydration.mixin;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -76,7 +77,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
             beneathCoord = 18;
           }
           variable_two = width - variable_one * 8 - 9;
-          this.client.getTextureManager().bindTexture(THIRST_ICON);
+          RenderSystem.setShaderTexture(0, THIRST_ICON);
           this.drawTexture(matrices, variable_two, variable_three, 0, 0, 9, 9);
           if (variable_one * 2 + 1 < thirst) {
             this.drawTexture(matrices, variable_two, variable_three, beneathCoord, uppderCoord, 9, 9); // Big icon
