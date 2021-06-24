@@ -3,21 +3,18 @@ plugins {
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
-minecraft {
-	accessWidener "src/main/resources/dehydration.aw"
-}
-
  repositories {
 	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://www.cursemaven.com" }
-	 maven { url "https://maven.terraformersmc.com/" }
+	maven { url "https://maven.terraformersmc.com/" }
+	maven { url = 'https://ladysnake.jfrog.io/artifactory/mods' }
 	//  maven { url = 'https://dl.bintray.com/ladysnake/mods'}
 	// 	maven { url = "https://dl.bintray.com/ladysnake/libs" }
 }
@@ -37,14 +34,20 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	// Puddles
-	modCompileOnly 'curse.maven:motschens-puddles-463169:3255932',{
+	modCompileOnly 'curse.maven:motschens-puddles-463169:3306770',{
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	// Croptopia
-	modCompileOnly 'curse.maven:croptopia-fabric-415438:3296002',{
+	modCompileOnly 'curse.maven:croptopia-fabric-415438:3342562',{
 		exclude(group: "net.fabricmc.fabric-api")
 		exclude(group: "io.github.prospector")
 	}
+	modCompileOnly 'curse.maven:fabricwarps-433362:3333938',{
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	modCompileOnly "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:3.0.0-nightly.1.17-pre1"
+    modCompileOnly "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:3.0.0-nightly.1.17-pre1"
+	modCompileOnly "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-world:3.0.0-nightly.1.17-pre1"
 	//Requiem
 	// 	modImplementation "io.github.ladysnake:requiem-api:${requiem_version}"
 	//    // modRuntime "io.github.ladysnake:requiem:${requiem_version}"
