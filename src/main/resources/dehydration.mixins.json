@@ -13,7 +13,9 @@
     "CampfireBlockMixin",
     "PotionUtilMixin",
     "BrewingRecipeRegistryMixin",
-    "DamageSourceAccessor"
+    "BootstrapMixin",
+    "DispenserBlockMixin",
+    "StatusEffectMixin"
   ],
   "client": [
     "InGameHudMixin",
