@@ -36,6 +36,5 @@
   },
   "suggests": {
     "flamingo": "*"
-  },
-  "accessWidener": "dehydration.aw"
+  }
 }
