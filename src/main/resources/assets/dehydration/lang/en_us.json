@@ -27,6 +27,8 @@
   "text.autoconfig.dehydration.option.flask_dirty_thirst_chance": "Flask dirty water thirst chance",
   "text.autoconfig.dehydration.option.flask_dirty_thirst_duration": "Flask dirty water thirst duration",
   "text.autoconfig.dehydration.option.water_boiling_time": "Water boiling time",
+  "text.autoconfig.dehydration.option.harder_nether": "Harder nether",
+  "text.autoconfig.dehydration.option.nether_factor": "Nether factor",
 
   "item.dehydration.leather_flask": "Leather Flask",
   "item.dehydration.iron_leather_flask": "Iron Leather Flask",

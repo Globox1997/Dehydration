@@ -28,8 +28,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;setSprinting(Z)V", shift = Shift.AFTER))
     public void tickMovementMixin(CallbackInfo info) {
         ThirstManager thirstManager = ((ThristManagerAccess) this).getThirstManager(this);
-        if (!ConfigInit.CONFIG.excluded_names.contains(this.getName().asString()) && !this.isCreative()
-                && thirstManager.getThirstLevel() < 6) {
+        if (!ConfigInit.CONFIG.excluded_names.contains(this.getName().asString()) && !this.isCreative() && thirstManager.getThirstLevel() < 6) {
             this.setSprinting(false);
         }
     }

@@ -7,11 +7,11 @@ import net.fabricmc.api.ClientModInitializer;
 
 public class DehydrationClient implements ClientModInitializer {
 
-  @Override
-  public void onInitializeClient() {
-    ModelProviderInit.init();
-    RenderInit.init();
-    ThirstUpdateS2CPacket.init();
-  }
+    @Override
+    public void onInitializeClient() {
+        ModelProviderInit.init();
+        RenderInit.init();
+        ThirstUpdateS2CPacket.init();
+    }
 
 }

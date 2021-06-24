@@ -5,6 +5,6 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public interface ThristManagerAccess {
 
-  public ThirstManager getThirstManager(PlayerEntity player);
+    public ThirstManager getThirstManager(PlayerEntity player);
 
 }

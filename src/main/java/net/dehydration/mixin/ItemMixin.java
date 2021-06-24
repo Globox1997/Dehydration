@@ -19,26 +19,26 @@ import net.minecraft.world.World;
 @Mixin(Item.class)
 public class ItemMixin {
 
-  @Inject(method = "finishUsing", at = @At(value = "HEAD"))
-  public void finishUsing(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info) {
-    if (user instanceof PlayerEntity) {
-      PlayerEntity player = (PlayerEntity) user;
-      ThirstManager thirstManager = ((ThristManagerAccess) player).getThirstManager(player);
-      int thirst = 0;
-      if (stack.isIn(TagInit.HYDRATING_STEW)) {
-        thirst = ConfigInit.CONFIG.stew_thirst_quench;
-        if (stack.getItem() == Items.RABBIT_STEW) {
-          thirst += 3;
+    @Inject(method = "finishUsing", at = @At(value = "HEAD"))
+    public void finishUsing(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info) {
+        if (user instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) user;
+            ThirstManager thirstManager = ((ThristManagerAccess) player).getThirstManager(player);
+            int thirst = 0;
+            if (stack.isIn(TagInit.HYDRATING_STEW)) {
+                thirst = ConfigInit.CONFIG.stew_thirst_quench;
+                if (stack.getItem() == Items.RABBIT_STEW) {
+                    thirst += 3;
+                }
+            }
+            if (stack.isIn(TagInit.HYDRATING_FOOD)) {
+                thirst = ConfigInit.CONFIG.food_thirst_quench;
+            }
+            if (stack.isIn(TagInit.HYDRATING_DRINKS)) {
+                thirst = ConfigInit.CONFIG.potion_thirst_quench;
+            }
+            thirstManager.add(thirst);
         }
-      }
-      if (stack.isIn(TagInit.HYDRATING_FOOD)) {
-        thirst = ConfigInit.CONFIG.food_thirst_quench;
-      }
-      if (stack.isIn(TagInit.HYDRATING_DRINKS)) {
-        thirst = ConfigInit.CONFIG.potion_thirst_quench;
-      }
-      thirstManager.add(thirst);
     }
-  }
 
 }

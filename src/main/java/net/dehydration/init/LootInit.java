@@ -10,15 +10,14 @@ import net.minecraft.util.Identifier;
 
 public class LootInit {
 
-  public static void init() {
-    LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, supplier, setter) -> {
-      if (id.equals(new Identifier(LootTables.SPAWN_BONUS_CHEST.toString()))) {
-        FabricLootPoolBuilder poolBuilder = FabricLootPoolBuilder.builder()
-            .rolls(BinomialLootNumberProvider.create(5, 0.9F)).with(ItemEntry.builder(Items.GLASS_BOTTLE));
-        supplier.pool(poolBuilder);
-      }
-    });
+    public static void init() {
+        LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, supplier, setter) -> {
+            if (id.equals(new Identifier(LootTables.SPAWN_BONUS_CHEST.toString()))) {
+                FabricLootPoolBuilder poolBuilder = FabricLootPoolBuilder.builder().rolls(BinomialLootNumberProvider.create(5, 0.9F)).with(ItemEntry.builder(Items.GLASS_BOTTLE));
+                supplier.pool(poolBuilder);
+            }
+        });
 
-  }
+    }
 
 }

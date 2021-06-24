@@ -17,8 +17,7 @@ public class ThirstEffect extends StatusEffect {
     @Override
     public void applyUpdateEffect(LivingEntity entity, int amplifier) {
         if (entity instanceof PlayerEntity) {
-            ThirstManager thirstManager = ((ThristManagerAccess) (PlayerEntity) entity)
-                    .getThirstManager((PlayerEntity) entity);
+            ThirstManager thirstManager = ((ThristManagerAccess) (PlayerEntity) entity).getThirstManager((PlayerEntity) entity);
             thirstManager.addDehydration(ConfigInit.CONFIG.thirst_effect_factor * (float) (amplifier + 1));
         }
     }

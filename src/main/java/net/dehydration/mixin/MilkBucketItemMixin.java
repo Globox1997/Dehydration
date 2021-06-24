@@ -19,17 +19,16 @@ import net.minecraft.world.World;
 @Mixin(MilkBucketItem.class)
 public class MilkBucketItemMixin {
 
-  @Inject(method = "finishUsing", at = @At(value = "HEAD"))
-  public void finishUsingMixin(ItemStack stack, World world, LivingEntity user,
-      CallbackInfoReturnable<ItemStack> info) {
-    if (user instanceof PlayerEntity) {
-      PlayerEntity player = (PlayerEntity) user;
-      ThirstManager thirstManager = ((ThristManagerAccess) player).getThirstManager(player);
-      thirstManager.add(ConfigInit.CONFIG.milk_thirst_quench);
-      if (!world.isClient && world.random.nextFloat() >= ConfigInit.CONFIG.milk_thirst_chance) {
-        player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, 300, 0, false, false, true));
-      }
+    @Inject(method = "finishUsing", at = @At(value = "HEAD"))
+    public void finishUsingMixin(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info) {
+        if (user instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) user;
+            ThirstManager thirstManager = ((ThristManagerAccess) player).getThirstManager(player);
+            thirstManager.add(ConfigInit.CONFIG.milk_thirst_quench);
+            if (!world.isClient && world.random.nextFloat() >= ConfigInit.CONFIG.milk_thirst_chance) {
+                player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, 300, 0, false, false, true));
+            }
+        }
     }
-  }
 
 }

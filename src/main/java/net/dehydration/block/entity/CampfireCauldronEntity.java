@@ -41,8 +41,7 @@ public class CampfireCauldronEntity extends BlockEntity {
 
     public void update() {
         CampfireCauldronBlock campfireCauldronBlock = (CampfireCauldronBlock) this.getCachedState().getBlock();
-        if (campfireCauldronBlock.isFireBurning(world, pos)
-                && this.getCachedState().get(CampfireCauldronBlock.LEVEL) > 0 && !isBoiled) {
+        if (campfireCauldronBlock.isFireBurning(world, pos) && this.getCachedState().get(CampfireCauldronBlock.LEVEL) > 0 && !isBoiled) {
             ticker++;
             if (ticker >= ConfigInit.CONFIG.water_boiling_time) {
                 isBoiled = true;

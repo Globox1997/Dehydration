@@ -65,16 +65,13 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state,
-            BlockEntityType<T> type) {
-        return checkType(type, BlockInit.CAMPFIRE_CAULDRON_ENTITY,
-                world.isClient ? CampfireCauldronEntity::clientTick : CampfireCauldronEntity::serverTick);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        return checkType(type, BlockInit.CAMPFIRE_CAULDRON_ENTITY, world.isClient ? CampfireCauldronEntity::clientTick : CampfireCauldronEntity::serverTick);
     }
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext itemPlacementContext) {
-        return (BlockState) this.getDefaultState().with(FACING,
-                itemPlacementContext.getPlayerFacing().rotateYClockwise());
+        return (BlockState) this.getDefaultState().with(FACING, itemPlacementContext.getPlayerFacing().rotateYClockwise());
     }
 
     @Override
@@ -102,8 +99,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand,
-            BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack itemStack = player.getStackInHand(hand);
         CampfireCauldronEntity campfireCauldronEntity = (CampfireCauldronEntity) world.getBlockEntity(pos);
         if (itemStack.isEmpty()) {
@@ -119,8 +115,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                     this.setLevel(world, pos, state, 4);
                     campfireCauldronEntity.isBoiled = false;
                     campfireCauldronEntity.ticker = 0;
-                    world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F,
-                            1.0F);
+                    world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
                 return ActionResult.success(world.isClient);
 
@@ -135,8 +130,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                         }
                     }
                     this.setLevel(world, pos, state, 0);
-                    world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F,
-                            1.0F);
+                    world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
                 return ActionResult.success(world.isClient);
 
@@ -148,8 +142,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                         if (!player.isCreative()) {
                             itemStack.decrement(1);
                             if (this.isPurifiedWater(world, pos)) {
-                                newItemStack = PotionUtil.setPotion(new ItemStack(Items.POTION),
-                                        ItemInit.PURIFIED_WATER);
+                                newItemStack = PotionUtil.setPotion(new ItemStack(Items.POTION), ItemInit.PURIFIED_WATER);
                             } else {
                                 newItemStack = PotionUtil.setPotion(new ItemStack(Items.POTION), Potions.WATER);
                             }
@@ -159,21 +152,18 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                                 player.dropItem(newItemStack, false);
                             }
                         }
-                        world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS,
-                                1.0F, 1.0F);
+                        world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         this.setLevel(world, pos, state, i - 1);
                     }
                     return ActionResult.success(world.isClient);
 
-                } else if (item == Items.POTION && (PotionUtil.getPotion(itemStack) == Potions.WATER
-                        || PotionUtil.getPotion(itemStack) == ItemInit.PURIFIED_WATER)) {
+                } else if (item == Items.POTION && (PotionUtil.getPotion(itemStack) == Potions.WATER || PotionUtil.getPotion(itemStack) == ItemInit.PURIFIED_WATER)) {
                     if (i < 4 && !world.isClient) {
                         if (!player.isCreative()) {
                             newItemStack = new ItemStack(Items.GLASS_BOTTLE);
                             player.setStackInHand(hand, newItemStack);
                         }
-                        world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS,
-                                1.0F, 1.0F);
+                        world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         this.setLevel(world, pos, state, i + 1);
                         campfireCauldronEntity.isBoiled = false;
                         campfireCauldronEntity.ticker = 0;
@@ -195,8 +185,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                             }
                             tags.putInt("leather_flask", tags.getInt("leather_flask") + 1);
                             this.setLevel(world, pos, state, i - 1);
-                            world.playSound((PlayerEntity) null, pos, SoundInit.FILL_FLASK_EVENT, SoundCategory.NEUTRAL,
-                                    1.0F, 1.0F);
+                            world.playSound((PlayerEntity) null, pos, SoundInit.FILL_FLASK_EVENT, SoundCategory.NEUTRAL, 1.0F, 1.0F);
                             return ActionResult.success(world.isClient);
                         } else
                             return ActionResult.PASS;
@@ -249,15 +238,13 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
     @Environment(EnvType.CLIENT)
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
         if (random.nextInt(12) == 0 && this.isFireBurning(world, pos) && (Integer) state.get(LEVEL) > 0) {
-            world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D,
-                    SoundInit.CAULDRON_BUBBLE_EVENT, SoundCategory.BLOCKS, 0.5F, random.nextFloat() * 0.4F + 0.8F,
-                    false);
+            world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, SoundInit.CAULDRON_BUBBLE_EVENT, SoundCategory.BLOCKS, 0.5F,
+                    random.nextFloat() * 0.4F + 0.8F, false);
         }
     }
 
     public boolean isFireBurning(World world, BlockPos pos) {
-        if (world.getBlockState(pos.down()).getBlock() instanceof CampfireBlock
-                && CampfireBlock.isLitCampfire(world.getBlockState(pos.down()))) {
+        if (world.getBlockState(pos.down()).getBlock() instanceof CampfireBlock && CampfireBlock.isLitCampfire(world.getBlockState(pos.down()))) {
             return true;
         } else
             return false;
@@ -267,24 +254,20 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
         return ((CampfireCauldronEntity) world.getBlockEntity(pos)).isBoiled;
     }
 
-    protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(
-            BlockEntityType<A> givenType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker) {
+    protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> givenType, BlockEntityType<E> expectedType,
+            BlockEntityTicker<? super E> ticker) {
         return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;
     }
 
     static {
         LEVEL = IntProperty.of("level", 0, 4);
         FACING = HorizontalFacingBlock.FACING;
-        CAULDRON_SHAPE = VoxelShapes.union(createCuboidShape(11, 1, 4, 12, 6, 5), createCuboidShape(4, 0, 4, 12, 1, 12),
-                createCuboidShape(3, 1, 4, 4, 6, 12), createCuboidShape(12, 1, 4, 13, 6, 12),
-                createCuboidShape(4, 1, 12, 12, 6, 13), createCuboidShape(4, 1, 3, 12, 6, 4),
-                createCuboidShape(4, 1, 4, 5, 6, 5), createCuboidShape(11, 1, 11, 12, 6, 12),
+        CAULDRON_SHAPE = VoxelShapes.union(createCuboidShape(11, 1, 4, 12, 6, 5), createCuboidShape(4, 0, 4, 12, 1, 12), createCuboidShape(3, 1, 4, 4, 6, 12), createCuboidShape(12, 1, 4, 13, 6, 12),
+                createCuboidShape(4, 1, 12, 12, 6, 13), createCuboidShape(4, 1, 3, 12, 6, 4), createCuboidShape(4, 1, 4, 5, 6, 5), createCuboidShape(11, 1, 11, 12, 6, 12),
                 Block.createCuboidShape(4, 1, 11, 5, 6, 12));
-        Z_BASE_SHAPE = VoxelShapes.union(CAULDRON_SHAPE, createCuboidShape(7, -15, 0, 9, 14, 1),
-                createCuboidShape(7, 14, -1, 9, 16, 1), createCuboidShape(7, 14, 15, 9, 16, 17),
+        Z_BASE_SHAPE = VoxelShapes.union(CAULDRON_SHAPE, createCuboidShape(7, -15, 0, 9, 14, 1), createCuboidShape(7, 14, -1, 9, 16, 1), createCuboidShape(7, 14, 15, 9, 16, 17),
                 createCuboidShape(7, -15, 15, 9, 14, 16), Block.createCuboidShape(7, 14, 1, 9, 15, 15));
-        X_BASE_SHAPE = VoxelShapes.union(CAULDRON_SHAPE, createCuboidShape(15, -15, 7, 16, 14, 9),
-                createCuboidShape(15, 14, 7, 17, 16, 9), createCuboidShape(-1, 14, 7, 1, 16, 9),
+        X_BASE_SHAPE = VoxelShapes.union(CAULDRON_SHAPE, createCuboidShape(15, -15, 7, 16, 14, 9), createCuboidShape(15, 14, 7, 17, 16, 9), createCuboidShape(-1, 14, 7, 1, 16, 9),
                 createCuboidShape(0, -15, 7, 1, 14, 9), Block.createCuboidShape(1, 14, 7, 15, 15, 9));
     }
 

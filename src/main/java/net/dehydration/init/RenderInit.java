@@ -7,10 +7,9 @@ import net.minecraft.client.render.RenderLayer;
 
 public class RenderInit {
 
-  public static void init() {
-    ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> BiomeColors.getWaterColor(world, pos),
-        BlockInit.CAMPFIRE_CAULDRON_BLOCK);
-    BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.CAMPFIRE_CAULDRON_BLOCK, RenderLayer.getCutout());
-  }
+    public static void init() {
+        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> BiomeColors.getWaterColor(world, pos), BlockInit.CAMPFIRE_CAULDRON_BLOCK);
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.CAMPFIRE_CAULDRON_BLOCK, RenderLayer.getCutout());
+    }
 
 }
