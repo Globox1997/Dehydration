@@ -27,87 +27,88 @@ import net.minecraft.util.Identifier;
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin extends DrawableHelper {
-  @Shadow
-  @Final
-  @Mutable
-  private final MinecraftClient client;
-  @Shadow
-  private int ticks;
-  @Shadow
-  private int scaledWidth;
-  @Shadow
-  private int scaledHeight;
+    @Shadow
+    @Final
+    @Mutable
+    private final MinecraftClient client;
+    @Shadow
+    private int ticks;
+    @Shadow
+    private int scaledWidth;
+    @Shadow
+    private int scaledHeight;
 
-  private static final Identifier THIRST_ICON = new Identifier("dehydration:textures/gui/thirst.png");
+    private static final Identifier THIRST_ICON = new Identifier("dehydration:textures/gui/thirst.png");
 
-  public InGameHudMixin(MinecraftClient client) {
-    this.client = client;
-  }
-
-  @Inject(method = "renderStatusBars", at = @At(value = "TAIL"))
-  private void renderStatusBarsMixin(MatrixStack matrices, CallbackInfo info) {
-    PlayerEntity playerEntity = this.getCameraPlayer();
-    if (playerEntity != null && !ConfigInit.CONFIG.excluded_names.contains(playerEntity.getName().asString())
-        && !playerEntity.isInvulnerable()) {
-      ThirstManager thirstManager = ((ThristManagerAccess) playerEntity).getThirstManager(playerEntity);
-      int thirst = thirstManager.getThirstLevel();
-      LivingEntity livingEntity = this.getRiddenEntity();
-      int variable_one;
-      int variable_two;
-      int variable_three;
-      int height = this.scaledHeight - 49;
-      int width = this.scaledWidth / 2 + 91;
-      if (this.getHeartCount(livingEntity) == 0) {
-        for (variable_one = 0; variable_one < 10; ++variable_one) {
-          variable_three = height;
-          if (thirstManager.dehydration >= 4.0F && this.ticks % (thirst * 3 + 1) == 0) {
-            variable_three = height + (client.world.random.nextInt(3) - 1); // bouncy
-            thirstManager.dehydration -= 4.0F;
-          }
-          int uppderCoord = 9;
-          if (ConfigInit.CONFIG.other_droplet_texture) {
-            uppderCoord = uppderCoord + 9;
-          }
-          int beneathCoord = 0;
-          // Check for freezing later too
-          // if (playerEntity.hasStatusEffect(EffectInit.DEHYDRATION)) {
-          // beneathCoord = 36;
-          // }
-          if (playerEntity.hasStatusEffect(EffectInit.THIRST)) {
-            beneathCoord = 18;
-          }
-          variable_two = width - variable_one * 8 - 9;
-          RenderSystem.setShaderTexture(0, THIRST_ICON);
-          this.drawTexture(matrices, variable_two, variable_three, 0, 0, 9, 9);
-          if (variable_one * 2 + 1 < thirst) {
-            this.drawTexture(matrices, variable_two, variable_three, beneathCoord, uppderCoord, 9, 9); // Big icon
-          }
-          if (variable_one * 2 + 1 == thirst) {
-            this.drawTexture(matrices, variable_two, variable_three, beneathCoord + 9, uppderCoord, 9, 9); // Small icon
-          }
-        }
-      }
+    public InGameHudMixin(MinecraftClient client) {
+        this.client = client;
     }
-  }
 
-  @Inject(method = "getHeartRows", at = @At(value = "HEAD"), cancellable = true)
-  private void getHeartRowsMixin(int heartCount, CallbackInfoReturnable<Integer> info) {
-    info.setReturnValue((int) Math.ceil((double) heartCount / 10.0D) + 1);
-  }
+    @Inject(method = "renderStatusBars", at = @At(value = "TAIL"))
+    private void renderStatusBarsMixin(MatrixStack matrices, CallbackInfo info) {
+        PlayerEntity playerEntity = this.getCameraPlayer();
+        if (playerEntity != null && !ConfigInit.CONFIG.excluded_names.contains(playerEntity.getName().asString()) && !playerEntity.isInvulnerable()) {
+            ThirstManager thirstManager = ((ThristManagerAccess) playerEntity).getThirstManager(playerEntity);
+            int thirst = thirstManager.getThirstLevel();
+            LivingEntity livingEntity = this.getRiddenEntity();
+            int variable_one;
+            int variable_two;
+            int variable_three;
+            int height = this.scaledHeight - 49;
+            int width = this.scaledWidth / 2 + 91;
+            if (this.getHeartCount(livingEntity) == 0) {
+                for (variable_one = 0; variable_one < 10; ++variable_one) {
+                    variable_three = height;
+                    if (thirstManager.dehydration >= 4.0F && this.ticks % (thirst * 3 + 1) == 0) {
+                        variable_three = height + (client.world.random.nextInt(3) - 1); // bouncy
+                        thirstManager.dehydration -= 4.0F;
+                    } else if (this.ticks % (thirst * 8 + 3) == 0) {
+                        variable_three = height + (client.world.random.nextInt(3) - 1); // bouncy
+                    }
+                    int uppderCoord = 9;
+                    if (ConfigInit.CONFIG.other_droplet_texture) {
+                        uppderCoord = uppderCoord + 9;
+                    }
+                    int beneathCoord = 0;
+                    // Check for freezing later too
+                    // if (playerEntity.hasStatusEffect(EffectInit.DEHYDRATION)) {
+                    // beneathCoord = 36;
+                    // }
+                    if (playerEntity.hasStatusEffect(EffectInit.THIRST)) {
+                        beneathCoord = 18;
+                    }
+                    variable_two = width - variable_one * 8 - 9;
+                    RenderSystem.setShaderTexture(0, THIRST_ICON);
+                    this.drawTexture(matrices, variable_two, variable_three, 0, 0, 9, 9);
+                    if (variable_one * 2 + 1 < thirst) {
+                        this.drawTexture(matrices, variable_two, variable_three, beneathCoord, uppderCoord, 9, 9); // Big icon
+                    }
+                    if (variable_one * 2 + 1 == thirst) {
+                        this.drawTexture(matrices, variable_two, variable_three, beneathCoord + 9, uppderCoord, 9, 9); // Small icon
+                    }
+                }
+            }
+        }
+    }
 
-  @Shadow
-  private PlayerEntity getCameraPlayer() {
-    return null;
-  }
+    @Inject(method = "getHeartRows", at = @At(value = "HEAD"), cancellable = true)
+    private void getHeartRowsMixin(int heartCount, CallbackInfoReturnable<Integer> info) {
+        info.setReturnValue((int) Math.ceil((double) heartCount / 10.0D) + 1);
+    }
 
-  @Shadow
-  private LivingEntity getRiddenEntity() {
-    return null;
-  }
+    @Shadow
+    private PlayerEntity getCameraPlayer() {
+        return null;
+    }
 
-  @Shadow
-  private int getHeartCount(LivingEntity entity) {
-    return 0;
-  }
+    @Shadow
+    private LivingEntity getRiddenEntity() {
+        return null;
+    }
+
+    @Shadow
+    private int getHeartCount(LivingEntity entity) {
+        return 0;
+    }
 
 }
