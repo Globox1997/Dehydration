@@ -14,7 +14,7 @@ group = project.maven_group
 	maven { url "https://maven.shedaniel.me/" }
 	maven { url "https://www.cursemaven.com" }
 	maven { url "https://maven.terraformersmc.com/" }
-	maven { url = 'https://ladysnake.jfrog.io/artifactory/mods' }
+	maven { url 'https://ladysnake.jfrog.io/artifactory/mods' }
 	//  maven { url = 'https://dl.bintray.com/ladysnake/mods'}
 	// 	maven { url = "https://dl.bintray.com/ladysnake/libs" }
 }

@@ -172,7 +172,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
 
                 } else {
                     if (i > 0 && item instanceof Leather_Flask) {
-                        NbtCompound tags = itemStack.getTag();
+                        NbtCompound tags = itemStack.getNbt();
                         if (tags != null && tags.getInt("leather_flask") < 2 + ((Leather_Flask) item).addition) {
                             if (this.isPurifiedWater(world, pos)) {
                                 if ((tags.getInt("purified_water") == 2 || tags.getInt("leather_flask") == 0)) {

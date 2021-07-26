@@ -52,11 +52,11 @@ public class Leather_Flask extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack itemStack = user.getStackInHand(hand);
-        NbtCompound tags = itemStack.getTag();
+        NbtCompound tags = itemStack.getNbt();
         HitResult hitResult = raycast(world, user, RaycastContext.FluidHandling.SOURCE_ONLY);
         BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
 
-        if (hitResult.getType() == HitResult.Type.BLOCK && world.canPlayerModifyAt(user, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER) && itemStack.hasTag()) {
+        if (hitResult.getType() == HitResult.Type.BLOCK && world.canPlayerModifyAt(user, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER) && itemStack.hasNbt()) {
             if (user.isSneaking() && tags.getInt("leather_flask") != 0) {
                 tags.putInt("leather_flask", 0);
                 world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.EMPTY_FLASK_EVENT, SoundCategory.NEUTRAL, 1.0F, 1.0F);
@@ -80,7 +80,7 @@ public class Leather_Flask extends Item {
                 return TypedActionResult.consume(itemStack);
             }
         }
-        if (itemStack.hasTag() && tags.getInt("leather_flask") == 0) {
+        if (itemStack.hasNbt() && tags.getInt("leather_flask") == 0) {
             return TypedActionResult.pass(itemStack);
         } else {
             return ItemUsage.consumeHeldItem(world, user, hand);
@@ -90,20 +90,20 @@ public class Leather_Flask extends Item {
     @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
         PlayerEntity playerEntity = user instanceof PlayerEntity ? (PlayerEntity) user : null;
-        NbtCompound tags = stack.getTag();
-        if (!stack.hasTag() || tags != null && tags.getInt("leather_flask") > 0) {
+        NbtCompound tags = stack.getNbt();
+        if (!stack.hasNbt() || tags != null && tags.getInt("leather_flask") > 0) {
             if (playerEntity instanceof ServerPlayerEntity) {
                 Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity) playerEntity, stack);
             }
             if (playerEntity != null) {
                 playerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
                 if (!playerEntity.isCreative()) {
-                    if (!stack.hasTag()) {
+                    if (!stack.hasNbt()) {
                         tags = new NbtCompound();
 
                         tags.putInt("leather_flask", 2 + addition);
                         tags.putInt("purified_water", 2);
-                        stack.setTag(tags);
+                        stack.setNbt(tags);
                     }
                     tags.putInt("leather_flask", tags.getInt("leather_flask") - 1);
                     ThirstManager thirstManager = ((ThristManagerAccess) playerEntity).getThirstManager(playerEntity);
@@ -131,8 +131,8 @@ public class Leather_Flask extends Item {
 
     @Override
     public UseAction getUseAction(ItemStack stack) {
-        NbtCompound tags = stack.getTag();
-        if (!stack.hasTag() || (tags != null && tags.getInt("leather_flask") > 0)) {
+        NbtCompound tags = stack.getNbt();
+        if (!stack.hasNbt() || (tags != null && tags.getInt("leather_flask") > 0)) {
             return UseAction.DRINK;
         } else
             return UseAction.NONE;
@@ -140,10 +140,10 @@ public class Leather_Flask extends Item {
 
     @Override
     public void onCraft(ItemStack stack, World world, PlayerEntity player) {
-        if (!stack.hasTag()) {
+        if (!stack.hasNbt()) {
             NbtCompound tags = new NbtCompound();
             tags.putInt("leather_flask", 0);
-            stack.setTag(tags);
+            stack.setNbt(tags);
         }
     }
 
@@ -151,7 +151,7 @@ public class Leather_Flask extends Item {
     @Environment(EnvType.CLIENT)
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
-        NbtCompound tags = stack.getTag();
+        NbtCompound tags = stack.getNbt();
         if (tags != null) {
             tooltip.add(new TranslatableText("item.dehydration.leather_flask.tooltip", tags.getInt("leather_flask"), addition + 2).formatted(Formatting.GRAY));
             if (tags.getInt("leather_flask") != 0) {

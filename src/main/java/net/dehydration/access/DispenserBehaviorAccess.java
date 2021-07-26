@@ -25,21 +25,21 @@ public class DispenserBehaviorAccess {
             public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
                 this.setSuccess(false);
                 ServerWorld serverWorld = pointer.getWorld();
-                BlockPos blockPos = pointer.getBlockPos().offset((Direction) pointer.getBlockState().get(DispenserBlock.FACING));
+                BlockPos blockPos = pointer.getPos().offset((Direction) pointer.getBlockState().get(DispenserBlock.FACING));
                 BlockState blockState = serverWorld.getBlockState(blockPos);
                 if (blockState.isOf(BlockInit.CAMPFIRE_CAULDRON_BLOCK) && blockState.get(CampfireCauldronBlock.LEVEL) > 0) {
                     CampfireCauldronBlock campfireCauldronBlock = (CampfireCauldronBlock) blockState.getBlock();
-                    if (campfireCauldronBlock.isPurifiedWater(serverWorld, blockPos) && stack.hasTag() && stack.getTag().getInt("leather_flask") < 2 + ((Leather_Flask) stack.getItem()).addition) {
+                    if (campfireCauldronBlock.isPurifiedWater(serverWorld, blockPos) && stack.hasNbt() && stack.getNbt().getInt("leather_flask") < 2 + ((Leather_Flask) stack.getItem()).addition) {
                         this.setSuccess(true);
                         ItemStack newStack = stack.copy();
                         NbtCompound tags = new NbtCompound();
                         tags.putInt("leather_flask", 2 + ((Leather_Flask) newStack.getItem()).addition);
                         int waterPurity = 2;
-                        if (stack.getTag().getInt("leather_flask") != 0 && newStack.getTag().getInt("purified_water") != 2) {
+                        if (stack.getNbt().getInt("leather_flask") != 0 && newStack.getNbt().getInt("purified_water") != 2) {
                             waterPurity = 1;
                         }
                         tags.putInt("purified_water", waterPurity);
-                        newStack.setTag(tags);
+                        newStack.setNbt(tags);
                         stack.decrement(1);
                         campfireCauldronBlock.setLevel(serverWorld, blockPos, blockState, blockState.get(CampfireCauldronBlock.LEVEL) - 1);
                         if (stack.isEmpty()) {

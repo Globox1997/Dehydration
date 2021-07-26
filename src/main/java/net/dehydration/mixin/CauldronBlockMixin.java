@@ -28,16 +28,16 @@ public class CauldronBlockMixin {
     public void onUseMixin(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
         ItemStack itemStack = player.getStackInHand(hand);
         if (itemStack.getItem() instanceof Leather_Flask) {
-            NbtCompound tags = itemStack.getTag();
+            NbtCompound tags = itemStack.getNbt();
             Leather_Flask item = (Leather_Flask) itemStack.getItem();
-            if (itemStack.hasTag() && tags.getInt("leather_flask") < 2 + item.addition) {
+            if (itemStack.hasNbt() && tags.getInt("leather_flask") < 2 + item.addition) {
                 if (state.get(LeveledCauldronBlock.LEVEL) > 0 && !world.isClient) {
                     world.playSound((PlayerEntity) null, pos, SoundInit.FILL_FLASK_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     LeveledCauldronBlock.decrementFluidLevel(state, world, pos);
                     player.incrementStat(Stats.USE_CAULDRON);
                     tags.putInt("leather_flask", tags.getInt("leather_flask") + 1);
                     tags.putBoolean("purified_water", false);
-                    itemStack.setTag(tags);
+                    itemStack.setNbt(tags);
                 }
                 info.setReturnValue(ActionResult.success(world.isClient));
             }
