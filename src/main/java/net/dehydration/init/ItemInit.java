@@ -3,7 +3,7 @@ package net.dehydration.init;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import net.dehydration.access.ThristManagerAccess;
+import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.item.Leather_Flask;
 import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -47,7 +47,7 @@ public class ItemInit {
                 HitResult hitResult = player.raycast(1.5D, 0.0F, true);
                 BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
                 if (world.canPlayerModifyAt(player, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER) && world.getFluidState(blockPos).isStill()) {
-                    ThirstManager thirstManager = ((ThristManagerAccess) player).getThirstManager(player);
+                    ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
                     if (thirstManager.isNotFull()) {
                         if (!world.isClient) {
                             thirstManager.add(ConfigInit.CONFIG.water_souce_quench);

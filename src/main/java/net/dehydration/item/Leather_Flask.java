@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import eu.midnightdust.puddles.Puddles;
-import net.dehydration.access.ThristManagerAccess;
+import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.EffectInit;
 import net.dehydration.init.SoundInit;
@@ -106,7 +106,7 @@ public class Leather_Flask extends Item {
                         stack.setNbt(tags);
                     }
                     tags.putInt("leather_flask", tags.getInt("leather_flask") - 1);
-                    ThirstManager thirstManager = ((ThristManagerAccess) playerEntity).getThirstManager(playerEntity);
+                    ThirstManager thirstManager = ((ThirstManagerAccess) playerEntity).getThirstManager(playerEntity);
                     thirstManager.add(ConfigInit.CONFIG.flask_thirst_quench);
 
                     if (tags.getInt("purified_water") == 0 && world.random.nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance) {

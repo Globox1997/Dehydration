@@ -1,6 +1,6 @@
 package net.dehydration.network;
 
-import net.dehydration.access.ThristManagerAccess;
+import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,7 +17,7 @@ public class ThirstUpdateS2CPacket {
             client.execute(() -> {
                 if (client.player.world.getEntityById(entityId) != null) {
                     PlayerEntity player = (PlayerEntity) client.player.world.getEntityById(entityId);
-                    ThirstManager thirstManager = ((ThristManagerAccess) player).getThirstManager(player);
+                    ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
                     thirstManager.setThirstLevel(thirstLevel);
                 }
             });
