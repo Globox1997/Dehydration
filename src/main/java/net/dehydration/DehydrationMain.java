@@ -24,18 +24,13 @@ public class DehydrationMain implements ModInitializer {
         SoundInit.init();
         TagInit.init();
 
-        // Handle DehydrationAPI entrypoints
         FabricLoader.getInstance().getEntrypointContainers("dehydration", DehydrationAPI.class).forEach((entrypoint) -> {
             ModMetadata metadata = entrypoint.getProvider().getMetadata();
             String id = metadata.getId();
 
             try {
                 DehydrationAPI api = entrypoint.getEntrypoint();
-
-                // Call API methods
                 api.registerDrinkEvent();
-                api.registerFlasks();
-
             } catch (Throwable exception) {
                 LOGGER.log(Level.ERROR, "Mod {} is providing a broken DehydrationAPI implementation", id, exception);
             }
