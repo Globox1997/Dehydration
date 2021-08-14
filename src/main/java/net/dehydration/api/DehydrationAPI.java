@@ -12,8 +12,6 @@ import net.minecraft.item.ItemStack;
  * The approach is very similar to ModMenu's API, with its {@code ModMenuApi} interface.
  */
 public interface DehydrationAPI {
-    // <---- THIRST ---->
-
     /**
      * This method registers a listener to the {@link DrinkEvent} your mod will be using.
      * <br>
@@ -52,13 +50,4 @@ public interface DehydrationAPI {
      * @return Calculated thirst
      */
     int calculateDrinkThirst(ItemStack stack, PlayerEntity playerEntity);
-
-    // <---- FLASKS ---->
-
-    /**
-     * This built-in hook is a place where you can register custom-made flasks.
-     * <br>
-     * This is entirely optional, and you could still register flasks whenever you want.
-     */
-    default void registerFlasks() {}
 }
