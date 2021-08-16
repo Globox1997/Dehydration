@@ -35,6 +35,7 @@
     "minecraft": "1.17.x"
   },
   "suggests": {
-    "flamingo": "*"
+    "environmentz": "*",
+    "puddles": "*"
   }
 }
