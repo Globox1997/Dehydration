@@ -24,7 +24,7 @@ public interface DehydrationAPI {
     /**
      * This method allows you to customize what happens when something is drunk.
      * <br>
-     * The default implementation
+     * The default implementation gets the {@link ThirstManager}, runs {@link DehydrationAPI#calculateDrinkThirst} and applies that thirst
      *
      * @param stack The {@link ItemStack} of the {@link DrinkItem} being consumed
      * @param playerEntity The {@link PlayerEntity} consuming the {@link DrinkItem}
