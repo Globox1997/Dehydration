@@ -38,6 +38,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 
 // Thanks to Pois1x for the texture
 
@@ -65,14 +66,27 @@ public class Leather_Flask extends Item {
             if (tags.getInt("leather_flask") < 2 + addition) {
                 int fillLevel = 2 + addition;
                 int waterPurity = 0;
+
+                boolean isEmpty = tags.getInt("leather_flask") == 0;
+                boolean isDirtyWater = tags.getInt("purified_water") == 0;
+                if (!isEmpty && !isDirtyWater) {
+                    waterPurity = 1;
+                }
+
                 if (FabricLoader.getInstance().isModLoaded("puddles") && world.getBlockState(blockPos) == Puddles.Puddle.getDefaultState()) {
                     if (!world.isClient) {
                         world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
                     }
-                    fillLevel = 1;
+                    if (!isEmpty && !isDirtyWater) {
+                        fillLevel = 2;
+                        waterPurity = 2;
+                    }
                 }
-                if (tags.getInt("leather_flask") != 0 && tags.getInt("purified_water") != 0) {
-                    waterPurity = 1;
+
+                boolean riverWater = world.getBiome(blockPos).getCategory().equals(Biome.Category.RIVER);
+
+                if (riverWater && (isEmpty || (!isEmpty && !isDirtyWater))) {
+                    waterPurity = 2;
                 }
                 world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.FILL_FLASK_EVENT, SoundCategory.NEUTRAL, 1.0F, 1.0F);
                 tags.putInt("purified_water", waterPurity);
