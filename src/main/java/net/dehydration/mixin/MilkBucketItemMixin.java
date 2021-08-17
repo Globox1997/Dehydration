@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.dehydration.access.ThristManagerAccess;
+import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.EffectInit;
 import net.dehydration.thirst.ThirstManager;
@@ -23,7 +23,7 @@ public class MilkBucketItemMixin {
     public void finishUsingMixin(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info) {
         if (user instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) user;
-            ThirstManager thirstManager = ((ThristManagerAccess) player).getThirstManager(player);
+            ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
             thirstManager.add(ConfigInit.CONFIG.milk_thirst_quench);
             if (!world.isClient && world.random.nextFloat() >= ConfigInit.CONFIG.milk_thirst_chance) {
                 player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, 300, 0, false, false, true));

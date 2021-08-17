@@ -13,7 +13,7 @@ import io.netty.buffer.Unpooled;
 
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.dehydration.access.ThristManagerAccess;
+import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.network.ThirstUpdateS2CPacket;
 import net.dehydration.thirst.ThirstManager;
@@ -28,7 +28,7 @@ import net.minecraft.world.World;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity {
-    ThirstManager thirstManager = ((ThristManagerAccess) this).getThirstManager(this);
+    ThirstManager thirstManager = ((ThirstManagerAccess) this).getThirstManager(this);
     private int syncedThirstLevel = -99999999;
 
     public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
@@ -47,7 +47,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
     @Inject(method = "Lnet/minecraft/server/network/ServerPlayerEntity;copyFrom(Lnet/minecraft/server/network/ServerPlayerEntity;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;clone(Lnet/minecraft/entity/player/PlayerInventory;)V", shift = Shift.AFTER))
     public void copyFromMixinOne(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo info) {
-        this.thirstManager = ((ThristManagerAccess) oldPlayer).getThirstManager(oldPlayer);
+        this.thirstManager = ((ThirstManagerAccess) oldPlayer).getThirstManager(oldPlayer);
     }
 
     @Inject(method = "Lnet/minecraft/server/network/ServerPlayerEntity;copyFrom(Lnet/minecraft/server/network/ServerPlayerEntity;Z)V", at = @At(value = "TAIL"))

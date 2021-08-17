@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.fabricmc.api.Environment;
-import net.dehydration.access.ThristManagerAccess;
+import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.EffectInit;
 import net.dehydration.thirst.ThirstManager;
@@ -48,7 +48,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
     private void renderStatusBarsMixin(MatrixStack matrices, CallbackInfo info) {
         PlayerEntity playerEntity = this.getCameraPlayer();
         if (playerEntity != null && !ConfigInit.CONFIG.excluded_names.contains(playerEntity.getName().asString()) && !playerEntity.isInvulnerable()) {
-            ThirstManager thirstManager = ((ThristManagerAccess) playerEntity).getThirstManager(playerEntity);
+            ThirstManager thirstManager = ((ThirstManagerAccess) playerEntity).getThirstManager(playerEntity);
             int thirst = thirstManager.getThirstLevel();
             LivingEntity livingEntity = this.getRiddenEntity();
             int variable_one;

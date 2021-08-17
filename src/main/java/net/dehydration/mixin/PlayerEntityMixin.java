@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.dehydration.access.ThristManagerAccess;
+import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.thirst.ThirstManager;
 import net.minecraft.entity.EntityType;
@@ -20,7 +20,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
 @Mixin(PlayerEntity.class)
-public abstract class PlayerEntityMixin extends LivingEntity implements ThristManagerAccess {
+public abstract class PlayerEntityMixin extends LivingEntity implements ThirstManagerAccess {
     private ThirstManager thirstManager = new ThirstManager();
 
     @Override

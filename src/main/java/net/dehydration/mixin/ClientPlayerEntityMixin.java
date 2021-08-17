@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.fabricmc.api.Environment;
-import net.dehydration.access.ThristManagerAccess;
+import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.api.EnvType;
@@ -27,7 +27,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;setSprinting(Z)V", shift = Shift.AFTER))
     public void tickMovementMixin(CallbackInfo info) {
-        ThirstManager thirstManager = ((ThristManagerAccess) this).getThirstManager(this);
+        ThirstManager thirstManager = ((ThirstManagerAccess) this).getThirstManager(this);
         if (!ConfigInit.CONFIG.excluded_names.contains(this.getName().asString()) && !this.isCreative() && thirstManager.getThirstLevel() < 6) {
             this.setSprinting(false);
         }

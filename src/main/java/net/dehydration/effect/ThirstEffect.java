@@ -1,6 +1,6 @@
 package net.dehydration.effect;
 
-import net.dehydration.access.ThristManagerAccess;
+import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.thirst.ThirstManager;
 import net.minecraft.entity.LivingEntity;
@@ -17,7 +17,7 @@ public class ThirstEffect extends StatusEffect {
     @Override
     public void applyUpdateEffect(LivingEntity entity, int amplifier) {
         if (entity instanceof PlayerEntity) {
-            ThirstManager thirstManager = ((ThristManagerAccess) (PlayerEntity) entity).getThirstManager((PlayerEntity) entity);
+            ThirstManager thirstManager = ((ThirstManagerAccess) (PlayerEntity) entity).getThirstManager((PlayerEntity) entity);
             thirstManager.addDehydration(ConfigInit.CONFIG.thirst_effect_factor * (float) (amplifier + 1));
         }
     }

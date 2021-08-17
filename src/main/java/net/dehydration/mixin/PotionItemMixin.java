@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.dehydration.access.ThristManagerAccess;
+import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.EffectInit;
 import net.dehydration.thirst.ThirstManager;
@@ -30,7 +30,7 @@ public abstract class PotionItemMixin {
             if (!world.isClient && this.isBadPotion(potion) && world.random.nextFloat() >= ConfigInit.CONFIG.potion_bad_thirst_chance) {
                 player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.potion_bad_thirst_duration, 0, false, false, true));
             }
-            ThirstManager thirstManager = ((ThristManagerAccess) player).getThirstManager(player);
+            ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
             thirstManager.add(ConfigInit.CONFIG.potion_thirst_quench);
         }
     }
