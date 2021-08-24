@@ -44,7 +44,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
         this.client = client;
     }
 
-    @Inject(method = "renderStatusBars", at = @At(value = "TAIL"))
+    @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 1))
     private void renderStatusBarsMixin(MatrixStack matrices, CallbackInfo info) {
         PlayerEntity playerEntity = this.getCameraPlayer();
         if (playerEntity != null && !ConfigInit.CONFIG.excluded_names.contains(playerEntity.getName().asString()) && !playerEntity.isInvulnerable()) {
@@ -87,6 +87,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
                         this.drawTexture(matrices, variable_two, variable_three, beneathCoord + 9, uppderCoord, 9, 9); // Small icon
                     }
                 }
+                RenderSystem.setShaderTexture(0, GUI_ICONS_TEXTURE);
             }
         }
     }
