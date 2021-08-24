@@ -1,7 +1,11 @@
 package net.dehydration.mixin;
 
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -9,6 +13,7 @@ import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.EffectInit;
 import net.dehydration.thirst.ThirstManager;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,6 +22,9 @@ import net.minecraft.item.PotionItem;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
 @Mixin(PotionItem.class)
@@ -42,6 +50,14 @@ public abstract class PotionItemMixin {
             return true;
         } else
             return false;
+    }
+
+    @Inject(method = "appendTooltip", at = @At(value = "TAIL"))
+    private void appendTooltipMixin(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context, CallbackInfo info) {
+        if (isBadPotion(PotionUtil.getPotion(stack))) {
+            tooltip.add(new TranslatableText("item.dehydration.dirty_potion.tooltip").formatted(Formatting.DARK_GREEN));
+        }
+
     }
 
 }

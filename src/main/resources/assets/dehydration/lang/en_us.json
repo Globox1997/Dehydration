@@ -41,6 +41,8 @@
   "item.minecraft.potion.effect.purified_water": "Purified Water Bottle",
   "item.minecraft.lingering_potion.effect.purified_water": "Lingering Purified Water",
   "item.minecraft.splash_potion.effect.purified_water": "Splash Potion of Purified Water",
+
+  "item.dehydration.dirty_potion.tooltip":"Dirty",
   
   "block.dehydration.campfire_cauldron": "Campfire Cauldron"
 }
