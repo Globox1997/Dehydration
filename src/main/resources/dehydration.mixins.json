@@ -15,7 +15,9 @@
     "BrewingRecipeRegistryMixin",
     "BootstrapMixin",
     "DispenserBlockMixin",
-    "StatusEffectMixin"
+    "StatusEffectMixin",
+    "CampfireBlockEntityMixin",
+    "CampfireBlockEntityAccessor"
   ],
   "client": [
     "InGameHudMixin",

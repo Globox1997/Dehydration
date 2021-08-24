@@ -2,17 +2,18 @@
     "parent": "minecraft:recipes/root",
     "rewards": {
         "recipes": [
-            "dehydration:diamond_leather_flask"
+            "dehydration:campfire_cauldron",
+            "dehydration:copper_cauldron"
         ]
     },
     "criteria": {
-        "got_the_diamond_for_dehydration": {
+        "got_the_copper_for_dehydration": {
             "trigger": "minecraft:inventory_changed",
             "conditions": {
                 "items": [
                     {
                         "items": [
-                            "minecraft:diamond"
+                            "minecraft:copper_ingot"
                         ]
                     }
                 ]

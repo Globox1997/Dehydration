@@ -1,0 +1,11 @@
+{
+  "parent": "dehydration:block/template_copper_cauldron_level2",
+  "textures": {
+    "content": "minecraft:block/water_still",
+    "inside": "dehydration:block/copper_cauldron_inner",
+    "particle": "dehydration:block/copper_cauldron_side",
+    "top": "dehydration:block/copper_cauldron_top",
+    "bottom": "dehydration:block/copper_cauldron_bottom",
+    "side": "dehydration:block/copper_cauldron_side"
+  }
+}

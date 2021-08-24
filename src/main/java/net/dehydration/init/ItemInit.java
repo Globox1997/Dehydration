@@ -1,6 +1,8 @@
 package net.dehydration.init;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.dehydration.access.ThirstManagerAccess;
@@ -21,7 +23,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 public class ItemInit {
+    // Map and List
     private static final Map<Identifier, Item> ITEMS = new LinkedHashMap<>();
+    public static final List<Item> FLASK_ITEM_LIST = new ArrayList<Item>();
     // Flasks
     public static final Leather_Flask LEATHER_FLASK = register("leather_flask", new Leather_Flask(0, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
     public static final Leather_Flask IRON_LEATHER_FLASK = register("iron_leather_flask", new Leather_Flask(1, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
@@ -33,6 +37,9 @@ public class ItemInit {
 
     private static <I extends Item> I register(String name, I item) {
         ITEMS.put(new Identifier("dehydration", name), item);
+        if (name.contains("flask")) {
+            FLASK_ITEM_LIST.add(item);
+        }
         return item;
     }
 

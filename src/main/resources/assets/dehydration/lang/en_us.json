@@ -44,5 +44,9 @@
 
   "item.dehydration.dirty_potion.tooltip":"Dirty",
   
-  "block.dehydration.campfire_cauldron": "Campfire Cauldron"
+  "block.dehydration.campfire_cauldron": "Campfire Cauldron",
+  "block.dehydration.copper_cauldron": "Copper Cauldron",
+  "block.dehydration.water_copper_cauldron": "Water Copper Cauldron",
+  "block.dehydration.purified_water_copper_cauldron": "Purified Water Copper Cauldron",
+  "block.dehydration.powder_snow_copper_cauldron": "Powder Snow Copper Cauldron"
 }

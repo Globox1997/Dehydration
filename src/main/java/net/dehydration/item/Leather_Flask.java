@@ -184,6 +184,28 @@ public class Leather_Flask extends Item {
             tooltip.add(new TranslatableText("item.dehydration.leather_flask.tooltip2", addition + 2).formatted(Formatting.GRAY));
     }
 
+    public static boolean isFlaskEmpty(ItemStack stack) {
+        NbtCompound tags = stack.getNbt();
+        if (tags != null) {
+            if (tags.getInt("leather_flask") != 0)
+                return false;
+            else
+                return true;
+        } else
+            return false;
+    }
+
+    public static boolean isFlaskFull(ItemStack stack) {
+        NbtCompound tags = stack.getNbt();
+        if (tags != null) {
+            if (tags.getInt("leather_flask") >= ((Leather_Flask) stack.getItem()).addition + 2)
+                return true;
+            else
+                return false;
+        } else
+            return true;
+    }
+
     // purified_water: 0 = dirty, 1 impurified, 2 purified
 
 }

@@ -1,6 +1,7 @@
 package net.dehydration.access;
 
 import net.dehydration.block.CampfireCauldronBlock;
+import net.dehydration.block.CopperLeveledCauldronBlock;
 import net.dehydration.init.BlockInit;
 import net.dehydration.init.ItemInit;
 import net.dehydration.item.Leather_Flask;
@@ -31,46 +32,44 @@ public class DispenserBehaviorAccess {
                     CampfireCauldronBlock campfireCauldronBlock = (CampfireCauldronBlock) blockState.getBlock();
                     if (campfireCauldronBlock.isPurifiedWater(serverWorld, blockPos) && stack.hasNbt() && stack.getNbt().getInt("leather_flask") < 2 + ((Leather_Flask) stack.getItem()).addition) {
                         this.setSuccess(true);
-                        ItemStack newStack = stack.copy();
-                        NbtCompound tags = new NbtCompound();
-                        tags.putInt("leather_flask", 2 + ((Leather_Flask) newStack.getItem()).addition);
-                        int waterPurity = 2;
-                        if (stack.getNbt().getInt("leather_flask") != 0 && newStack.getNbt().getInt("purified_water") != 2) {
-                            waterPurity = 1;
-                        }
-                        tags.putInt("purified_water", waterPurity);
-                        newStack.setNbt(tags);
-                        stack.decrement(1);
                         campfireCauldronBlock.setLevel(serverWorld, blockPos, blockState, blockState.get(CampfireCauldronBlock.LEVEL) - 1);
-                        if (stack.isEmpty()) {
-                            return newStack.copy();
-                        } else {
-                            if (((DispenserBlockEntity) pointer.getBlockEntity()).addToFirstFreeSlot(newStack.copy()) < 0) {
-                                new ItemDispenserBehavior().dispense(pointer, newStack.copy());
-                            }
-
-                            return stack;
-                        }
+                        return getNewFlask(stack, pointer);
                     }
+                } else if (blockState.isOf(BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK) && blockState.get(CopperLeveledCauldronBlock.LEVEL) > 0 && stack.hasNbt()
+                        && stack.getNbt().getInt("leather_flask") < 2 + ((Leather_Flask) stack.getItem()).addition) {
+                    this.setSuccess(true);
+                    CopperLeveledCauldronBlock.decrementFluidLevel(blockState, serverWorld, blockPos);
+
+                    return getNewFlask(stack, pointer);
                 }
                 return super.dispenseSilently(pointer, stack);
             }
         };
-        DispenserBlock.registerBehavior(ItemInit.LEATHER_FLASK, itemDispenserBehavior);
-        DispenserBlock.registerBehavior(ItemInit.IRON_LEATHER_FLASK, itemDispenserBehavior);
-        DispenserBlock.registerBehavior(ItemInit.GOLDEN_LEATHER_FLASK, itemDispenserBehavior);
-        DispenserBlock.registerBehavior(ItemInit.DIAMOND_LEATHER_FLASK, itemDispenserBehavior);
-        DispenserBlock.registerBehavior(ItemInit.NETHERITE_LEATHER_FLASK, itemDispenserBehavior);
+        for (int i = 0; i < ItemInit.FLASK_ITEM_LIST.size(); i++) {
+            DispenserBlock.registerBehavior(ItemInit.FLASK_ITEM_LIST.get(i), itemDispenserBehavior);
+        }
+    }
+
+    private static ItemStack getNewFlask(ItemStack stack, BlockPointer pointer) {
+        ItemStack newStack = stack.copy();
+        NbtCompound tags = new NbtCompound();
+        tags.putInt("leather_flask", 2 + ((Leather_Flask) newStack.getItem()).addition);
+        int waterPurity = 2;
+        if (stack.getNbt().getInt("leather_flask") != 0 && newStack.getNbt().getInt("purified_water") != 2) {
+            waterPurity = 1;
+        }
+        tags.putInt("purified_water", waterPurity);
+        newStack.setNbt(tags);
+        stack.decrement(1);
+
+        if (stack.isEmpty()) {
+            return newStack.copy();
+        } else {
+            if (((DispenserBlockEntity) pointer.getBlockEntity()).addToFirstFreeSlot(newStack.copy()) < 0) {
+                new ItemDispenserBehavior().dispense(pointer, newStack.copy());
+            }
+
+            return stack;
+        }
     }
 }
-
-// ItemStack potion = PotionUtil.setPotion(new ItemStack(Items.POTION), ItemInit.PURIFIED_WATER);
-// if (stack.isEmpty()) {
-// return potion.copy();
-// } else {
-// if (((DispenserBlockEntity) pointer.getBlockEntity()).addToFirstFreeSlot(potion.copy()) < 0) {
-// new ItemDispenserBehavior().dispense(pointer, potion.copy());
-// }
-
-// return stack;
-// }

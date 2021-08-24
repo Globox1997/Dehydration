@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "dehydration:campfire_cauldron",
+    "dehydration:copper_cauldron",
+    "dehydration:water_copper_cauldron",
+    "dehydration:powder_snow_copper_cauldron",
+    "dehydration:purified_water_copper_cauldron"
+  ]
+}

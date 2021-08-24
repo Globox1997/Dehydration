@@ -13,7 +13,7 @@
             "item": "minecraft:chain"
         },
         "f": {
-            "item": "minecraft:cauldron"
+            "item": "dehydration:copper_cauldron"
         }
     },
     "result": {
