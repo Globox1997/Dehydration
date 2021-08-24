@@ -12,7 +12,7 @@ import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 
 /**
- * The {@link DrinkItem} represents any drinkable item in your mod
+ * The {@link DrinkItem} represents any drinkable item
  */
 public class DrinkItem extends Item {
     public DrinkItem(Settings settings) {
