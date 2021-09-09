@@ -17,7 +17,9 @@
     "DispenserBlockMixin",
     "StatusEffectMixin",
     "CampfireBlockEntityMixin",
-    "CampfireBlockEntityAccessor"
+    "CampfireBlockEntityAccessor",
+    "compat.OriginCommandMixin",
+    "compat.PlayerOriginComponentMixin"
   ],
   "client": [
     "InGameHudMixin",

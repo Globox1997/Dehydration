@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
-import net.dehydration.network.ThirstUpdateS2CPacket;
+import net.dehydration.network.ThirstServerPacket;
 import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
@@ -40,7 +40,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         if (this.syncedThirstLevel != this.thirstManager.getThirstLevel() && !ConfigInit.CONFIG.excluded_names.contains(this.getName().asString())) {
             PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
             data.writeIntArray(new int[] { this.getId(), thirstManager.getThirstLevel() });
-            ServerPlayNetworking.send((ServerPlayerEntity) (Object) this, ThirstUpdateS2CPacket.THIRST_UPDATE, data);
+            ServerPlayNetworking.send((ServerPlayerEntity) (Object) this, ThirstServerPacket.THIRST_UPDATE, data);
             this.syncedThirstLevel = thirstManager.getThirstLevel();
         }
     }

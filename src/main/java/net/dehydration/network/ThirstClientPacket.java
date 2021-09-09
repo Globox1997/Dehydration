@@ -1,16 +1,15 @@
 package net.dehydration.network;
 
 import net.dehydration.access.ThirstManagerAccess;
+import net.dehydration.init.ConfigInit;
 import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
 
-public class ThirstUpdateS2CPacket {
-    public static final Identifier THIRST_UPDATE = new Identifier("dehydration", "thirst_update");
+public class ThirstClientPacket {
 
     public static void init() {
-        ClientPlayNetworking.registerGlobalReceiver(THIRST_UPDATE, (client, handler, buffer, responseSender) -> {
+        ClientPlayNetworking.registerGlobalReceiver(ThirstServerPacket.THIRST_UPDATE, (client, handler, buffer, responseSender) -> {
             int[] bufferArray = buffer.readIntArray();
             int entityId = bufferArray[0];
             int thirstLevel = bufferArray[1];
@@ -22,6 +21,14 @@ public class ThirstUpdateS2CPacket {
                 }
             });
         });
-
+        ClientPlayNetworking.registerGlobalReceiver(ThirstServerPacket.EXCLUDED_SYNC, (client, handler, buffer, responseSender) -> {
+            client.execute(() -> {
+                if (client.player != null) {
+                    if (!ConfigInit.CONFIG.excluded_names.contains(client.player.getName().asString())) {
+                        ConfigInit.CONFIG.excluded_names.add(client.player.getName().asString());
+                    }
+                }
+            });
+        });
     }
 }

@@ -2,6 +2,7 @@ package net.dehydration;
 
 import net.dehydration.api.DehydrationAPI;
 import net.dehydration.init.*;
+import net.dehydration.network.ThirstServerPacket;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -23,6 +24,7 @@ public class DehydrationMain implements ModInitializer {
         LootInit.init();
         SoundInit.init();
         TagInit.init();
+        ThirstServerPacket.init();
 
         FabricLoader.getInstance().getEntrypointContainers("dehydration", DehydrationAPI.class).forEach((entrypoint) -> {
             ModMetadata metadata = entrypoint.getProvider().getMetadata();

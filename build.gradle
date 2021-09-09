@@ -15,6 +15,10 @@ group = project.maven_group
 	maven { url "https://www.cursemaven.com" }
 	maven { url "https://maven.terraformersmc.com/" }
 	maven { url 'https://ladysnake.jfrog.io/artifactory/mods' }
+	maven { url 'https://jitpack.io' }
+	maven { url "https://api.modrinth.com/maven" }
+	maven { url "https://maven.jamieswhiteshirt.com/libs-release" }
+	maven { url = 'https://maven.cafeteria.dev'	}
 	//  maven { url = 'https://dl.bintray.com/ladysnake/mods'}
 	// 	maven { url = "https://dl.bintray.com/ladysnake/libs" }
 }
@@ -42,6 +46,7 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 		exclude(group: "io.github.prospector")
 	}
+	// Warps
 	modCompileOnly 'curse.maven:fabricwarps-433362:3333938',{
 		exclude(group: "net.fabricmc.fabric-api")
 	}
@@ -54,6 +59,13 @@ dependencies {
 	// 	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:2.7.12"
 	//     include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:2.7.12"
 	//	//requiem_version = 1.4.4
+
+	// Origins
+	modCompileOnly 'com.github.apace100:origins-fabric:v1.0.3',{
+		exclude(group: "net.fabricmc.fabric-api")
+		exclude(group: "maven.modrinth")
+		exclude(group: "me.shedaniel.cloth")
+	}
 }
 
 processResources {
