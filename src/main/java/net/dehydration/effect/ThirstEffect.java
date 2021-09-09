@@ -5,12 +5,12 @@ import net.dehydration.init.ConfigInit;
 import net.dehydration.thirst.ThirstManager;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectType;
+import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class ThirstEffect extends StatusEffect {
 
-    public ThirstEffect(StatusEffectType type, int color) {
+    public ThirstEffect(StatusEffectCategory type, int color) {
         super(type, color);
     }
 
