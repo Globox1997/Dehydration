@@ -251,7 +251,11 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
     }
 
     public boolean isPurifiedWater(World world, BlockPos pos) {
-        return ((CampfireCauldronEntity) world.getBlockEntity(pos)).isBoiled;
+        if (((CampfireCauldronEntity) world.getBlockEntity(pos) != null)) {
+            return ((CampfireCauldronEntity) world.getBlockEntity(pos)).isBoiled;
+        } else
+            return false;
+
     }
 
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> givenType, BlockEntityType<E> expectedType,
