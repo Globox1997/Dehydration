@@ -6,8 +6,8 @@ import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.dehydration.access.DispenserBehaviorAccess;
 import net.dehydration.block.entity.CopperCauldronBehavior;
+import net.dehydration.block.entity.DispenserBehaviorAccess;
 import net.minecraft.Bootstrap;
 
 @Mixin(Bootstrap.class)

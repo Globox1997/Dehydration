@@ -1,4 +1,4 @@
-package net.dehydration.access;
+package net.dehydration.block.entity;
 
 import net.dehydration.block.CampfireCauldronBlock;
 import net.dehydration.block.CopperLeveledCauldronBlock;
