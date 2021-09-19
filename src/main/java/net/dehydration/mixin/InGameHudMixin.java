@@ -1,5 +1,8 @@
 package net.dehydration.mixin;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,8 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
+import io.github.apace100.apoli.component.PowerHolderComponent;
+import io.github.apace100.apoli.power.HudRendered;
+
 import net.fabricmc.api.Environment;
 import net.dehydration.access.ThirstManagerAccess;
+import net.dehydration.init.CompatInit;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.EffectInit;
 import net.dehydration.thirst.ThirstManager;
@@ -47,7 +54,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
     @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 1))
     private void renderStatusBarsMixin(MatrixStack matrices, CallbackInfo info) {
         PlayerEntity playerEntity = this.getCameraPlayer();
-        if (playerEntity != null && !ConfigInit.CONFIG.excluded_names.contains(playerEntity.getName().asString()) && !playerEntity.isInvulnerable()) {
+        if (playerEntity != null && !playerEntity.isInvulnerable()) {
             ThirstManager thirstManager = ((ThirstManagerAccess) playerEntity).getThirstManager(playerEntity);
             int thirst = thirstManager.getThirstLevel();
             LivingEntity livingEntity = this.getRiddenEntity();
@@ -79,17 +86,33 @@ public abstract class InGameHudMixin extends DrawableHelper {
                     }
                     variable_two = width - variable_one * 8 - 9;
                     RenderSystem.setShaderTexture(0, THIRST_ICON);
-                    this.drawTexture(matrices, variable_two, variable_three, 0, 0, 9, 9);
+                    
+                    int offset = getOffset();
+                    
+                    this.drawTexture(matrices, variable_two, variable_three - offset, 0, 0, 9, 9);
                     if (variable_one * 2 + 1 < thirst) {
-                        this.drawTexture(matrices, variable_two, variable_three, beneathCoord, uppderCoord, 9, 9); // Big icon
+                        this.drawTexture(matrices, variable_two, variable_three - offset, beneathCoord, uppderCoord, 9, 9); // Big icon
                     }
                     if (variable_one * 2 + 1 == thirst) {
-                        this.drawTexture(matrices, variable_two, variable_three, beneathCoord + 9, uppderCoord, 9, 9); // Small icon
+                        this.drawTexture(matrices, variable_two, variable_three - offset, beneathCoord + 9, uppderCoord, 9, 9); // Small icon
                     }
                 }
                 RenderSystem.setShaderTexture(0, GUI_ICONS_TEXTURE);
             }
         }
+    }
+    
+    private int getOffset() {
+        if(CompatInit.origins_enabled) {
+            PowerHolderComponent component = PowerHolderComponent.KEY.get(client.player);
+            
+            List<HudRendered> hudPowers = component.getPowers().stream().filter(p -> p instanceof HudRendered).map(p -> (HudRendered) p).collect(Collections.toList());
+            
+            if(hudPowers.stream().anyMatch(p -> p.getRenderSettings().shouldRender(client.player) && p.shouldRender())
+               return 9;
+        }
+        
+        return 0;
     }
 
     @Inject(method = "getHeartRows", at = @At(value = "HEAD"), cancellable = true)
