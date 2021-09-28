@@ -112,9 +112,8 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                     if (!player.isCreative()) {
                         player.setStackInHand(hand, new ItemStack(Items.BUCKET));
                     }
+                    campfireCauldronEntity.onFillingCauldron();
                     this.setLevel(world, pos, state, 4);
-                    campfireCauldronEntity.isBoiled = false;
-                    campfireCauldronEntity.ticker = 0;
                     world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
                 return ActionResult.success(world.isClient);
@@ -164,9 +163,10 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                             player.setStackInHand(hand, newItemStack);
                         }
                         world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        if (PotionUtil.getPotion(itemStack) == Potions.WATER) {
+                            campfireCauldronEntity.onFillingCauldron();
+                        }
                         this.setLevel(world, pos, state, i + 1);
-                        campfireCauldronEntity.isBoiled = false;
-                        campfireCauldronEntity.ticker = 0;
                     }
                     return ActionResult.success(world.isClient);
 

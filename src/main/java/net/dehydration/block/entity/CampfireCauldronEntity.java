@@ -10,9 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class CampfireCauldronEntity extends BlockEntity {
-
-    public int ticker;
     public boolean isBoiled;
+    private int ticker;
 
     public CampfireCauldronEntity(BlockPos pos, BlockState state) {
         super(BlockInit.CAMPFIRE_CAULDRON_ENTITY, pos, state);
@@ -21,7 +20,7 @@ public class CampfireCauldronEntity extends BlockEntity {
     @Override
     public void readNbt(NbtCompound tag) {
         super.readNbt(tag);
-        isBoiled = tag.getBoolean("Boiled");
+        this.isBoiled = tag.getBoolean("Boiled");
     }
 
     @Override
@@ -41,11 +40,11 @@ public class CampfireCauldronEntity extends BlockEntity {
 
     public void update() {
         CampfireCauldronBlock campfireCauldronBlock = (CampfireCauldronBlock) this.getCachedState().getBlock();
-        if (campfireCauldronBlock.isFireBurning(world, pos) && this.getCachedState().get(CampfireCauldronBlock.LEVEL) > 0 && !isBoiled) {
-            ticker++;
-            if (ticker >= ConfigInit.CONFIG.water_boiling_time) {
-                isBoiled = true;
-                ticker = 0;
+        if (campfireCauldronBlock.isFireBurning(world, pos) && this.getCachedState().get(CampfireCauldronBlock.LEVEL) > 0 && !this.isBoiled) {
+            this.ticker++;
+            if (this.ticker >= ConfigInit.CONFIG.water_boiling_time) {
+                this.isBoiled = true;
+                this.ticker = 0;
             }
         }
     }
@@ -61,6 +60,12 @@ public class CampfireCauldronEntity extends BlockEntity {
             BlockState state = this.world.getBlockState(this.pos);
             (this.world).updateListeners(this.pos, state, state, 3);
         }
+    }
+
+    // Client sync issue since method gets only called on server and client looks for isBoiled
+    public void onFillingCauldron() {
+        this.isBoiled = false;
+        this.ticker = 0;
     }
 
 }
