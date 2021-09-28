@@ -18,12 +18,13 @@
     "StatusEffectMixin",
     "CampfireBlockEntityMixin",
     "CampfireBlockEntityAccessor",
+    "PlayerManagerMixin",
     "compat.OriginCommandMixin",
     "compat.PlayerOriginComponentMixin"
   ],
   "client": [
-    "InGameHudMixin",
-    "ClientPlayerEntityMixin"
+    "client.InGameHudMixin",
+    "client.ClientPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

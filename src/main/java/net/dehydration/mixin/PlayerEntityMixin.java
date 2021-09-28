@@ -39,15 +39,14 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
 
     @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;update(Lnet/minecraft/entity/player/PlayerEntity;)V", shift = Shift.AFTER))
     private void tickMixin(CallbackInfo info) {
-        if (!ConfigInit.CONFIG.excluded_names.contains(this.getName().asString())) {
+        if (this.thirstManager.hasThirst()) {
             this.thirstManager.update((PlayerEntity) (Object) this);
         }
     }
 
     @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;updateItems()V", shift = Shift.BEFORE))
     private void tickMovementMixin(CallbackInfo info) {
-        if (this.world.getDifficulty() == Difficulty.PEACEFUL && this.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)
-                && !ConfigInit.CONFIG.excluded_names.contains(this.getName().asString())) {
+        if (this.world.getDifficulty() == Difficulty.PEACEFUL && this.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION) && this.thirstManager.hasThirst()) {
             PlayerEntity player = (PlayerEntity) (Object) this;
             this.thirstManager.update(player);
             if (this.thirstManager.isNotFull() && this.age % 10 == 0) {
@@ -68,7 +67,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
 
     @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;addExhaustion(F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V", shift = Shift.AFTER))
     private void addExhaustionMixin(float exhaustion, CallbackInfo info) {
-        if (!ConfigInit.CONFIG.excluded_names.contains(this.getName().asString())) {
+        if (this.thirstManager.hasThirst()) {
             if (ConfigInit.CONFIG.harder_nether && this.world.getRegistryKey() == World.NETHER) {
                 exhaustion *= ConfigInit.CONFIG.nether_factor;
             }
@@ -78,7 +77,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
 
     @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;wakeUp(ZZ)V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;sleepTimer:I"))
     private void wakeUpMixin(boolean bl, boolean updateSleepingPlayers, CallbackInfo info) {
-        if (!this.world.isClient && !ConfigInit.CONFIG.excluded_names.contains(this.getName().asString()) && this.sleepTimer >= 100) {
+        if (!this.world.isClient && this.thirstManager.hasThirst() && this.sleepTimer >= 100) {
             int thirstLevel = this.thirstManager.getThirstLevel();
             int hungerLevel = this.hungerManager.getFoodLevel();
             int thirstConsumption = ConfigInit.CONFIG.sleep_thirst_consumption;

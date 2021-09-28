@@ -1,7 +1,6 @@
 package net.dehydration.network;
 
 import net.dehydration.access.ThirstManagerAccess;
-import net.dehydration.init.ConfigInit;
 import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,12 +21,9 @@ public class ThirstClientPacket {
             });
         });
         ClientPlayNetworking.registerGlobalReceiver(ThirstServerPacket.EXCLUDED_SYNC, (client, handler, buffer, responseSender) -> {
+            boolean setThirst = buffer.readBoolean();
             client.execute(() -> {
-                if (client.player != null) {
-                    if (!ConfigInit.CONFIG.excluded_names.contains(client.player.getName().asString())) {
-                        ConfigInit.CONFIG.excluded_names.add(client.player.getName().asString());
-                    }
-                }
+                ((ThirstManagerAccess) client.player).getThirstManager(client.player).setThirst(setThirst);
             });
         });
     }

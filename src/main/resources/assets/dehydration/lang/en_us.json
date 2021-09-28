@@ -14,7 +14,6 @@
   "text.autoconfig.dehydration.option.food_thirst_quench": "Food thirst quench",
   "text.autoconfig.dehydration.option.water_souce_quench": "Water source block quench",
   "text.autoconfig.dehydration.option.hydrating_factor": "Hydrating factor",
-  "text.autoconfig.dehydration.option.excluded_names": "Excluded names",
   "text.autoconfig.dehydration.option.sleep_thirst_consumption": "Sleeping thirst consumption",
   "text.autoconfig.dehydration.option.sleep_hunger_consumption": "Sleeping hunger consumption",
   "text.autoconfig.dehydration.option.potion_bad_thirst_chance": "Bad potion thirst debuff chance",
@@ -48,5 +47,7 @@
   "block.dehydration.copper_cauldron": "Copper Cauldron",
   "block.dehydration.water_copper_cauldron": "Water Copper Cauldron",
   "block.dehydration.purified_water_copper_cauldron": "Purified Water Copper Cauldron",
-  "block.dehydration.powder_snow_copper_cauldron": "Powder Snow Copper Cauldron"
+  "block.dehydration.powder_snow_copper_cauldron": "Powder Snow Copper Cauldron",
+
+  "commands.dehydration.changed": "thirst got changed"
 }

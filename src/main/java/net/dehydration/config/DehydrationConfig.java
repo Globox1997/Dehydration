@@ -1,8 +1,5 @@
 package net.dehydration.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -11,7 +8,7 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 @Config(name = "dehydration")
 @Config.Gui.Background("minecraft:textures/block/stone.png")
 public class DehydrationConfig implements ConfigData {
-    // @ConfigEntry.Category("hydration_settings")
+
     @Comment("Defines the damage taken every 4 seconds")
     public float thirst_damage = 1.0F;
     @Comment("Defines speed of dehydration, bigger value = slower depletion")
@@ -56,6 +53,4 @@ public class DehydrationConfig implements ConfigData {
     public float nether_factor = 1.3F;
     @Comment("Enables alternate textures by the lead texture artist")
     public boolean other_droplet_texture = false;
-    @Comment("Players listed here won't have thirst")
-    public List<String> excluded_names = new ArrayList<>();
 }
