@@ -11,6 +11,7 @@ import io.github.apace100.origins.Origins;
 import io.github.apace100.origins.component.PlayerOriginComponent;
 import io.github.apace100.origins.origin.Origin;
 import io.github.apace100.origins.origin.OriginLayer;
+import net.dehydration.access.ServerPlayerAccess;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.network.ThirstServerPacket;
 import net.dehydration.thirst.ThirstManager;
@@ -31,7 +32,10 @@ public class PlayerOriginComponentMixin {
             setThirst = false;
 
         thirstManager.setThirst(setThirst);
-        ThirstServerPacket.writeS2CExcludedSyncPacket((ServerPlayerEntity) player, setThirst);
+        if (player instanceof ServerPlayerEntity) {
+            ThirstServerPacket.writeS2CExcludedSyncPacket((ServerPlayerEntity) player, setThirst);
+            ((ServerPlayerAccess) player).compatSync();
+        }
     }
 
 }

@@ -13,6 +13,7 @@ import io.netty.buffer.Unpooled;
 
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.dehydration.access.ServerPlayerAccess;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.network.ThirstServerPacket;
 import net.dehydration.thirst.ThirstManager;
@@ -26,9 +27,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntity {
-    ThirstManager thirstManager = ((ThirstManagerAccess) this).getThirstManager(this);
+public abstract class ServerPlayerEntityMixin extends PlayerEntity implements ServerPlayerAccess {
+    private ThirstManager thirstManager = ((ThirstManagerAccess) this).getThirstManager(this);
     private int syncedThirstLevel = -99999999;
+    public int compatSync = 0;
 
     public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
         super(world, pos, yaw, profile);
@@ -41,6 +43,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             data.writeIntArray(new int[] { this.getId(), thirstManager.getThirstLevel() });
             ServerPlayNetworking.send((ServerPlayerEntity) (Object) this, ThirstServerPacket.THIRST_UPDATE, data);
             this.syncedThirstLevel = thirstManager.getThirstLevel();
+        }
+        if (compatSync > 0) {
+            compatSync--;
+            if (compatSync == 1)
+                ThirstServerPacket.writeS2CExcludedSyncPacket((ServerPlayerEntity) (Object) this, thirstManager.hasThirst());
         }
     }
 
@@ -63,6 +70,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Inject(method = "moveToWorld", at = @At(value = "FIELD", target = "Lnet/minecraft/server/network/ServerPlayerEntity;syncedFoodLevel:I", ordinal = 0))
     private void moveToWorldMixin(ServerWorld destination, CallbackInfoReturnable<Entity> info) {
         this.syncedThirstLevel = -1;
+    }
+
+    @Override
+    public void compatSync() {
+        compatSync = 5;
     }
 
 }

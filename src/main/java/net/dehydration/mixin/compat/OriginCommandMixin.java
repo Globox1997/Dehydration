@@ -27,6 +27,8 @@ public class OriginCommandMixin {
             setThirst = false;
 
         thirstManager.setThirst(setThirst);
-        ThirstServerPacket.writeS2CExcludedSyncPacket((ServerPlayerEntity) player, setThirst);
+        if (player instanceof ServerPlayerEntity)
+            ThirstServerPacket.writeS2CExcludedSyncPacket((ServerPlayerEntity) player, setThirst);
+
     }
 }
