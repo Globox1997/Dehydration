@@ -79,6 +79,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
                             beneathCoord = 18;
                         }
                         variable_two = width - variable_one * 8 - 9;
+                        variable_two = variable_two + ConfigInit.CONFIG.hud_x;
+                        variable_three = variable_three + ConfigInit.CONFIG.hud_y;
                         RenderSystem.setShaderTexture(0, THIRST_ICON);
                         this.drawTexture(matrices, variable_two, variable_three, 0, 0, 9, 9);
                         if (variable_one * 2 + 1 < thirst) {

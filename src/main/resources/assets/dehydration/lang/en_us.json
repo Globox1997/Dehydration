@@ -5,6 +5,8 @@
   "effect.dehydration.thirst_effect": "Thirst",
 
   "text.autoconfig.dehydration.title": "Dehydration Config",
+  "text.autoconfig.dehydration.category.default": "Default Settings",
+  "text.autoconfig.dehydration.category.advanced_settings": "Advanced Settings",
   "text.autoconfig.dehydration.option.thirst_damage": "Thirst damage",
   "text.autoconfig.dehydration.option.potion_thirst_quench": "Potion thirst quench",
   "text.autoconfig.dehydration.option.milk_thirst_quench": "Milk bucket thirst quench",
@@ -28,6 +30,8 @@
   "text.autoconfig.dehydration.option.water_boiling_time": "Water boiling time",
   "text.autoconfig.dehydration.option.harder_nether": "Harder nether",
   "text.autoconfig.dehydration.option.nether_factor": "Nether factor",
+  "text.autoconfig.dehydration.option.hud_x": "Hud X Position",
+  "text.autoconfig.dehydration.option.hud_y": "Hud Y Position",
 
   "item.dehydration.leather_flask": "Leather Flask",
   "item.dehydration.iron_leather_flask": "Iron Leather Flask",

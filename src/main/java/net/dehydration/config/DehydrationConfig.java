@@ -51,6 +51,11 @@ public class DehydrationConfig implements ConfigData {
     public boolean harder_nether = false;
     @Comment("1.3 = 30% more thirst")
     public float nether_factor = 1.3F;
+    @ConfigEntry.Category("advanced_settings")
     @Comment("Enables alternate textures by the lead texture artist")
     public boolean other_droplet_texture = false;
+    @ConfigEntry.Category("advanced_settings")
+    public int hud_x = 0;
+    @ConfigEntry.Category("advanced_settings")
+    public int hud_y = 0;
 }
