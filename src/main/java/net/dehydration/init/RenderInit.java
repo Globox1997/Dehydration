@@ -1,6 +1,7 @@
 package net.dehydration.init;
 
 import net.dehydration.block.CampfireCauldronBlock;
+import net.dehydration.block.entity.CampfireCauldronEntity;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.BlockState;
@@ -25,7 +26,7 @@ public class RenderInit {
     }
 
     private static boolean isPurifiedWater(BlockRenderView blockRenderView, BlockPos blockPos, BlockState state) {
-        if (blockRenderView.getBlockEntity(blockPos) != null) {
+        if (blockRenderView.getBlockEntity(blockPos) != null && blockRenderView.getBlockEntity(blockPos) instanceof CampfireCauldronEntity) {
             return ((CampfireCauldronBlock) state.getBlock()).isPurifiedWater(blockRenderView.getBlockEntity(blockPos).getWorld(), blockPos);
         }
         return false;
