@@ -59,7 +59,7 @@ public class ItemInit {
                         if (!world.isClient) {
                             thirstManager.add(ConfigInit.CONFIG.water_souce_quench);
                             if (world.random.nextFloat() <= ConfigInit.CONFIG.water_sip_thirst_chance) {
-                                player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.water_sip_thirst_duration, 0, false, false, true));
+                                player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.water_sip_thirst_duration, 1, false, false, true));
                             }
                         }
                         world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundInit.WATER_SIP_EVENT, SoundCategory.PLAYERS, 1.0F, 0.9F + (world.random.nextFloat() / 5F));
