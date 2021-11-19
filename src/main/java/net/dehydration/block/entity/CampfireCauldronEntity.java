@@ -24,10 +24,9 @@ public class CampfireCauldronEntity extends BlockEntity {
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
+    public void writeNbt(NbtCompound tag) {
         super.writeNbt(tag);
         tag.putBoolean("Boiled", isBoiled);
-        return tag;
     }
 
     public static void clientTick(World world, BlockPos pos, BlockState state, CampfireCauldronEntity blockEntity) {

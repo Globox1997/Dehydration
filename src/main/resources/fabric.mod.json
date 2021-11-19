@@ -30,10 +30,11 @@
     "dehydration.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.7.4",
+    "fabricloader": ">=0.12.5",
     "fabric": "*",
-    "minecraft": "1.17.x",
-    "cloth-config2": ">=5.0.34"
+    "minecraft": "1.18.x",
+    "cloth-config2": ">=5.0.34",
+    "java": ">=17"
   },
   "suggests": {
     "environmentz": "*",
