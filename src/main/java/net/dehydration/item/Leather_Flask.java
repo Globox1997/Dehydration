@@ -169,16 +169,13 @@ public class Leather_Flask extends Item {
         if (tags != null) {
             tooltip.add(new TranslatableText("item.dehydration.leather_flask.tooltip", tags.getInt("leather_flask"), addition + 2).formatted(Formatting.GRAY));
             if (tags.getInt("leather_flask") != 0) {
-                String string = "Dirty Water";
-                Formatting formatting = Formatting.DARK_GREEN;
                 if (tags.getInt("purified_water") == 1) {
-                    string = "Impurified Water";
-                    formatting = Formatting.DARK_AQUA;
+                    tooltip.add(new TranslatableText("item.dehydration.impurified_water.tooltip").formatted(Formatting.DARK_AQUA));
                 } else if (tags.getInt("purified_water") == 2) {
-                    string = "Purified Water";
-                    formatting = Formatting.AQUA;
+                    tooltip.add(new TranslatableText("item.dehydration.purified_water.tooltip").formatted(Formatting.AQUA));
+                } else {
+                    tooltip.add(new TranslatableText("item.dehydration.dirty_water.tooltip").formatted(Formatting.DARK_GREEN));
                 }
-                tooltip.add(new TranslatableText("item.dehydration.leather_flask.tooltip3", string).formatted(formatting));
             }
         } else
             tooltip.add(new TranslatableText("item.dehydration.leather_flask.tooltip2", addition + 2).formatted(Formatting.GRAY));
