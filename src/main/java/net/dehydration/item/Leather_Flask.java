@@ -47,7 +47,7 @@ public class Leather_Flask extends Item {
 
     public Leather_Flask(int waterAddition, Settings settings) {
         super(settings);
-        this.addition = waterAddition;
+        this.addition = waterAddition + ConfigInit.CONFIG.extra_flask_size;
     }
 
     @Override
