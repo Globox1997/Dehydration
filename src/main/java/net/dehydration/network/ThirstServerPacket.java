@@ -1,6 +1,7 @@
 package net.dehydration.network;
 
 import io.netty.buffer.Unpooled;
+import net.dehydration.access.ThirstManagerAccess;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -17,5 +18,11 @@ public class ThirstServerPacket {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeBoolean(setThirst);
         serverPlayerEntity.networkHandler.sendPacket(new CustomPayloadS2CPacket(EXCLUDED_SYNC, buf));
+    }
+
+    public static void writeS2CThirstUpdatePacket(ServerPlayerEntity serverPlayerEntity) {
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeIntArray(new int[] { serverPlayerEntity.getId(), ((ThirstManagerAccess) serverPlayerEntity).getThirstManager(serverPlayerEntity).getThirstLevel() });
+        serverPlayerEntity.networkHandler.sendPacket(new CustomPayloadS2CPacket(ThirstServerPacket.THIRST_UPDATE, buf));
     }
 }
