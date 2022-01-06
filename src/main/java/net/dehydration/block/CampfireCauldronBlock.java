@@ -207,7 +207,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
     public void precipitationTick(BlockState state, World world, BlockPos pos, Biome.Precipitation precipitation) {
         if (world.random.nextInt(20) == 1 && world.getBiome(pos).getTemperature() >= 0.15F) {
             if (precipitation == Biome.Precipitation.RAIN && state.get(LEVEL) < 4) {
-                world.setBlockState(pos, Blocks.WATER_CAULDRON.getDefaultState());
+                this.setLevel(world, pos, state, state.get(LEVEL) + 1);
                 world.emitGameEvent((Entity) null, GameEvent.FLUID_PLACE, pos);
             }
         }
