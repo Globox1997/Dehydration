@@ -53,7 +53,7 @@ public class ItemInit {
             if (!player.isCreative() && !player.isSpectator() && player.isSneaking() && player.getMainHandStack().isEmpty()) {
                 HitResult hitResult = player.raycast(1.5D, 0.0F, true);
                 BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
-                if (world.canPlayerModifyAt(player, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER) && world.getFluidState(blockPos).isStill()) {
+                if (world.canPlayerModifyAt(player, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
                     ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
                     if (thirstManager.isNotFull()) {
                         if (!world.isClient) {
