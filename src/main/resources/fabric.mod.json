@@ -12,7 +12,7 @@
     "sources": "https://github.com/Globox1997/Dehydration",
     "issues": "https://github.com/Globox1997/Dehydration/issues"
   },
-  "license": "GLPv3",
+  "license": "GPL-3.0-or-later",
   "icon": "assets/dehydration/icon.png",
   "environment": "*",
   "entrypoints": {
