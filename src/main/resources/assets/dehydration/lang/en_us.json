@@ -33,6 +33,7 @@
   "text.autoconfig.dehydration.option.extra_flask_size": "Extra Flask Size",
   "text.autoconfig.dehydration.option.hud_x": "Hud X Position",
   "text.autoconfig.dehydration.option.hud_y": "Hud Y Position",
+  "text.autoconfig.dehydration.option.allow_non_flowing_water_sip": "Allow non flowing water sip",
 
   "item.dehydration.leather_flask": "Leather Flask",
   "item.dehydration.iron_leather_flask": "Iron Leather Flask",

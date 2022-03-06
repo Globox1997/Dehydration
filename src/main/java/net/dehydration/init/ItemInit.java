@@ -53,14 +53,14 @@ public class ItemInit {
             if (!player.isCreative() && !player.isSpectator() && player.isSneaking() && player.getMainHandStack().isEmpty()) {
                 HitResult hitResult = player.raycast(1.5D, 0.0F, true);
                 BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
-                if (world.canPlayerModifyAt(player, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER) && world.getFluidState(blockPos).isStill()) {
+                if (world.canPlayerModifyAt(player, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)
+                        && (world.getFluidState(blockPos).isStill() || ConfigInit.CONFIG.allow_non_flowing_water_sip)) {
                     ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
                     if (thirstManager.isNotFull()) {
                         if (!world.isClient) {
                             thirstManager.add(ConfigInit.CONFIG.water_souce_quench);
-                            if (world.random.nextFloat() <= ConfigInit.CONFIG.water_sip_thirst_chance) {
+                            if (world.random.nextFloat() <= ConfigInit.CONFIG.water_sip_thirst_chance)
                                 player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.water_sip_thirst_duration, 1, false, false, true));
-                            }
                         }
                         world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundInit.WATER_SIP_EVENT, SoundCategory.PLAYERS, 1.0F, 0.9F + (world.random.nextFloat() / 5F));
                         return ActionResult.SUCCESS;

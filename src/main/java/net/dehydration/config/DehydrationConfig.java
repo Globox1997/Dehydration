@@ -42,6 +42,7 @@ public class DehydrationConfig implements ConfigData {
     public float water_sip_thirst_chance = 0.75F;
     @Comment("Counted in ticks, 20 ticks = 1 second")
     public int water_sip_thirst_duration = 600;
+    public boolean allow_non_flowing_water_sip = false;
     @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
     public int sleep_thirst_consumption = 4;
     @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
