@@ -83,7 +83,8 @@ public class Leather_Flask extends Item {
                     }
                 }
 
-                boolean riverWater = world.getBiome(blockPos).getCategory().equals(Biome.Category.RIVER);
+                boolean riverWater = Biome.getCategory(world.getBiome(blockPos)).equals(Biome.Category.RIVER);
+                // world.getBiome(blockPos).getCategory().equals(Biome.Category.RIVER); getCategory is not public anymore
 
                 if (riverWater && (isEmpty || (!isEmpty && !isDirtyWater))) {
                     waterPurity = 2;
