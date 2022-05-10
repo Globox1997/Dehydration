@@ -14,6 +14,7 @@
   "text.autoconfig.dehydration.option.wears_armor_modifier": "Wear armor modifier",
   "text.autoconfig.dehydration.option.stew_thirst_quench": "Stew thirst quench",
   "text.autoconfig.dehydration.option.food_thirst_quench": "Food thirst quench",
+  "text.autoconfig.dehydration.option.drinks_thirst_quench": "Drinks thirst quench",
   "text.autoconfig.dehydration.option.water_souce_quench": "Water source block quench",
   "text.autoconfig.dehydration.option.hydrating_factor": "Hydrating factor",
   "text.autoconfig.dehydration.option.sleep_thirst_consumption": "Sleeping thirst consumption",

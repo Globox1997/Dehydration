@@ -20,7 +20,7 @@ public class CroptopiaCompat {
                 thirst = ConfigInit.CONFIG.food_thirst_quench;
             }
             if (stack.isIn(TagInit.HYDRATING_DRINKS)) {
-                thirst = ConfigInit.CONFIG.potion_thirst_quench;
+                thirst = ConfigInit.CONFIG.drinks_thirst_quench;
             }
             thirstManager.add(thirst);
         });
