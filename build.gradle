@@ -40,25 +40,29 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	// Puddles
-	modCompileOnly "maven.modrinth:midnightlib:0.2.9",{
+	modCompileOnly "maven.modrinth:midnightlib:0.4.0",{
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	modCompileOnly 'curse.maven:motschens-puddles-463169:3508239',{
+	modCompileOnly 'curse.maven:motschens-puddles-463169:3711910',{
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	// Croptopia
-	modCompileOnly 'curse.maven:croptopia-fabric-415438:3569896',{
+	modCompileOnly 'curse.maven:croptopia-fabric-415438:3779983',{
 		exclude(group: "net.fabricmc.fabric-api")
 		exclude(group: "com.terraformersmc")
 	}
-	modCompileOnly "ca.stellardrift:confabricate:2.2.0-SNAPSHOT"
+	modCompileOnly "ca.stellardrift:confabricate:3.0.0-SNAPSHOT"
 	// Warps
 	// modCompileOnly 'curse.maven:fabricwarps-433362:3333938',{
 	// 	exclude(group: "net.fabricmc.fabric-api")
 	// }
-	modCompileOnly "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:4.0.1"
-    modCompileOnly "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:4.0.1"
-	modCompileOnly "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-world:4.0.1"
+	// modCompileOnly "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:4.1.4"
+    // modCompileOnly "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:4.1.4"
+	// modCompileOnly "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-world:4.1.4"
+
+	// modCompileOnly "dev.onyxstudios.Cardinal-Components-API:cardinal-components-base:4.1.4"
+	// modCompileOnly "dev.onyxstudios.Cardinal-Components-API:cardinal-components-entity:4.1.4"
+	// modCompileOnly "dev.onyxstudios.Cardinal-Components-API:cardinal-components-world:4.1.4"
 	//Requiem
 	// 	modImplementation "io.github.ladysnake:requiem-api:${requiem_version}"
 	//    // modRuntime "io.github.ladysnake:requiem:${requiem_version}"
@@ -67,7 +71,7 @@ dependencies {
 	//	//requiem_version = 1.4.4
 
 	// Origins
-	modCompileOnly 'com.github.apace100:origins-fabric:v1.3.1',{
+	modCompileOnly 'com.github.apace100:origins-fabric:v1.4.1',{
 		exclude(group: "net.fabricmc.fabric-api")
 		exclude(group: "maven.modrinth")
 		exclude(group: "me.shedaniel.cloth")
