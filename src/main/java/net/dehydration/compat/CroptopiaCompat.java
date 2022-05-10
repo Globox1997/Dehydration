@@ -1,6 +1,7 @@
 package net.dehydration.compat;
 
-import me.thonk.croptopia.event.DrinkEvent;
+import com.epherical.croptopia.event.DrinkEvent;
+
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.TagInit;
