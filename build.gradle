@@ -63,6 +63,8 @@ dependencies {
 	// modCompileOnly "dev.onyxstudios.Cardinal-Components-API:cardinal-components-base:4.1.4"
 	// modCompileOnly "dev.onyxstudios.Cardinal-Components-API:cardinal-components-entity:4.1.4"
 	// modCompileOnly "dev.onyxstudios.Cardinal-Components-API:cardinal-components-world:4.1.4"
+	modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:4.1.4"
+	modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:4.1.4"
 	//Requiem
 	// 	modImplementation "io.github.ladysnake:requiem-api:${requiem_version}"
 	//    // modRuntime "io.github.ladysnake:requiem:${requiem_version}"
