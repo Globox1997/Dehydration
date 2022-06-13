@@ -1,7 +1,6 @@
 package net.dehydration.block;
 
 import java.util.Map;
-import java.util.Random;
 
 import net.dehydration.block.entity.CopperCauldronBehavior;
 import net.dehydration.init.BlockInit;
@@ -23,6 +22,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -83,7 +83,6 @@ public abstract class AbstractCopperCauldronBlock extends Block {
             if (fluid != Fluids.EMPTY && this.canBeFilledByDripstone(fluid)) {
                 this.fillFromDripstone(state, world, pos, fluid);
             }
-
         }
     }
 

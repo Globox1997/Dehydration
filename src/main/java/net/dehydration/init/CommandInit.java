@@ -2,12 +2,12 @@ package net.dehydration.init;
 
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.network.ThirstServerPacket;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,7 +15,7 @@ import java.util.Iterator;
 public class CommandInit {
 
     public static void init() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated, environment) -> {
             dispatcher.register((CommandManager.literal("thirst").requires((serverCommandSource) -> {
                 return serverCommandSource.hasPermissionLevel(3);
             })).then((CommandManager.argument("targets", EntityArgumentType.players()).then(CommandManager.literal("true").executes((commandContext) -> {
@@ -34,7 +34,7 @@ public class CommandInit {
             ((ThirstManagerAccess) serverPlayerEntity).getThirstManager(serverPlayerEntity).setThirst(setThirst);
             ThirstServerPacket.writeS2CExcludedSyncPacket(serverPlayerEntity, setThirst);
         }
-        source.sendFeedback(new TranslatableText("commands.dehydration.changed"), true);
+        source.sendFeedback(Text.translatable("commands.dehydration.changed"), true);
 
         return targets.size();
     }

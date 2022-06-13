@@ -26,9 +26,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.stat.Stats;
+import net.minecraft.tag.BiomeTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -38,7 +38,6 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 
 // Thanks to Pois1x for the texture
 
@@ -83,9 +82,7 @@ public class Leather_Flask extends Item {
                     }
                 }
 
-                boolean riverWater = Biome.getCategory(world.getBiome(blockPos)).equals(Biome.Category.RIVER);
-                // world.getBiome(blockPos).getCategory().equals(Biome.Category.RIVER); getCategory is not public anymore
-
+                boolean riverWater = world.getBiome(blockPos).isIn(BiomeTags.IS_RIVER);
                 if (riverWater && (isEmpty || (!isEmpty && !isDirtyWater))) {
                     waterPurity = 2;
                 }
@@ -168,7 +165,7 @@ public class Leather_Flask extends Item {
         super.appendTooltip(stack, world, tooltip, context);
         NbtCompound tags = stack.getNbt();
         if (tags != null) {
-            tooltip.add(new TranslatableText("item.dehydration.leather_flask.tooltip", tags.getInt("leather_flask"), addition + 2).formatted(Formatting.GRAY));
+            tooltip.add(Text.translatable("item.dehydration.leather_flask.tooltip", tags.getInt("leather_flask"), addition + 2).formatted(Formatting.GRAY));
             if (tags.getInt("leather_flask") != 0) {
                 String string = "Dirty Water";
                 Formatting formatting = Formatting.DARK_GREEN;
@@ -179,10 +176,10 @@ public class Leather_Flask extends Item {
                     string = "Purified Water";
                     formatting = Formatting.AQUA;
                 }
-                tooltip.add(new TranslatableText("item.dehydration.leather_flask.tooltip3", string).formatted(formatting));
+                tooltip.add(Text.translatable("item.dehydration.leather_flask.tooltip3", string).formatted(formatting));
             }
         } else
-            tooltip.add(new TranslatableText("item.dehydration.leather_flask.tooltip2", addition + 2).formatted(Formatting.GRAY));
+            tooltip.add(Text.translatable("item.dehydration.leather_flask.tooltip2", addition + 2).formatted(Formatting.GRAY));
     }
 
     public static boolean isFlaskEmpty(ItemStack stack) {

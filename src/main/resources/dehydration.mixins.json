@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "net.dehydration.mixin",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "net.dehydration.mixin.compat.DehydrationMixinPlugin",
   "mixins": [
     "PlayerEntityMixin",
     "PotionItemMixin",

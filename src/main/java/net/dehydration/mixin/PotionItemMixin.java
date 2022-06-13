@@ -23,7 +23,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
@@ -55,7 +54,7 @@ public abstract class PotionItemMixin {
     @Inject(method = "appendTooltip", at = @At(value = "TAIL"))
     private void appendTooltipMixin(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context, CallbackInfo info) {
         if (isBadPotion(PotionUtil.getPotion(stack))) {
-            tooltip.add(new TranslatableText("item.dehydration.dirty_potion.tooltip").formatted(Formatting.DARK_GREEN));
+            tooltip.add(Text.translatable("item.dehydration.dirty_potion.tooltip").formatted(Formatting.DARK_GREEN));
         }
 
     }

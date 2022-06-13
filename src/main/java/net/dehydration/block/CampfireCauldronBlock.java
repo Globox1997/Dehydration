@@ -1,7 +1,5 @@
 package net.dehydration.block;
 
-import java.util.Random;
-
 import net.dehydration.block.entity.CampfireCauldronEntity;
 import net.dehydration.init.BlockInit;
 import net.dehydration.init.ItemInit;
@@ -37,6 +35,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -258,6 +257,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
 
     }
 
+    @SuppressWarnings("unchecked")
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> givenType, BlockEntityType<E> expectedType,
             BlockEntityTicker<? super E> ticker) {
         return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;

@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.11-SNAPSHOT'
+	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -47,7 +47,7 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	// Croptopia
-	modCompileOnly 'curse.maven:croptopia-fabric-415438:3779983',{
+	modCompileOnly 'curse.maven:croptopia-fabric-415438:3822878',{
 		exclude(group: "net.fabricmc.fabric-api")
 		exclude(group: "com.terraformersmc")
 	}
@@ -56,15 +56,8 @@ dependencies {
 	// modCompileOnly 'curse.maven:fabricwarps-433362:3333938',{
 	// 	exclude(group: "net.fabricmc.fabric-api")
 	// }
-	// modCompileOnly "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:4.1.4"
-    // modCompileOnly "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:4.1.4"
-	// modCompileOnly "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-world:4.1.4"
-
-	// modCompileOnly "dev.onyxstudios.Cardinal-Components-API:cardinal-components-base:4.1.4"
-	// modCompileOnly "dev.onyxstudios.Cardinal-Components-API:cardinal-components-entity:4.1.4"
-	// modCompileOnly "dev.onyxstudios.Cardinal-Components-API:cardinal-components-world:4.1.4"
-	modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-base:4.1.4"
-	modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:4.1.4"
+    modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.0.0-beta.1")
+	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.0.0-beta.1")
 	//Requiem
 	// 	modImplementation "io.github.ladysnake:requiem-api:${requiem_version}"
 	//    // modRuntime "io.github.ladysnake:requiem:${requiem_version}"
