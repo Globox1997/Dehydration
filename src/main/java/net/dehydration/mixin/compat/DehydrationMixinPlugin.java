@@ -23,7 +23,7 @@ public class DehydrationMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (!FabricLoader.getInstance().isModLoaded("origins")
-                && (mixinClassName.equals("net.levelz.mixin.compat.OriginCommandMixin") || mixinClassName.equals("net.levelz.mixin.compat.PlayerOriginComponentMixin")))
+                && (mixinClassName.equals("net.dehydration.mixin.compat.OriginCommandMixin") || mixinClassName.equals("net.dehydration.mixin.compat.PlayerOriginComponentMixin")))
             return false;
 
         return true;
