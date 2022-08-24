@@ -1,5 +1,7 @@
 package net.dehydration.mixin;
 
+import java.util.Optional;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -8,7 +10,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.TagInit;
-import net.dehydration.thirst.ThirstManager;
+import net.dehydration.misc.ThirstTooltipData;
+import net.minecraft.client.item.TooltipData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -20,25 +23,36 @@ import net.minecraft.world.World;
 public class ItemMixin {
 
     @Inject(method = "finishUsing", at = @At(value = "HEAD"))
-    public void finishUsing(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info) {
-        if (user instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) user;
-            ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
-            int thirst = 0;
+    private void finishUsingMixin(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info) {
+        if (user instanceof PlayerEntity player) {
+            int thirstQuench = 0;
             if (stack.isIn(TagInit.HYDRATING_STEW)) {
-                thirst = ConfigInit.CONFIG.stew_thirst_quench;
-                if (stack.getItem() == Items.RABBIT_STEW) {
-                    thirst += 3;
-                }
+                thirstQuench = ConfigInit.CONFIG.stew_thirst_quench;
+                if (stack.getItem() == Items.RABBIT_STEW)
+                    thirstQuench += 3;
             }
-            if (stack.isIn(TagInit.HYDRATING_FOOD)) {
-                thirst = ConfigInit.CONFIG.food_thirst_quench;
-            }
-            if (stack.isIn(TagInit.HYDRATING_DRINKS)) {
-                thirst = ConfigInit.CONFIG.drinks_thirst_quench;
-            }
-            thirstManager.add(thirst);
+            if (stack.isIn(TagInit.HYDRATING_FOOD))
+                thirstQuench = ConfigInit.CONFIG.food_thirst_quench;
+            if (stack.isIn(TagInit.HYDRATING_DRINKS))
+                thirstQuench = ConfigInit.CONFIG.drinks_thirst_quench;
+            ((ThirstManagerAccess) player).getThirstManager(player).add(thirstQuench);
         }
+    }
+
+    @Inject(method = "getTooltipData", at = @At("HEAD"), cancellable = true)
+    private void getTooltipDataMixin(ItemStack stack, CallbackInfoReturnable<Optional<TooltipData>> info) {
+        int thirstQuench = 0;
+        if (stack.isIn(TagInit.HYDRATING_STEW)) {
+            thirstQuench = ConfigInit.CONFIG.stew_thirst_quench;
+            if (stack.getItem() == Items.RABBIT_STEW)
+                thirstQuench += 3;
+        }
+        if (stack.isIn(TagInit.HYDRATING_FOOD))
+            thirstQuench = ConfigInit.CONFIG.food_thirst_quench;
+        if (stack.isIn(TagInit.HYDRATING_DRINKS))
+            thirstQuench = ConfigInit.CONFIG.drinks_thirst_quench;
+        if (thirstQuench > 0)
+            info.setReturnValue(Optional.of(new ThirstTooltipData(0, thirstQuench)));
     }
 
 }

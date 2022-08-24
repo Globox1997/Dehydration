@@ -7,10 +7,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
 public class RenderInit {
+
+    public static final Identifier THIRST_ICON = new Identifier("dehydration:textures/gui/thirst.png");
 
     public static void init() {
         ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> isPurifiedWater(world, pos, state) ? 3708358 : BiomeColors.getWaterColor(world, pos),

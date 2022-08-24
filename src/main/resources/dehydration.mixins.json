@@ -18,8 +18,10 @@
     "DispenserBlockMixin",
     "StatusEffectMixin",
     "CampfireBlockEntityMixin",
-    "CampfireBlockEntityAccessor",
     "PlayerManagerMixin",
+    "TooltipComponentMixin",
+    "HoneyBottleItemMixin",
+    "accessor.CampfireBlockEntityAccessor",
     "compat.OriginCommandMixin",
     "compat.PlayerOriginComponentMixin"
   ],

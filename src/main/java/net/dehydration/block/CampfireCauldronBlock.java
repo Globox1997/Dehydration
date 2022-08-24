@@ -174,13 +174,13 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                         NbtCompound tags = itemStack.getNbt();
                         if (tags != null && tags.getInt("leather_flask") < 2 + ((Leather_Flask) item).addition) {
                             if (this.isPurifiedWater(world, pos)) {
-                                if ((tags.getInt("purified_water") == 2 || tags.getInt("leather_flask") == 0)) {
-                                    tags.putInt("purified_water", 2);
+                                if ((tags.getInt("purified_water") == 0 || tags.getInt("leather_flask") == 0)) {
+                                    tags.putInt("purified_water", 0);
                                 } else {
                                     tags.putInt("purified_water", 1);
                                 }
                             } else {
-                                tags.putInt("purified_water", 0);
+                                tags.putInt("purified_water", 2);
                             }
                             tags.putInt("leather_flask", tags.getInt("leather_flask") + 1);
                             this.setLevel(world, pos, state, i - 1);

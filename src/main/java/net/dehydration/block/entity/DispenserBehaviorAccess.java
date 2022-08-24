@@ -54,8 +54,8 @@ public class DispenserBehaviorAccess {
         ItemStack newStack = stack.copy();
         NbtCompound tags = new NbtCompound();
         tags.putInt("leather_flask", 2 + ((Leather_Flask) newStack.getItem()).addition);
-        int waterPurity = 2;
-        if (stack.getNbt().getInt("leather_flask") != 0 && newStack.getNbt().getInt("purified_water") != 2) {
+        int waterPurity = 0;
+        if (stack.getNbt().getInt("leather_flask") != 0 && newStack.getNbt().getInt("purified_water") != 0) {
             waterPurity = 1;
         }
         tags.putInt("purified_water", waterPurity);

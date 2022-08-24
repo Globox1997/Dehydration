@@ -31,7 +31,7 @@ public class ItemInit {
     public static final Leather_Flask IRON_LEATHER_FLASK = register("iron_leather_flask", new Leather_Flask(1, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
     public static final Leather_Flask GOLDEN_LEATHER_FLASK = register("golden_leather_flask", new Leather_Flask(2, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
     public static final Leather_Flask DIAMOND_LEATHER_FLASK = register("diamond_leather_flask", new Leather_Flask(3, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
-    public static final Leather_Flask NETHERITE_LEATHER_FLASK = register("netherite_leather_flask", new Leather_Flask(3, new Item.Settings().group(ItemGroup.MISC).maxCount(1).fireproof()));
+    public static final Leather_Flask NETHERITE_LEATHER_FLASK = register("netherite_leather_flask", new Leather_Flask(4, new Item.Settings().group(ItemGroup.MISC).maxCount(1).fireproof()));
     // Potion
     public static final Potion PURIFIED_WATER = new Potion(new StatusEffectInstance[0]);
 

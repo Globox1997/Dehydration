@@ -42,7 +42,7 @@ public abstract class LeveledCauldronBlockMixin extends AbstractCauldronBlock {
                     LeveledCauldronBlock.decrementFluidLevel(state, world, pos);
                     player.incrementStat(Stats.USE_CAULDRON);
                     tags.putInt("leather_flask", tags.getInt("leather_flask") + 1);
-                    tags.putBoolean("purified_water", false);
+                    tags.putInt("purified_water", 2);
                     itemStack.setNbt(tags);
                 }
                 return ActionResult.success(world.isClient);
