@@ -10,7 +10,6 @@
     "ServerPlayerEntityMixin",
     "MilkBucketItemMixin",
     "ItemMixin",
-    "AbstractCauldronBlockMixin",
     "CampfireBlockMixin",
     "PotionUtilMixin",
     "BrewingRecipeRegistryMixin",

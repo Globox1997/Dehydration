@@ -37,9 +37,9 @@ public class ItemInit {
 
     private static <I extends Item> I register(String name, I item) {
         ITEMS.put(new Identifier("dehydration", name), item);
-        if (name.contains("flask")) {
+        if (name.contains("flask"))
             FLASK_ITEM_LIST.add(item);
-        }
+
         return item;
     }
 
