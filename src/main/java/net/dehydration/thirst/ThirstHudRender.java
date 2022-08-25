@@ -21,6 +21,7 @@ import net.minecraft.util.math.MathHelper;
 @Environment(EnvType.CLIENT)
 public class ThirstHudRender {
 
+    // Could implement HudRenderCallback
     public static void renderThirstHud(MatrixStack matrices, MinecraftClient client, PlayerEntity playerEntity, int scaledWidth, int scaledHeight, int ticks, int vehicleHeartCount, float flashAlpha,
             float otherFlashAlpha) {
         if (playerEntity != null && !playerEntity.isInvulnerable()) {
@@ -109,4 +110,5 @@ public class ThirstHudRender {
             }
         }
     }
+
 }
