@@ -30,7 +30,6 @@
   "text.autoconfig.dehydration.option.water_boiling_time": "Water Boiling Time",
   "text.autoconfig.dehydration.option.harder_nether": "Harder Nether",
   "text.autoconfig.dehydration.option.nether_factor": "Nether Factor",
-  "text.autoconfig.dehydration.option.extra_flask_size": "Extra Flask Size",
   "text.autoconfig.dehydration.option.hud_x": "Hud X Position",
   "text.autoconfig.dehydration.option.hud_y": "Hud Y Position",
   "text.autoconfig.dehydration.option.allow_non_flowing_water_sip": "Allow Non Flowing Water Sip",

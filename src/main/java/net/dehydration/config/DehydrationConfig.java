@@ -58,8 +58,6 @@ public class DehydrationConfig implements ConfigData {
     public boolean harder_nether = false;
     @Comment("1.3 = 30% more thirst")
     public float nether_factor = 1.3F;
-    @Comment("Set flask extra water amount")
-    public int extra_flask_size = 0;
 
     @ConfigEntry.Category("advanced_settings")
     @Comment("Enables alternate textures by the lead texture artist")

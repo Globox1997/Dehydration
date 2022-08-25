@@ -45,11 +45,11 @@ import net.minecraft.world.World;
 // Thanks to Pois1x for the texture
 
 public class Leather_Flask extends Item {
-    public int addition;
+    public final int addition;
 
     public Leather_Flask(int waterAddition, Settings settings) {
         super(settings);
-        this.addition = waterAddition + ConfigInit.CONFIG.extra_flask_size;
+        this.addition = waterAddition;
     }
 
     @Override
@@ -168,7 +168,7 @@ public class Leather_Flask extends Item {
         NbtCompound tags = stack.getNbt();
         if (tags != null) {
             tooltip.add(Text.translatable("item.dehydration.leather_flask.tooltip", tags.getInt("leather_flask"), addition + 2).formatted(Formatting.GRAY));
-            if (tags.getInt("leather_flask") != 2) {
+            if (tags.getInt("leather_flask") > 0) {
                 String string = "Dirty Water";
                 Formatting formatting = Formatting.DARK_GREEN;
                 if (tags.getInt("purified_water") == 1) {
