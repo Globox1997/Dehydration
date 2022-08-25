@@ -36,6 +36,13 @@ public class DehydrationConfig implements ConfigData {
     @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
     public int food_thirst_quench = 1;
     @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
+    public int stronger_drinks_thirst_quench = 4;
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
+    public int stronger_stew_thirst_quench = 6;
+    @Comment("Applies to only food tagged with: #hydrating_food")
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
+    public int stronger_food_thirst_quench = 2;
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
     public int flask_thirst_quench = 4;
     @Comment("1.0F = 100%, 0.5F = 50%, 0.0F = 0%")
     public float flask_dirty_thirst_chance = 0.75F;
