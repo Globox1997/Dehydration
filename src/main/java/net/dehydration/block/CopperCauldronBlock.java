@@ -26,9 +26,9 @@ public class CopperCauldronBlock extends AbstractCopperCauldronBlock {
 
     public static boolean canFillWithPrecipitation(World world, Biome.Precipitation precipitation) {
         if (precipitation == Biome.Precipitation.RAIN) {
-            return world.getRandom().nextFloat() < 0.05F;
-        } else if (precipitation == Biome.Precipitation.SNOW) {
             return world.getRandom().nextFloat() < 0.1F;
+        } else if (precipitation == Biome.Precipitation.SNOW) {
+            return world.getRandom().nextFloat() < 0.15F;
         } else {
             return false;
         }
