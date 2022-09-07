@@ -21,7 +21,7 @@ public class OriginCommandMixin {
 
     @Inject(method = "setOrigin", at = @At("TAIL"), remap = false)
     private static void setOriginMixin(PlayerEntity player, OriginLayer layer, Origin origin, CallbackInfo info) {
-        ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
+        ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
         boolean setThirst = true;
         if (origin.hasPowerType(new PowerTypeReference<>(Origins.identifier("fire_immunity"))) && thirstManager.hasThirst())
             setThirst = false;

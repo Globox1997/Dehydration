@@ -15,7 +15,7 @@ public class ThirstClientPacket {
             client.execute(() -> {
                 if (client.player.world.getEntityById(entityId) != null) {
                     PlayerEntity player = (PlayerEntity) client.player.world.getEntityById(entityId);
-                    ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
+                    ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
                     thirstManager.setThirstLevel(thirstLevel);
                 }
             });
@@ -23,7 +23,7 @@ public class ThirstClientPacket {
         ClientPlayNetworking.registerGlobalReceiver(ThirstServerPacket.EXCLUDED_SYNC, (client, handler, buffer, responseSender) -> {
             boolean setThirst = buffer.readBoolean();
             client.execute(() -> {
-                ((ThirstManagerAccess) client.player).getThirstManager(client.player).setThirst(setThirst);
+                ((ThirstManagerAccess) client.player).getThirstManager().setThirst(setThirst);
             });
         });
     }

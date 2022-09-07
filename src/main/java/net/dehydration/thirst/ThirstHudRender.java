@@ -25,7 +25,7 @@ public class ThirstHudRender {
     public static void renderThirstHud(MatrixStack matrices, MinecraftClient client, PlayerEntity playerEntity, int scaledWidth, int scaledHeight, int ticks, int vehicleHeartCount, float flashAlpha,
             float otherFlashAlpha) {
         if (playerEntity != null && !playerEntity.isInvulnerable()) {
-            ThirstManager thirstManager = ((ThirstManagerAccess) playerEntity).getThirstManager(playerEntity);
+            ThirstManager thirstManager = ((ThirstManagerAccess) playerEntity).getThirstManager();
             if (thirstManager.hasThirst()) {
                 int thirst = thirstManager.getThirstLevel();
                 int variable_one;

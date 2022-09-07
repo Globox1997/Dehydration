@@ -28,7 +28,7 @@ public class EventInit {
                 BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
                 if (world.canPlayerModifyAt(player, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)
                         && (world.getFluidState(blockPos).isStill() || ConfigInit.CONFIG.allow_non_flowing_water_sip)) {
-                    ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
+                    ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
                     if (thirstManager.isNotFull()) {
                         int drinkTime = ((PlayerAccess) player).getDrinkTime();
                         if (world.isClient && drinkTime % 3 == 0)

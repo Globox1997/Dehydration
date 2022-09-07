@@ -22,7 +22,7 @@ public class ThirstServerPacket {
 
     public static void writeS2CThirstUpdatePacket(ServerPlayerEntity serverPlayerEntity) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeIntArray(new int[] { serverPlayerEntity.getId(), ((ThirstManagerAccess) serverPlayerEntity).getThirstManager(serverPlayerEntity).getThirstLevel() });
+        buf.writeIntArray(new int[] { serverPlayerEntity.getId(), ((ThirstManagerAccess) serverPlayerEntity).getThirstManager().getThirstLevel() });
         serverPlayerEntity.networkHandler.sendPacket(new CustomPayloadS2CPacket(ThirstServerPacket.THIRST_UPDATE, buf));
     }
 }

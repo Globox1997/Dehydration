@@ -25,7 +25,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
     private ThirstManager thirstManager = new ThirstManager();
 
     @Override
-    public ThirstManager getThirstManager(PlayerEntity player) {
+    public ThirstManager getThirstManager() {
         return this.thirstManager;
     }
 

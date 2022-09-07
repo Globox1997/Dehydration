@@ -39,7 +39,7 @@ public abstract class PotionItemMixin extends Item {
             if (!world.isClient && this.isBadPotion(potion) && world.random.nextFloat() >= ConfigInit.CONFIG.potion_bad_thirst_chance) {
                 player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.potion_bad_thirst_duration, 0, false, false, true));
             }
-            ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
+            ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
             thirstManager.add(ConfigInit.CONFIG.potion_thirst_quench);
         }
     }

@@ -23,12 +23,12 @@ public class PlayerManagerMixin {
 
     @Inject(method = "onPlayerConnect", at = @At(value = "TAIL"))
     private void onPlayerConnectMixin(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
-        ThirstServerPacket.writeS2CExcludedSyncPacket(player, ((ThirstManagerAccess) player).getThirstManager(player).hasThirst());
+        ThirstServerPacket.writeS2CExcludedSyncPacket(player, ((ThirstManagerAccess) player).getThirstManager().hasThirst());
     }
 
     @Inject(method = "respawnPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;onPlayerRespawned(Lnet/minecraft/server/network/ServerPlayerEntity;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void respawnPlayerMixin(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> info, BlockPos blockPos, float f, boolean bl, ServerWorld serverWorld,
             Optional<Vec3d> optional2, ServerWorld serverWorld2, ServerPlayerEntity serverPlayerEntity) {
-        ThirstServerPacket.writeS2CExcludedSyncPacket(serverPlayerEntity, ((ThirstManagerAccess) player).getThirstManager(player).hasThirst());
+        ThirstServerPacket.writeS2CExcludedSyncPacket(serverPlayerEntity, ((ThirstManagerAccess) player).getThirstManager().hasThirst());
     }
 }

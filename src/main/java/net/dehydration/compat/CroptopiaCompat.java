@@ -11,7 +11,7 @@ public class CroptopiaCompat {
 
     public static void init() {
         DrinkEvent.DRINK.register((stack, player) -> {
-            ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
+            ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
             int thirst = 0;
             if (stack.isIn(TagInit.HYDRATING_STEW))
                 thirst = ConfigInit.CONFIG.stew_thirst_quench;

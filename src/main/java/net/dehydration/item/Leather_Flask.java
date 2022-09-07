@@ -175,7 +175,7 @@ public class Leather_Flask extends Item {
                         stack.setNbt(tags);
                     }
                     tags.putInt("leather_flask", tags.getInt("leather_flask") - 1);
-                    ThirstManager thirstManager = ((ThirstManagerAccess) playerEntity).getThirstManager(playerEntity);
+                    ThirstManager thirstManager = ((ThirstManagerAccess) playerEntity).getThirstManager();
                     thirstManager.add(ConfigInit.CONFIG.flask_thirst_quench);
                     if (!world.isClient)
                         if (tags.getInt("purified_water") == 2 && world.random.nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance)

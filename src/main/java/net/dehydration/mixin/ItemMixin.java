@@ -37,7 +37,7 @@ public class ItemMixin {
                 thirstQuench = ConfigInit.CONFIG.stronger_food_thirst_quench;
             if (stack.isIn(TagInit.STRONGER_HYDRATING_DRINKS))
                 thirstQuench = ConfigInit.CONFIG.stronger_drinks_thirst_quench;
-            ((ThirstManagerAccess) player).getThirstManager(player).add(thirstQuench);
+            ((ThirstManagerAccess) player).getThirstManager().add(thirstQuench);
         }
     }
 

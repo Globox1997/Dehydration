@@ -30,7 +30,7 @@ public abstract class MilkBucketItemMixin extends Item {
     @Inject(method = "finishUsing", at = @At(value = "HEAD"))
     public void finishUsingMixin(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info) {
         if (user instanceof PlayerEntity player) {
-            ((ThirstManagerAccess) player).getThirstManager(player).add(ConfigInit.CONFIG.milk_thirst_quench);
+            ((ThirstManagerAccess) player).getThirstManager().add(ConfigInit.CONFIG.milk_thirst_quench);
             if (!world.isClient && world.random.nextFloat() >= ConfigInit.CONFIG.milk_thirst_chance)
                 player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.potion_bad_thirst_duration / 2, 0, false, false, true));
         }

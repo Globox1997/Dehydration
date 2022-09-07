@@ -28,7 +28,7 @@ public abstract class HoneyBottleItemMixin extends Item {
     @Inject(method = "finishUsing", at = @At(value = "HEAD"))
     public void finishUsingMixin(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info) {
         if (user instanceof PlayerEntity player)
-            ((ThirstManagerAccess) player).getThirstManager(player).add(ConfigInit.CONFIG.honey_quench);
+            ((ThirstManagerAccess) player).getThirstManager().add(ConfigInit.CONFIG.honey_quench);
     }
 
     @Override
