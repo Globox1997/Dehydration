@@ -5,21 +5,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.item.Leather_Flask;
-import net.dehydration.thirst.ThirstManager;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.potion.Potion;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.tag.FluidTags;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 public class ItemInit {
@@ -48,29 +39,6 @@ public class ItemInit {
             Registry.register(Registry.ITEM, id, ITEMS.get(id));
         }
         Registry.register(Registry.POTION, "purified_water", PURIFIED_WATER);
-
-        UseBlockCallback.EVENT.register((player, world, hand, result) -> {
-            if (!player.isCreative() && !player.isSpectator() && player.isSneaking() && player.getMainHandStack().isEmpty()) {
-                HitResult hitResult = player.raycast(1.5D, 0.0F, true);
-                BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
-                if (world.canPlayerModifyAt(player, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)
-                        && (world.getFluidState(blockPos).isStill() || ConfigInit.CONFIG.allow_non_flowing_water_sip)) {
-                    ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager(player);
-                    if (thirstManager.isNotFull()) {
-                        if (!world.isClient) {
-                            thirstManager.add(ConfigInit.CONFIG.water_souce_quench);
-                            if (world.random.nextFloat() <= ConfigInit.CONFIG.water_sip_thirst_chance)
-                                player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.water_sip_thirst_duration, 1, false, false, true));
-                        }
-                        world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundInit.WATER_SIP_EVENT, SoundCategory.PLAYERS, 1.0F, 0.9F + (world.random.nextFloat() / 5F));
-                        return ActionResult.SUCCESS;
-                    }
-                }
-                return ActionResult.PASS;
-            }
-            return ActionResult.PASS;
-        });
-
     }
 
 }

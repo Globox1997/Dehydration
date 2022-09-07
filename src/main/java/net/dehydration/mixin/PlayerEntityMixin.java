@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.dehydration.access.PlayerAccess;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.thirst.ThirstManager;
@@ -20,7 +21,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 
 @Mixin(PlayerEntity.class)
-public abstract class PlayerEntityMixin extends LivingEntity implements ThirstManagerAccess {
+public abstract class PlayerEntityMixin extends LivingEntity implements ThirstManagerAccess, PlayerAccess {
     private ThirstManager thirstManager = new ThirstManager();
 
     @Override
@@ -32,6 +33,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
     protected HungerManager hungerManager = new HungerManager();
     @Shadow
     private int sleepTimer;
+
+    private int drinkTime = 0;
 
     public PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
@@ -86,6 +89,16 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
             this.hungerManager.setFoodLevel(hungerLevel >= hungerConsumption ? hungerLevel - hungerConsumption : 0);
         }
 
+    }
+
+    @Override
+    public void setDrinkTime(int time) {
+        this.drinkTime = time;
+    }
+
+    @Override
+    public int getDrinkTime() {
+        return this.drinkTime;
     }
 
 }
