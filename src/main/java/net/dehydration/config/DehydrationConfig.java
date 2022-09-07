@@ -14,7 +14,7 @@ public class DehydrationConfig implements ConfigData {
     @Comment("Defines speed of dehydration, bigger value = slower depletion")
     public float hydrating_factor = 1.5F;
     @Comment("Defines the rate of the thirst effect's drain, smaller variable = less draining")
-    public float thirst_effect_factor = 0.033F;
+    public float thirst_effect_factor = 0.05F;
     @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
     public int potion_thirst_quench = 2;
     @Comment("1.0F = 100%, 0.5F = 50%, 0.0F = 0%")
