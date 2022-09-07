@@ -2,6 +2,8 @@ package net.dehydration.init;
 
 import net.dehydration.block.CampfireCauldronBlock;
 import net.dehydration.block.entity.CampfireCauldronEntity;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.BlockState;
@@ -11,6 +13,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
+@Environment(EnvType.CLIENT)
 public class RenderInit {
 
     public static final Identifier THIRST_ICON = new Identifier("dehydration:textures/gui/thirst.png");

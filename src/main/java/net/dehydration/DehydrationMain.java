@@ -21,9 +21,8 @@ public class DehydrationMain implements ModInitializer {
         CompatInit.init();
         ConfigInit.init();
         EffectInit.init();
-        EventInit.init();
         ItemInit.init();
-        LootInit.init();
+        EventInit.init();
         SoundInit.init();
         TagInit.init();
         ThirstServerPacket.init();

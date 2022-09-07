@@ -2,9 +2,12 @@ package net.dehydration.network;
 
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.thirst.ThirstManager;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 
+@Environment(EnvType.CLIENT)
 public class ThirstClientPacket {
 
     public static void init() {

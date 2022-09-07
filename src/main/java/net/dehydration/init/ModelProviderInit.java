@@ -1,9 +1,12 @@
 package net.dehydration.init;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
+@Environment(EnvType.CLIENT)
 public class ModelProviderInit {
 
     public static void init() {
