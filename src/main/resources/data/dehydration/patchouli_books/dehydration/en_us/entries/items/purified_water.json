@@ -1,0 +1,17 @@
+{
+    "name": "Purified Water Bottle",
+    "icon": "minecraft:potion{Potion:'minecraft:purified_water'}",
+    "category": "dehydration:item_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "minecraft:potion{Potion:'minecraft:purified_water'}",
+            "link_recipe": false,
+            "text": "Purified water in a bottle can get obtained by placing a watter bottle onto a campfire or in a furnace or by brewing a water potion with kelp."
+        },
+        {
+            "type": "empty",
+            "draw_filler": false
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+{
+    "name": "Leather Flask",
+    "icon": "dehydration:leather_flask",
+    "category": "dehydration:item_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "dehydration:leather_flask",
+            "link_recipe": true,
+            "text": "The leather flask can hold purified water but don't mix the purified water with dirty water, otherwise it will get dirty too. It can get upgraded to better tiers."
+        },
+        {
+            "type": "crafting",
+            "recipe": "dehydration:leather_flask"
+        }
+    ]
+}

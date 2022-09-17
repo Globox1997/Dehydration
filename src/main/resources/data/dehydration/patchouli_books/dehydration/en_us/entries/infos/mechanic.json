@@ -1,0 +1,15 @@
+{
+    "name": "Drink Mechanic",
+    "icon": "dehydration:leather_flask",
+    "category": "dehydration:info_category",
+    "pages": [
+        {
+            "type": "text",
+            "text": "The player can drink from water source blocks by holding right click with an empty hand and crouching for a few seconds. Only river biomes contain fresh water!"
+        },
+        {
+            "type": "empty",
+            "draw_filler": false
+        }
+    ]
+}

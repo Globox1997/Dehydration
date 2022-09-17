@@ -1,0 +1,9 @@
+{
+    "name": "item.dehydration.handbook",
+    "landing_text": "This is the Dehydration handbook and contains information about how to get fresh water and quench your thirst!",
+    "subtitle": "Quench your thirst",
+    "show_progress": false,
+    "model": "dehydration:handbook",
+    "dont_generate_book": true,
+    "custom_book_item": "dehydration:handbook"
+}

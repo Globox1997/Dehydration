@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.dehydration.item.HandbookItem;
 import net.dehydration.item.Leather_Flask;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
@@ -25,6 +26,8 @@ public class ItemInit {
     public static final Leather_Flask NETHERITE_LEATHER_FLASK = register("netherite_leather_flask", new Leather_Flask(4, new Item.Settings().group(ItemGroup.MISC).maxCount(1).fireproof()));
     // Potion
     public static final Potion PURIFIED_WATER = new Potion(new StatusEffectInstance[0]);
+    // Handbook
+    public static final Item HANDBOOK = register("handbook", new HandbookItem(new Item.Settings().group(ItemGroup.MISC)));
 
     private static <I extends Item> I register(String name, I item) {
         ITEMS.put(new Identifier("dehydration", name), item);

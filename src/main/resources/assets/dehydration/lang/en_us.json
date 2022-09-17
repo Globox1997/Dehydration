@@ -46,6 +46,9 @@
   "item.dehydration.leather_flask.tooltip": "Fill Level %1$s/%2$s",
   "item.dehydration.leather_flask.tooltip2": "Fill Capacity %1$s",
   "item.dehydration.leather_flask.tooltip3": "%1$s",
+  "item.dehydration.handbook": "Handbook",
+  "item.dehydration.patchouli_book.tooltip": "§cPatchouli mod is missing",
+
   "item.minecraft.potion.effect.purified_water": "Purified Water Bottle",
   "item.minecraft.lingering_potion.effect.purified_water": "Lingering Purified Water",
   "item.minecraft.splash_potion.effect.purified_water": "Splash Potion of Purified Water",

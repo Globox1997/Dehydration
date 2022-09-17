@@ -1,0 +1,17 @@
+{
+    "name": "Copper Cauldron",
+    "icon": "dehydration:copper_cauldron",
+    "category": "dehydration:block_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "dehydration:copper_cauldron",
+            "link_recipe": false,
+            "text": "The copper cauldron is made for holding purified water which the vanilla cauldron can't. While it is raining, it will slowly fill up with water."
+        },
+        {
+            "type": "empty",
+            "draw_filler": false
+        }
+    ]
+}

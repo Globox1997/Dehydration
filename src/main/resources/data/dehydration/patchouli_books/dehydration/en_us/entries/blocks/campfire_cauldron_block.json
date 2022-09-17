@@ -1,0 +1,32 @@
+{
+    "name": "Campfire Cauldron",
+    "icon": "dehydration:campfire_cauldron",
+    "category": "dehydration:block_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "dehydration:campfire_cauldron",
+            "link_recipe": false,
+            "text": "The campfire cauldron is used for purifying water. Place it on top of a fireplace, fill it up with water and wait a little to get purified water out of it."
+        },
+        {
+            "type": "multiblock",
+            "text": "Can only be placed on top of a fireplace",
+            "multiblock": {
+                "pattern": [
+                    [
+                        "P"
+                    ],
+                    [
+                        "0"
+                    ]
+                ],
+                "mapping": {
+                    "0": "minecraft:campfire",
+                    "P": "dehydration:campfire_cauldron"
+                },
+                "symmetrical": true
+            }
+        }
+    ]
+}

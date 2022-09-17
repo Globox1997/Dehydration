@@ -10,7 +10,6 @@ public class ConfigInit {
     public static void init() {
         AutoConfig.register(DehydrationConfig.class, JanksonConfigSerializer::new);
         CONFIG = AutoConfig.getConfigHolder(DehydrationConfig.class).getConfig();
-        // AutoConfig.getConfigHolder(DehydrationConfig.class).save();
     }
 
 }
