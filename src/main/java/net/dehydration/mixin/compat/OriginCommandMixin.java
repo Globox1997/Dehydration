@@ -27,7 +27,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 @Mixin(OriginCommand.class)
 public class OriginCommandMixin {
 
-    @Inject(method = "setOrigin", at = @At(value = "INVOKE", target = "Lio/github/apace100/origins/component/OriginComponent;partialOnChosen(Lnet/minecraft/entity/player/PlayerEntity;ZLio/github/apace100/origins/origin/Origin;)V"), locals = LocalCapture.CAPTURE_FAILSOFT, remap = false)
+    @Inject(method = "setOrigin", at = @At(value = "INVOKE", target = "Lio/github/apace100/origins/component/OriginComponent;sync()V"), locals = LocalCapture.CAPTURE_FAILSOFT, remap = false)
     private static void setOriginMixin(CommandContext<ServerCommandSource> commandContext, CallbackInfoReturnable<Integer> info, Collection targets, OriginLayer originLayer, Origin origin,
             ServerCommandSource serverCommandSource, int processedTargets, Iterator var6, ServerPlayerEntity target) throws CommandSyntaxException {
         ThirstManager thirstManager = ((ThirstManagerAccess) target).getThirstManager();
