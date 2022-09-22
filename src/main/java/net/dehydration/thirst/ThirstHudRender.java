@@ -83,6 +83,7 @@ public class ThirstHudRender {
                         // Show item thirst quench
                         if (variable_one >= thirst / 2) {
                             if (itemStack != null) {
+                                RenderSystem.enableBlend();
                                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, flashAlpha);
                                 int thirstQuench = ((ThirstTooltipData) itemStack.getTooltipData().get()).getThirstQuench();
                                 if (itemStack.getItem() instanceof Leather_Flask)
@@ -92,16 +93,19 @@ public class ThirstHudRender {
                                     DrawableHelper.drawTexture(matrices, variable_two, variable_three, quality * 18, 9, 9, 9, 256, 256);
                                 else if ((thirst + thirstQuench) % 2 != 0 && variable_one < (thirst + thirstQuench) / 2 + 1)
                                     DrawableHelper.drawTexture(matrices, variable_two, variable_three, quality * 18 + 9, 9, 9, 9, 256, 256);
+                                RenderSystem.disableBlend();
                                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
                             }
                         }
                         // Freezing
                         if (playerEntity.getFrozenTicks() > 0) {
+                            RenderSystem.enableBlend();
                             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, playerEntity.getFreezingScale());
                             if (variable_one * 2 + 1 < thirst)
                                 DrawableHelper.drawTexture(matrices, variable_two, variable_three, 54, uppderCoord, 9, 9, 256, 256);
                             if (variable_one * 2 + 1 == thirst)
                                 DrawableHelper.drawTexture(matrices, variable_two, variable_three, 54 + 9, uppderCoord, 9, 9, 256, 256);
+                            RenderSystem.disableBlend();
                             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
                         }
                     }
