@@ -57,13 +57,16 @@ public interface CopperCauldronBehavior {
     ActionResult interact(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack);
 
     static void registerBehavior() {
-        registerBucketBehavior(EMPTY_COPPER_CAULDRON_BEHAVIOR);
+        EMPTY_COPPER_CAULDRON_BEHAVIOR.put(ItemInit.PURIFIED_BUCKET, (state, world, pos, player, hand, stack) -> {
+            return fillCauldron(world, pos, player, hand, stack, (BlockState) BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK.getDefaultState().with(CopperLeveledCauldronBlock.LEVEL, 3),
+                    SoundEvents.ITEM_BUCKET_EMPTY);
+        });
         EMPTY_COPPER_CAULDRON_BEHAVIOR.put(Items.POTION, (state, world, pos, player, hand, stack) -> {
             if (PotionUtil.getPotion(stack) == ItemInit.PURIFIED_WATER) {
                 if (!world.isClient) {
                     Item item = stack.getItem();
                     player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(Items.GLASS_BOTTLE)));
-                    player.incrementStat(Stats.USE_CAULDRON);
+                    player.incrementStat(Stats.FILL_CAULDRON);
                     player.incrementStat(Stats.USED.getOrCreateStat(item));
                     world.setBlockState(pos, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK.getDefaultState());
                     world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
@@ -74,7 +77,7 @@ public interface CopperCauldronBehavior {
                 if (!world.isClient) {
                     Item item = stack.getItem();
                     player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(Items.GLASS_BOTTLE)));
-                    player.incrementStat(Stats.USE_CAULDRON);
+                    player.incrementStat(Stats.FILL_CAULDRON);
                     player.incrementStat(Stats.USED.getOrCreateStat(item));
                     world.setBlockState(pos, BlockInit.COPPER_WATER_CAULDRON_BLOCK.getDefaultState());
                     world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
@@ -116,7 +119,7 @@ public interface CopperCauldronBehavior {
 
             });
         }
-        registerBucketBehavior(WATER_COPPER_CAULDRON_BEHAVIOR);
+        registerBucketBehavior(EMPTY_COPPER_CAULDRON_BEHAVIOR);
         WATER_COPPER_CAULDRON_BEHAVIOR.put(Items.BUCKET, (state, world, pos, player, hand, stack) -> {
             return emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(Items.WATER_BUCKET), (statex) -> {
                 return (Integer) statex.get(CopperLeveledCauldronBlock.LEVEL) == 3;
@@ -151,6 +154,7 @@ public interface CopperCauldronBehavior {
                 return ActionResult.PASS;
             }
         });
+        registerBucketBehavior(WATER_COPPER_CAULDRON_BEHAVIOR);
         POWDER_SNOW_COPPER_CAULDRON_BEHAVIOR.put(Items.BUCKET, (state, world, pos, player, hand, stack) -> {
             return emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(Items.POWDER_SNOW_BUCKET), (statex) -> {
                 return (Integer) statex.get(CopperLeveledCauldronBlock.LEVEL) == 3;
@@ -158,6 +162,11 @@ public interface CopperCauldronBehavior {
         });
         registerBucketBehavior(POWDER_SNOW_COPPER_CAULDRON_BEHAVIOR);
 
+        PURIFIED_WATER_COPPER_CAULDRON_BEHAVIOR.put(Items.BUCKET, (state, world, pos, player, hand, stack) -> {
+            return emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(ItemInit.PURIFIED_BUCKET), (statex) -> {
+                return (Integer) statex.get(CopperLeveledCauldronBlock.LEVEL) == 3;
+            }, SoundEvents.ITEM_BUCKET_FILL);
+        });
         PURIFIED_WATER_COPPER_CAULDRON_BEHAVIOR.put(Items.GLASS_BOTTLE, (state, world, pos, player, hand, stack) -> {
             if (!world.isClient) {
                 Item item = stack.getItem();

@@ -2,9 +2,11 @@ package net.dehydration.init;
 
 import net.dehydration.block.CampfireCauldronBlock;
 import net.dehydration.block.entity.CampfireCauldronEntity;
+import net.dehydration.block.render.BambooPumpRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.world.BiomeColors;
@@ -30,6 +32,9 @@ public class RenderInit {
         BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.COPPER_WATER_CAULDRON_BLOCK, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.COPPER_POWDERED_CAULDRON_BLOCK, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.BAMBOO_PUMP_BLOCK, RenderLayer.getCutout());
+
+        BlockEntityRendererRegistry.register(BlockInit.BAMBOO_PUMP_ENTITY, BambooPumpRenderer::new);
     }
 
     private static boolean isPurifiedWater(BlockRenderView blockRenderView, BlockPos blockPos, BlockState state) {

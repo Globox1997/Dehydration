@@ -3,7 +3,8 @@
     "rewards": {
         "recipes": [
             "dehydration:iron_leather_flask",
-            "dehydration:campfire_cauldron"
+            "dehydration:campfire_cauldron",
+            "dehydration:bamboo_pump"
         ]
     },
     "criteria": {

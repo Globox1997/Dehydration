@@ -245,6 +245,22 @@ public class Leather_Flask extends Item {
         return Optional.of(new ThirstTooltipData(0, (2 + this.addition) * ConfigInit.CONFIG.flask_thirst_quench));
     }
 
+    public static void fillFlask(ItemStack itemStack, int quench) {
+        NbtCompound nbt = new NbtCompound();
+        if (!itemStack.hasNbt()) {
+            nbt.putInt("leather_flask", 0);
+            nbt.putInt("purified_water", 0);
+        } else {
+            nbt = itemStack.getNbt().copy();
+            if (nbt.getInt("leather_flask") == 0)
+                nbt.putInt("purified_water", 0);
+        }
+        int fillQuench = nbt.getInt("leather_flask") + quench;
+        int addition = ((Leather_Flask) itemStack.getItem()).addition;
+        nbt.putInt("leather_flask", fillQuench > 2 + addition ? 2 + addition : fillQuench);
+        itemStack.setNbt(nbt);
+    }
+
     public static boolean isFlaskEmpty(ItemStack stack) {
         NbtCompound tags = stack.getNbt();
         if (tags != null) {

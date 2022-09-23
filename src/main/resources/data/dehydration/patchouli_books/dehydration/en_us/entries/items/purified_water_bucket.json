@@ -1,0 +1,16 @@
+{
+    "name": "Purified Water Bucket",
+    "icon": "dehydration:purified_water_bucket",
+    "category": "dehydration:item_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "dehydration:purified_water_bucket",
+            "text": "A simple bucket with purified water in it."
+        },
+        {
+            "type": "empty",
+            "draw_filler": false
+        }
+    ]
+}

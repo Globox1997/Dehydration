@@ -7,9 +7,11 @@ import java.util.Map;
 
 import net.dehydration.item.HandbookItem;
 import net.dehydration.item.Leather_Flask;
+import net.dehydration.item.PurifiedBucket;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Items;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -28,6 +30,8 @@ public class ItemInit {
     public static final Potion PURIFIED_WATER = new Potion(new StatusEffectInstance[0]);
     // Handbook
     public static final Item HANDBOOK = register("handbook", new HandbookItem(new Item.Settings().group(ItemGroup.MISC)));
+    // Bucket
+    public static final Item PURIFIED_BUCKET = register("purified_water_bucket", new PurifiedBucket(new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1).group(ItemGroup.MISC)));
 
     private static <I extends Item> I register(String name, I item) {
         ITEMS.put(new Identifier("dehydration", name), item);
@@ -38,9 +42,9 @@ public class ItemInit {
     }
 
     public static void init() {
-        for (Identifier id : ITEMS.keySet()) {
+        for (Identifier id : ITEMS.keySet())
             Registry.register(Registry.ITEM, id, ITEMS.get(id));
-        }
+
         Registry.register(Registry.POTION, "purified_water", PURIFIED_WATER);
     }
 

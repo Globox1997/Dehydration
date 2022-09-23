@@ -1,0 +1,17 @@
+{
+    "name": "Bumboo Pump",
+    "icon": "dehydration:bamboo_pump",
+    "category": "dehydration:block_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "dehydration:bamboo_pump",
+            "link_recipe": false,
+            "text": "The bumboo pump is used to pump fresh water on the surface. Place a bucket, flask or bottle onto it, to fill them up."
+        },
+        {
+            "type": "empty",
+            "draw_filler": false
+        }
+    ]
+}

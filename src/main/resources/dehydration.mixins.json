@@ -20,6 +20,7 @@
     "PlayerManagerMixin",
     "TooltipComponentMixin",
     "HoneyBottleItemMixin",
+    "CauldronBehaviorMixin",
     "accessor.CampfireBlockEntityAccessor",
     "compat.OriginCommandMixin",
     "compat.PlayerOriginComponentMixin"

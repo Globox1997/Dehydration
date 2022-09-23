@@ -10,45 +10,14 @@ import net.minecraft.util.Identifier;
 public class ModelProviderInit {
 
     public static void init() {
-        ModelPredicateProviderRegistry.register(ItemInit.LEATHER_FLASK, new Identifier("empty"), (stack, world, entity, seed) -> {
-            NbtCompound tags = stack.getNbt();
-            if (entity == null || (stack.hasNbt() && tags.getInt("leather_flask") == 0)) {
-                return 1.0F;
-            } else {
-                return 0.0F;
-            }
-        });
-        ModelPredicateProviderRegistry.register(ItemInit.IRON_LEATHER_FLASK, new Identifier("empty"), (stack, world, entity, seed) -> {
-            NbtCompound tags = stack.getNbt();
-            if (entity == null || (stack.hasNbt() && tags.getInt("leather_flask") == 0)) {
-                return 1.0F;
-            } else {
-                return 0.0F;
-            }
-        });
-        ModelPredicateProviderRegistry.register(ItemInit.GOLDEN_LEATHER_FLASK, new Identifier("empty"), (stack, world, entity, seed) -> {
-            NbtCompound tags = stack.getNbt();
-            if (entity == null || (stack.hasNbt() && tags.getInt("leather_flask") == 0)) {
-                return 1.0F;
-            } else {
-                return 0.0F;
-            }
-        });
-        ModelPredicateProviderRegistry.register(ItemInit.DIAMOND_LEATHER_FLASK, new Identifier("empty"), (stack, world, entity, seed) -> {
-            NbtCompound tags = stack.getNbt();
-            if (entity == null || (stack.hasNbt() && tags.getInt("leather_flask") == 0)) {
-                return 1.0F;
-            } else {
-                return 0.0F;
-            }
-        });
-        ModelPredicateProviderRegistry.register(ItemInit.NETHERITE_LEATHER_FLASK, new Identifier("empty"), (stack, world, entity, seed) -> {
-            NbtCompound tags = stack.getNbt();
-            if (entity == null || (stack.hasNbt() && tags.getInt("leather_flask") == 0)) {
-                return 1.0F;
-            } else {
-                return 0.0F;
-            }
-        });
+        for (int i = 0; i < ItemInit.FLASK_ITEM_LIST.size(); i++) {
+            ModelPredicateProviderRegistry.register(ItemInit.FLASK_ITEM_LIST.get(i), new Identifier("empty"), (stack, world, entity, seed) -> {
+                NbtCompound tags = stack.getNbt();
+                if (!stack.hasNbt() || (stack.hasNbt() && tags.getInt("leather_flask") != 0))
+                    return 0.0F;
+                else
+                    return 1.0F;
+            });
+        }
     }
 }

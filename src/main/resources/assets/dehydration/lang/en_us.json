@@ -48,6 +48,7 @@
   "item.dehydration.leather_flask.tooltip3": "%1$s",
   "item.dehydration.handbook": "Handbook",
   "item.dehydration.patchouli_book.tooltip": "§cPatchouli mod is missing",
+  "item.dehydration.purified_water_bucket": "Purified Water Bucket",
 
   "item.minecraft.potion.effect.purified_water": "Purified Water Bottle",
   "item.minecraft.lingering_potion.effect.purified_water": "Lingering Purified Water",
@@ -60,6 +61,7 @@
   "block.dehydration.water_copper_cauldron": "Water Copper Cauldron",
   "block.dehydration.purified_water_copper_cauldron": "Purified Water Copper Cauldron",
   "block.dehydration.powder_snow_copper_cauldron": "Powder Snow Copper Cauldron",
+  "block.dehydration.bamboo_pump": "Bamboo Pump",
 
   "commands.dehydration.changed": "thirst got changed"
 }

@@ -1,0 +1,64 @@
+{
+    "variants": {
+        "attached=false,extended=false,facing=south,": {
+            "model": "dehydration:block/bamboo_pump",
+            "y": 180
+        },
+        "attached=false,extended=false,facing=west,": {
+            "model": "dehydration:block/bamboo_pump",
+            "y": 270
+        },
+        "attached=false,extended=false,facing=north,": {
+            "model": "dehydration:block/bamboo_pump"
+        },
+        "attached=false,extended=false,facing=east,": {
+            "model": "dehydration:block/bamboo_pump",
+            "y": 90
+        },
+        "attached=false,extended=true,facing=south": {
+            "model": "dehydration:block/bamboo_pump_on",
+            "y": 180
+        },
+        "attached=false,extended=true,facing=west": {
+            "model": "dehydration:block/bamboo_pump_on",
+            "y": 270
+        },
+        "attached=false,extended=true,facing=north": {
+            "model": "dehydration:block/bamboo_pump_on"
+        },
+        "attached=false,extended=true,facing=east": {
+            "model": "dehydration:block/bamboo_pump_on",
+            "y": 90
+        },
+        "attached=true,extended=false,facing=south,": {
+            "model": "dehydration:block/bamboo_pump_bucket",
+            "y": 180
+        },
+        "attached=true,extended=false,facing=west,": {
+            "model": "dehydration:block/bamboo_pump_bucket",
+            "y": 270
+        },
+        "attached=true,extended=false,facing=north,": {
+            "model": "dehydration:block/bamboo_pump_bucket"
+        },
+        "attached=true,extended=false,facing=east,": {
+            "model": "dehydration:block/bamboo_pump_bucket",
+            "y": 90
+        },
+        "attached=true,extended=true,facing=south": {
+            "model": "dehydration:block/bamboo_pump_bucket_on",
+            "y": 180
+        },
+        "attached=true,extended=true,facing=west": {
+            "model": "dehydration:block/bamboo_pump_bucket_on",
+            "y": 270
+        },
+        "attached=true,extended=true,facing=north": {
+            "model": "dehydration:block/bamboo_pump_bucket_on"
+        },
+        "attached=true,extended=true,facing=east": {
+            "model": "dehydration:block/bamboo_pump_bucket_on",
+            "y": 90
+        }
+    }
+}

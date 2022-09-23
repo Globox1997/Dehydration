@@ -21,8 +21,6 @@ import net.minecraft.world.WorldEvents;
 import net.minecraft.world.biome.Biome;
 
 public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
-    public static final int field_31107 = 1;
-    public static final int field_31108 = 3;
     public static final IntProperty LEVEL;
     public static final Predicate<Biome.Precipitation> RAIN_PREDICATE;
     public static final Predicate<Biome.Precipitation> SNOW_PREDICATE;
@@ -66,7 +64,7 @@ public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
 
     public static void decrementFluidLevel(BlockState state, World world, BlockPos pos) {
         int i = (Integer) state.get(LEVEL) - 1;
-        world.setBlockState(pos, i == 0 ? BlockInit.COPPER_CAULDRON_BLOCK.getDefaultState() : (BlockState) state.with(LEVEL, i));
+        world.setBlockState(pos, i <= 0 ? BlockInit.COPPER_CAULDRON_BLOCK.getDefaultState() : (BlockState) state.with(LEVEL, i));
     }
 
     @Override
