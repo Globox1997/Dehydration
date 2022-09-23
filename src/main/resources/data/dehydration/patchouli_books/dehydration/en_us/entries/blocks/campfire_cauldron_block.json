@@ -27,6 +27,14 @@
                 },
                 "symmetrical": true
             }
+        },
+        {
+            "type": "crafting",
+            "recipe": "dehydration:campfire_cauldron"
+        },
+        {
+            "type": "empty",
+            "draw_filler": false
         }
     ]
 }
