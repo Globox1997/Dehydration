@@ -81,6 +81,7 @@ public class BambooPumpBlock extends BlockWithEntity {
                     }
                     return ActionResult.success(world.isClient);
                 }
+                // can get used to place a water source block infront of the pump
                 // else {
                 // if (world.isClient) {
                 // if (state.get(EXTENDED))

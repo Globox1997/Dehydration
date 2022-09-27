@@ -73,6 +73,7 @@ public class BambooPumpEntity extends BlockEntity implements Inventory {
     @Override
     public void clear() {
         this.inventory.clear();
+        this.pumpCount = 0;
         this.markDirty();
     }
 
@@ -129,7 +130,7 @@ public class BambooPumpEntity extends BlockEntity implements Inventory {
     }
 
     public void increasePumpCount(int count) {
-        pumpCount += count;
+        this.pumpCount += count;
         updateInventory();
     }
 
