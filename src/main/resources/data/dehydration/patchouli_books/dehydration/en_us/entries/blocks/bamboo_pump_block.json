@@ -7,7 +7,7 @@
             "type": "spotlight",
             "item": "dehydration:bamboo_pump",
             "link_recipe": false,
-            "text": "The bumboo pump is used to pump fresh water on the surface. Place a bucket, flask or bottle onto it, to fill them up."
+            "text": "The bumboo pump is used to pump fresh water on the surface. Place a bucket, flask or bottle onto it, to fill them up. By default it has one minute cooldown."
         },
         {
             "type": "crafting",
