@@ -6,7 +6,7 @@
         {
             "type": "spotlight",
             "item": "dehydration:purified_water_bucket",
-            "text": "A simple bucket with purified water in it. Can only place normal water."
+            "text": "A simple bucket with purified water in it."
         },
         {
             "type": "empty",

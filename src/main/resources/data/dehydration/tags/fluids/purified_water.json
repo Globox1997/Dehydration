@@ -1,0 +1,7 @@
+{
+    "replace": false,
+    "values": [
+        "dehydration:purified_water",
+        "dehydration:purified_flowing_water"
+    ]
+}

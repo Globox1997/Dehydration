@@ -7,6 +7,7 @@ import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
@@ -50,8 +51,11 @@ public class EventInit {
 
                         if (drinkTime > 20) {
                             if (!world.isClient) {
+                                if (!ConfigInit.CONFIG.allow_non_flowing_water_sip && world.getFluidState(blockPos).isStill())
+                                    world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
+
                                 thirstManager.add(ConfigInit.CONFIG.water_souce_quench);
-                                if (world.random.nextFloat() <= ConfigInit.CONFIG.water_sip_thirst_chance)
+                                if (world.random.nextFloat() <= ConfigInit.CONFIG.water_sip_thirst_chance && !world.getFluidState(blockPos).isIn(TagInit.PURIFIED_WATER))
                                     player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.water_sip_thirst_duration, 1, false, false, true));
                             } else {
                                 world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundInit.WATER_SIP_EVENT, SoundCategory.PLAYERS, 1.0F, 0.9F + (world.random.nextFloat() / 5F));

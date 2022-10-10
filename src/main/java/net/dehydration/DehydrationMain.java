@@ -23,6 +23,7 @@ public class DehydrationMain implements ModInitializer {
         EffectInit.init();
         ItemInit.init();
         EventInit.init();
+        FluidInit.init();
         SoundInit.init();
         TagInit.init();
         ThirstServerPacket.init();

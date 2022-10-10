@@ -2,8 +2,7 @@ package net.dehydration.item;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.dehydration.block.CopperCauldronBlock;
-import net.dehydration.block.CopperLeveledCauldronBlock;
+import net.dehydration.init.FluidInit;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -12,7 +11,6 @@ import net.minecraft.block.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowableFluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.FluidModificationItem;
 import net.minecraft.item.Item;
@@ -81,8 +79,8 @@ public class PurifiedBucket extends Item implements FluidModificationItem {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         Material material = blockState.getMaterial();
-        boolean bl = blockState.canBucketPlace(Fluids.WATER);
-        bl2 = blockState.isAir() || bl || block instanceof FluidFillable && ((FluidFillable) ((Object) block)).canFillWithFluid(world, pos, blockState, Fluids.WATER);
+        boolean bl = blockState.canBucketPlace(FluidInit.PURIFIED_WATER);
+        bl2 = blockState.isAir() || bl || block instanceof FluidFillable && ((FluidFillable) ((Object) block)).canFillWithFluid(world, pos, blockState, FluidInit.PURIFIED_WATER);
         if (!bl2) {
             return hitResult != null && this.placeFluid(player, world, hitResult.getBlockPos().offset(hitResult.getSide()), null);
         }
@@ -97,19 +95,7 @@ public class PurifiedBucket extends Item implements FluidModificationItem {
             return true;
         }
         if (block instanceof FluidFillable) {
-            if (block instanceof CopperCauldronBlock) {
-
-            } else if (block instanceof CopperLeveledCauldronBlock) {
-
-            } else
-
-                ((FluidFillable) ((Object) block)).tryFillWithFluid(world, pos, blockState, ((FlowableFluid) Fluids.WATER).getStill(false));
-
-            // Fluids.WATER
-            // Do
-            // Something
-            // here
-            // lol
+            ((FluidFillable) ((Object) block)).tryFillWithFluid(world, pos, blockState, ((FlowableFluid) FluidInit.PURIFIED_WATER).getStill(false));
 
             this.playEmptyingSound(player, world, pos);
             return true;
@@ -117,7 +103,7 @@ public class PurifiedBucket extends Item implements FluidModificationItem {
         if (!world.isClient && bl && !material.isLiquid()) {
             world.breakBlock(pos, true);
         }
-        if (world.setBlockState(pos, Fluids.WATER.getDefaultState().getBlockState(), Block.NOTIFY_ALL | Block.REDRAW_ON_MAIN_THREAD) || blockState.getFluidState().isStill()) {
+        if (world.setBlockState(pos, FluidInit.PURIFIED_WATER.getDefaultState().getBlockState(), Block.NOTIFY_ALL | Block.REDRAW_ON_MAIN_THREAD) || blockState.getFluidState().isStill()) {
             this.playEmptyingSound(player, world, pos);
             return true;
         }

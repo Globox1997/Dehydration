@@ -6,6 +6,8 @@ import net.dehydration.block.render.BambooPumpRenderer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.block.BlockState;
@@ -35,6 +37,9 @@ public class RenderInit {
         BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.BAMBOO_PUMP_BLOCK, RenderLayer.getCutout());
 
         BlockEntityRendererRegistry.register(BlockInit.BAMBOO_PUMP_ENTITY, BambooPumpRenderer::new);
+
+        FluidRenderHandlerRegistry.INSTANCE.register(FluidInit.PURIFIED_WATER, SimpleFluidRenderHandler.coloredWater(3708358));
+        FluidRenderHandlerRegistry.INSTANCE.register(FluidInit.PURIFIED_FLOWING_WATER, SimpleFluidRenderHandler.coloredWater(3708358));
     }
 
     private static boolean isPurifiedWater(BlockRenderView blockRenderView, BlockPos blockPos, BlockState state) {

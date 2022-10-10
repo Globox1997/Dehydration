@@ -4,7 +4,10 @@ import net.dehydration.block.*;
 import net.dehydration.block.entity.*;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
@@ -27,6 +30,7 @@ public class BlockInit {
             CopperLeveledCauldronBlock.RAIN_PREDICATE, CopperCauldronBehavior.PURIFIED_WATER_COPPER_CAULDRON_BEHAVIOR);
     public static final BambooPumpBlock BAMBOO_PUMP_BLOCK = new BambooPumpBlock(
             FabricBlockSettings.of(Material.STONE, MapColor.DARK_GREEN).requiresTool().strength(1.2f, 4.0f).sounds(BlockSoundGroup.BAMBOO));
+    public static final Block PURIFIED_WATER = new FluidBlock(FluidInit.PURIFIED_WATER, AbstractBlock.Settings.of(Material.WATER).noCollision().strength(100.0f).dropsNothing());
 
     // Entity
     public static BlockEntityType<CampfireCauldronEntity> CAMPFIRE_CAULDRON_ENTITY = FabricBlockEntityTypeBuilder.create(CampfireCauldronEntity::new, CAMPFIRE_CAULDRON_BLOCK).build(null);
@@ -44,6 +48,7 @@ public class BlockInit {
         Registry.register(Registry.ITEM, new Identifier("dehydration", "bamboo_pump"), new BlockItem(BAMBOO_PUMP_BLOCK, new Item.Settings().group(ItemGroup.DECORATIONS)));
         Registry.register(Registry.BLOCK, new Identifier("dehydration", "bamboo_pump"), BAMBOO_PUMP_BLOCK);
         Registry.register(Registry.BLOCK_ENTITY_TYPE, "dehydration:bamboo_pump_entity", BAMBOO_PUMP_ENTITY);
+        Registry.register(Registry.BLOCK, new Identifier("dehydration", "purified_water"), PURIFIED_WATER);
     }
 
 }
