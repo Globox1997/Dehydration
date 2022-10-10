@@ -22,6 +22,7 @@
     "HoneyBottleItemMixin",
     "CauldronBehaviorMixin",
     "WaterFluidMixin",
+    "GlassBottleItemMixin",
     "accessor.CampfireBlockEntityAccessor",
     "compat.OriginCommandMixin",
     "compat.PlayerOriginComponentMixin"

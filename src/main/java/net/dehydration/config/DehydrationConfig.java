@@ -65,6 +65,7 @@ public class DehydrationConfig implements ConfigData {
     public int pump_cooldown = 0;
     @Comment("Pump requires water below 10 blocks within 50 blocks")
     public boolean pump_requires_water = false;
+    public boolean bottle_consumes_source_block = false;
 
     public boolean harder_nether = false;
     @Comment("1.3 = 30% more thirst")

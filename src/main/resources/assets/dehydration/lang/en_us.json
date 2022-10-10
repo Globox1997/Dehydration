@@ -39,6 +39,7 @@
   "text.autoconfig.dehydration.option.honey_quench": "Honey Quench",
   "text.autoconfig.dehydration.option.pump_cooldown": "Pump Cooldown",
   "text.autoconfig.dehydration.option.pump_requires_water": "Pump Requires Water",
+  "text.autoconfig.dehydration.option.bottle_consumes_source_block": "Bottle Consumes Source Block",
 
   "item.dehydration.leather_flask": "Leather Flask",
   "item.dehydration.iron_leather_flask": "Iron Leather Flask",
