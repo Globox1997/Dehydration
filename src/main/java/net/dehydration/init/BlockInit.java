@@ -28,8 +28,7 @@ public class BlockInit {
             CopperLeveledCauldronBlock.SNOW_PREDICATE, CopperCauldronBehavior.POWDER_SNOW_COPPER_CAULDRON_BEHAVIOR);
     public static final CopperLeveledCauldronBlock COPPER_PURIFIED_WATER_CAULDRON_BLOCK = new CopperLeveledCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
             CopperLeveledCauldronBlock.RAIN_PREDICATE, CopperCauldronBehavior.PURIFIED_WATER_COPPER_CAULDRON_BEHAVIOR);
-    public static final BambooPumpBlock BAMBOO_PUMP_BLOCK = new BambooPumpBlock(
-            FabricBlockSettings.of(Material.STONE, MapColor.DARK_GREEN).requiresTool().strength(1.2f, 4.0f).sounds(BlockSoundGroup.BAMBOO));
+    public static final BambooPumpBlock BAMBOO_PUMP_BLOCK = new BambooPumpBlock(FabricBlockSettings.of(Material.STONE, MapColor.DARK_GREEN).strength(1.2f, 4.0f).sounds(BlockSoundGroup.BAMBOO));
     public static final Block PURIFIED_WATER = new FluidBlock(FluidInit.PURIFIED_WATER, AbstractBlock.Settings.of(Material.WATER).noCollision().strength(100.0f).dropsNothing());
 
     // Entity
