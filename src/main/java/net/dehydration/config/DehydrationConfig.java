@@ -62,7 +62,7 @@ public class DehydrationConfig implements ConfigData {
     @Comment("boiling time in ticks")
     public int water_boiling_time = 100;
     @Comment("pump cooldown in ticks 0 = no cooldown")
-    public int pump_cooldown = 0;
+    public int pump_cooldown = 1200;
     @Comment("Pump requires water below 10 blocks within 50 blocks")
     public boolean pump_requires_water = false;
     public boolean bottle_consumes_source_block = false;
