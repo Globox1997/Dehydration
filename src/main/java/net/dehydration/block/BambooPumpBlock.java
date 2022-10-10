@@ -1,6 +1,10 @@
 package net.dehydration.block;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.dehydration.block.entity.BambooPumpEntity;
+import net.dehydration.init.BlockInit;
+import net.dehydration.init.ConfigInit;
 import net.dehydration.item.Leather_Flask;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -10,6 +14,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -24,6 +30,8 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.tag.FluidTags;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
@@ -100,14 +108,39 @@ public class BambooPumpBlock extends BlockWithEntity {
                     return ActionResult.success(world.isClient);
                 }
                 if (itemStack.isOf(Items.BUCKET) || itemStack.isOf(Items.GLASS_BOTTLE) || (itemStack.getItem() instanceof Leather_Flask && !Leather_Flask.isFlaskFull(itemStack))) {
+                    if (ConfigInit.CONFIG.pump_requires_water) {
+                        boolean foundWater = false;
+                        for (int i = 0; i < 50; i++) {
+                            if (world.getBlockState(pos.down(10 + i)).getFluidState().isIn(FluidTags.WATER)) {
+                                foundWater = true;
+                                break;
+                            }
+                        }
+                        if (!foundWater) {
+                            if (world.isClient) {
+                                if (state.get(EXTENDED))
+                                    world.playSound(player, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                            } else
+                                player.sendMessage(Text.translatable("block.dehydration.bamboo_pump.no_water"), true);
+                            return ActionResult.FAIL;
+                        }
+                    }
+                    if (ConfigInit.CONFIG.pump_cooldown != 0 && bambooPumpEntity.getCooldown() > 0) {
+                        if (world.isClient) {
+                            if (state.get(EXTENDED))
+                                world.playSound(player, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                        } else
+                            player.sendMessage(Text.translatable("block.dehydration.bamboo_pump.cooldown", bambooPumpEntity.getCooldown() / 20), true);
+                        return ActionResult.FAIL;
+                    }
+
+                    if (state.get(EXTENDED))
+                        bambooPumpEntity.increasePumpCount(1);
                     if (world.isClient) {
                         if (state.get(EXTENDED))
                             world.playSound(player, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0f, 1.0f);
-                    } else {
+                    } else
                         world.setBlockState(pos, state.with(EXTENDED, !state.get(EXTENDED)), Block.NOTIFY_LISTENERS);
-                        if (state.get(EXTENDED))
-                            bambooPumpEntity.increasePumpCount(1);
-                    }
 
                     return ActionResult.success(world.isClient);
                 }
@@ -184,6 +217,12 @@ public class BambooPumpBlock extends BlockWithEntity {
 
             super.onStateReplaced(state, world, pos, newState, moved);
         }
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        return checkType(type, BlockInit.BAMBOO_PUMP_ENTITY, world.isClient ? BambooPumpEntity::clientTick : BambooPumpEntity::serverTick);
     }
 
 }

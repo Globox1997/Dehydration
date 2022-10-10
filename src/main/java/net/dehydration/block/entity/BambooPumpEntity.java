@@ -1,6 +1,7 @@
 package net.dehydration.block.entity;
 
 import net.dehydration.init.BlockInit;
+import net.dehydration.init.ConfigInit;
 import net.dehydration.init.ItemInit;
 import net.dehydration.item.Leather_Flask;
 import net.minecraft.block.BlockState;
@@ -15,11 +16,13 @@ import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class BambooPumpEntity extends BlockEntity implements Inventory {
 
     private DefaultedList<ItemStack> inventory = DefaultedList.ofSize(1, ItemStack.EMPTY);
     private int pumpCount = 0;
+    private int cooldown = 0;
 
     public BambooPumpEntity(BlockPos pos, BlockState state) {
         super(BlockInit.BAMBOO_PUMP_ENTITY, pos, state);
@@ -44,6 +47,19 @@ public class BambooPumpEntity extends BlockEntity implements Inventory {
         sendUpdate();
     }
 
+    public static void clientTick(World world, BlockPos pos, BlockState state, BambooPumpEntity blockEntity) {
+        blockEntity.update();
+    }
+
+    public static void serverTick(World world, BlockPos pos, BlockState state, BambooPumpEntity blockEntity) {
+        blockEntity.update();
+    }
+
+    private void update() {
+        if (this.cooldown > 0)
+            this.cooldown--;
+    }
+
     private void sendUpdate() {
         if (this.world != null) {
             BlockState state = this.world.getBlockState(this.pos);
@@ -56,16 +72,23 @@ public class BambooPumpEntity extends BlockEntity implements Inventory {
             ItemStack itemStack = getStack(0);
             if (itemStack.isOf(Items.BUCKET)) {
                 if (pumpCount > 3) {
-                    setStack(0, new ItemStack(ItemInit.PURIFIED_BUCKET));
+                    if (!this.world.isClient)
+                        setStack(0, new ItemStack(ItemInit.PURIFIED_BUCKET));
                     pumpCount = 0;
+                    cooldown = ConfigInit.CONFIG.pump_cooldown;
                 }
             } else if (itemStack.isOf(Items.GLASS_BOTTLE)) {
-                setStack(0, PotionUtil.setPotion(new ItemStack(Items.POTION), ItemInit.PURIFIED_WATER));
+                if (!this.world.isClient)
+                    setStack(0, PotionUtil.setPotion(new ItemStack(Items.POTION), ItemInit.PURIFIED_WATER));
                 pumpCount = 0;
+                cooldown = ConfigInit.CONFIG.pump_cooldown;
             } else if (itemStack.getItem() instanceof Leather_Flask) {
-                Leather_Flask.fillFlask(itemStack, 2);
-                setStack(0, itemStack);
+                if (!this.world.isClient) {
+                    Leather_Flask.fillFlask(itemStack, 2);
+                    setStack(0, itemStack);
+                }
                 pumpCount = 0;
+                cooldown = ConfigInit.CONFIG.pump_cooldown;
             }
         }
     }
@@ -132,6 +155,14 @@ public class BambooPumpEntity extends BlockEntity implements Inventory {
     public void increasePumpCount(int count) {
         this.pumpCount += count;
         updateInventory();
+    }
+
+    public int getCooldown() {
+        return this.cooldown;
+    }
+
+    public void setCooldown(int ticks) {
+        this.cooldown = ticks;
     }
 
 }

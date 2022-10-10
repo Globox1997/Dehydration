@@ -59,8 +59,12 @@ public class DehydrationConfig implements ConfigData {
     public int sleep_thirst_consumption = 4;
     @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
     public int sleep_hunger_consumption = 2;
-    @Comment("in ticks")
+    @Comment("boiling time in ticks")
     public int water_boiling_time = 100;
+    @Comment("pump cooldown in ticks 0 = no cooldown")
+    public int pump_cooldown = 0;
+    @Comment("Pump requires water below 10 blocks within 50 blocks")
+    public boolean pump_requires_water = false;
 
     public boolean harder_nether = false;
     @Comment("1.3 = 30% more thirst")

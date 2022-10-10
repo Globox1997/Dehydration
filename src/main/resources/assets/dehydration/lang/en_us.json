@@ -37,6 +37,8 @@
   "text.autoconfig.dehydration.option.hud_y": "Hud Y Position",
   "text.autoconfig.dehydration.option.allow_non_flowing_water_sip": "Allow Non Flowing Water Sip",
   "text.autoconfig.dehydration.option.honey_quench": "Honey Quench",
+  "text.autoconfig.dehydration.option.pump_cooldown": "Pump Cooldown",
+  "text.autoconfig.dehydration.option.pump_requires_water": "Pump Requires Water",
 
   "item.dehydration.leather_flask": "Leather Flask",
   "item.dehydration.iron_leather_flask": "Iron Leather Flask",
@@ -62,6 +64,8 @@
   "block.dehydration.purified_water_copper_cauldron": "Purified Water Copper Cauldron",
   "block.dehydration.powder_snow_copper_cauldron": "Powder Snow Copper Cauldron",
   "block.dehydration.bamboo_pump": "Bamboo Pump",
+  "block.dehydration.bamboo_pump.cooldown": "Pump Cooldown: %ss",
+  "block.dehydration.bamboo_pump.no_water": "Pump found no water",
 
   "commands.dehydration.changed": "thirst got changed"
 }
