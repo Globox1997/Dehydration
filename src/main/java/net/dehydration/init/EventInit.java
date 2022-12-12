@@ -16,6 +16,7 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.BinomialLootNumberProvider;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.tag.BiomeTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -55,8 +56,13 @@ public class EventInit {
                                     world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
 
                                 thirstManager.add(ConfigInit.CONFIG.water_souce_quench);
-                                if (world.random.nextFloat() <= ConfigInit.CONFIG.water_sip_thirst_chance && !world.getFluidState(blockPos).isIn(TagInit.PURIFIED_WATER))
-                                    player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.water_sip_thirst_duration, 1, false, false, true));
+                                if (!world.getFluidState(blockPos).isIn(TagInit.PURIFIED_WATER)) {
+                                    float sipThirstChance = ConfigInit.CONFIG.water_sip_thirst_chance;
+                                    if (world.getBiome(blockPos).isIn(BiomeTags.IS_RIVER))
+                                        sipThirstChance = sipThirstChance / 2f;
+                                    if (world.random.nextFloat() <= sipThirstChance)
+                                        player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.water_sip_thirst_duration, 1, false, false, true));
+                                }
                             } else {
                                 world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundInit.WATER_SIP_EVENT, SoundCategory.PLAYERS, 1.0F, 0.9F + (world.random.nextFloat() / 5F));
                             }
