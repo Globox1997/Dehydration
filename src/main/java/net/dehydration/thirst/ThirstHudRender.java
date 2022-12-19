@@ -7,7 +7,7 @@ import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.EffectInit;
 import net.dehydration.init.RenderInit;
-import net.dehydration.item.Leather_Flask;
+import net.dehydration.item.LeatherFlask;
 import net.dehydration.misc.ThirstTooltipData;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -86,7 +86,7 @@ public class ThirstHudRender {
                                 RenderSystem.enableBlend();
                                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, flashAlpha);
                                 int thirstQuench = ((ThirstTooltipData) itemStack.getTooltipData().get()).getThirstQuench();
-                                if (itemStack.getItem() instanceof Leather_Flask)
+                                if (itemStack.getItem() instanceof LeatherFlask)
                                     thirstQuench = ConfigInit.CONFIG.flask_thirst_quench;
                                 int quality = ((ThirstTooltipData) itemStack.getTooltipData().get()).getDrinkQuality();
                                 if (variable_one < (thirst + thirstQuench) / 2)

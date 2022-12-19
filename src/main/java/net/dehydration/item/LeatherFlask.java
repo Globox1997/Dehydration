@@ -50,10 +50,10 @@ import net.minecraft.world.event.GameEvent;
 
 // Thanks to Pois1x for the texture
 
-public class Leather_Flask extends Item {
+public class LeatherFlask extends Item {
     public final int addition;
 
-    public Leather_Flask(int waterAddition, Settings settings) {
+    public LeatherFlask(int waterAddition, Settings settings) {
         super(settings);
         this.addition = waterAddition;
     }
@@ -256,7 +256,7 @@ public class Leather_Flask extends Item {
                 nbt.putInt("purified_water", 0);
         }
         int fillQuench = nbt.getInt("leather_flask") + quench;
-        int addition = ((Leather_Flask) itemStack.getItem()).addition;
+        int addition = ((LeatherFlask) itemStack.getItem()).addition;
         nbt.putInt("leather_flask", fillQuench > 2 + addition ? 2 + addition : fillQuench);
         itemStack.setNbt(nbt);
     }
@@ -275,7 +275,7 @@ public class Leather_Flask extends Item {
     public static boolean isFlaskFull(ItemStack stack) {
         NbtCompound tags = stack.getNbt();
         if (tags != null) {
-            if (tags.getInt("leather_flask") >= ((Leather_Flask) stack.getItem()).addition + 2)
+            if (tags.getInt("leather_flask") >= ((LeatherFlask) stack.getItem()).addition + 2)
                 return true;
             else
                 return false;

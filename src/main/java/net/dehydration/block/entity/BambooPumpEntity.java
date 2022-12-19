@@ -3,7 +3,7 @@ package net.dehydration.block.entity;
 import net.dehydration.init.BlockInit;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.ItemInit;
-import net.dehydration.item.Leather_Flask;
+import net.dehydration.item.LeatherFlask;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -82,9 +82,9 @@ public class BambooPumpEntity extends BlockEntity implements Inventory {
                     setStack(0, PotionUtil.setPotion(new ItemStack(Items.POTION), ItemInit.PURIFIED_WATER));
                 pumpCount = 0;
                 cooldown = ConfigInit.CONFIG.pump_cooldown;
-            } else if (itemStack.getItem() instanceof Leather_Flask) {
+            } else if (itemStack.getItem() instanceof LeatherFlask) {
                 if (!this.world.isClient) {
-                    Leather_Flask.fillFlask(itemStack, 2);
+                    LeatherFlask.fillFlask(itemStack, 2);
                     setStack(0, itemStack);
                 }
                 pumpCount = 0;

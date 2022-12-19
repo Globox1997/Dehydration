@@ -4,7 +4,7 @@ import net.dehydration.block.CampfireCauldronBlock;
 import net.dehydration.block.CopperLeveledCauldronBlock;
 import net.dehydration.init.BlockInit;
 import net.dehydration.init.ItemInit;
-import net.dehydration.item.Leather_Flask;
+import net.dehydration.item.LeatherFlask;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.FallibleItemDispenserBehavior;
@@ -30,13 +30,13 @@ public class DispenserBehaviorAccess {
                 BlockState blockState = serverWorld.getBlockState(blockPos);
                 if (blockState.isOf(BlockInit.CAMPFIRE_CAULDRON_BLOCK) && blockState.get(CampfireCauldronBlock.LEVEL) > 0) {
                     CampfireCauldronBlock campfireCauldronBlock = (CampfireCauldronBlock) blockState.getBlock();
-                    if (campfireCauldronBlock.isPurifiedWater(serverWorld, blockPos) && stack.hasNbt() && stack.getNbt().getInt("leather_flask") < 2 + ((Leather_Flask) stack.getItem()).addition) {
+                    if (campfireCauldronBlock.isPurifiedWater(serverWorld, blockPos) && stack.hasNbt() && stack.getNbt().getInt("leather_flask") < 2 + ((LeatherFlask) stack.getItem()).addition) {
                         this.setSuccess(true);
                         campfireCauldronBlock.setLevel(serverWorld, blockPos, blockState, blockState.get(CampfireCauldronBlock.LEVEL) - 1);
                         return getNewFlask(stack, pointer);
                     }
                 } else if (blockState.isOf(BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK) && blockState.get(CopperLeveledCauldronBlock.LEVEL) > 0 && stack.hasNbt()
-                        && stack.getNbt().getInt("leather_flask") < 2 + ((Leather_Flask) stack.getItem()).addition) {
+                        && stack.getNbt().getInt("leather_flask") < 2 + ((LeatherFlask) stack.getItem()).addition) {
                     this.setSuccess(true);
                     CopperLeveledCauldronBlock.decrementFluidLevel(blockState, serverWorld, blockPos);
 
@@ -53,7 +53,7 @@ public class DispenserBehaviorAccess {
     private static ItemStack getNewFlask(ItemStack stack, BlockPointer pointer) {
         ItemStack newStack = stack.copy();
         NbtCompound tags = new NbtCompound();
-        tags.putInt("leather_flask", 2 + ((Leather_Flask) newStack.getItem()).addition);
+        tags.putInt("leather_flask", 2 + ((LeatherFlask) newStack.getItem()).addition);
         int waterPurity = 0;
         if (stack.getNbt().getInt("leather_flask") != 0 && newStack.getNbt().getInt("purified_water") != 0) {
             waterPurity = 1;

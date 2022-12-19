@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.dehydration.item.HandbookItem;
-import net.dehydration.item.Leather_Flask;
+import net.dehydration.item.LeatherFlask;
 import net.dehydration.item.PurifiedBucket;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
@@ -21,11 +21,11 @@ public class ItemInit {
     private static final Map<Identifier, Item> ITEMS = new LinkedHashMap<>();
     public static final List<Item> FLASK_ITEM_LIST = new ArrayList<Item>();
     // Flasks
-    public static final Leather_Flask LEATHER_FLASK = register("leather_flask", new Leather_Flask(0, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
-    public static final Leather_Flask IRON_LEATHER_FLASK = register("iron_leather_flask", new Leather_Flask(1, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
-    public static final Leather_Flask GOLDEN_LEATHER_FLASK = register("golden_leather_flask", new Leather_Flask(2, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
-    public static final Leather_Flask DIAMOND_LEATHER_FLASK = register("diamond_leather_flask", new Leather_Flask(3, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
-    public static final Leather_Flask NETHERITE_LEATHER_FLASK = register("netherite_leather_flask", new Leather_Flask(4, new Item.Settings().group(ItemGroup.MISC).maxCount(1).fireproof()));
+    public static final LeatherFlask LEATHER_FLASK = register("leather_flask", new LeatherFlask(0, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
+    public static final LeatherFlask IRON_LEATHER_FLASK = register("iron_leather_flask", new LeatherFlask(1, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
+    public static final LeatherFlask GOLDEN_LEATHER_FLASK = register("golden_leather_flask", new LeatherFlask(2, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
+    public static final LeatherFlask DIAMOND_LEATHER_FLASK = register("diamond_leather_flask", new LeatherFlask(3, new Item.Settings().group(ItemGroup.MISC).maxCount(1)));
+    public static final LeatherFlask NETHERITE_LEATHER_FLASK = register("netherite_leather_flask", new LeatherFlask(4, new Item.Settings().group(ItemGroup.MISC).maxCount(1).fireproof()));
     // Potion
     public static final Potion PURIFIED_WATER = new Potion(new StatusEffectInstance[0]);
     // Handbook

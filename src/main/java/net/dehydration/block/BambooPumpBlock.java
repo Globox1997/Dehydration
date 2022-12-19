@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import net.dehydration.block.entity.BambooPumpEntity;
 import net.dehydration.init.BlockInit;
 import net.dehydration.init.ConfigInit;
-import net.dehydration.item.Leather_Flask;
+import net.dehydration.item.LeatherFlask;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -77,7 +77,7 @@ public class BambooPumpBlock extends BlockWithEntity {
             ItemStack itemStack = bambooPumpEntity.getStack(0);
             ItemStack itemStack2 = player.getStackInHand(hand);
             if (itemStack.isEmpty()) {
-                if (itemStack2.isOf(Items.BUCKET) || itemStack2.isOf(Items.GLASS_BOTTLE) || (itemStack2.getItem() instanceof Leather_Flask && !Leather_Flask.isFlaskFull(itemStack2))) {
+                if (itemStack2.isOf(Items.BUCKET) || itemStack2.isOf(Items.GLASS_BOTTLE) || (itemStack2.getItem() instanceof LeatherFlask && !LeatherFlask.isFlaskFull(itemStack2))) {
                     if (!world.isClient) {
                         if (player.isCreative())
                             bambooPumpEntity.setStack(0, itemStack2.copy());
@@ -107,7 +107,7 @@ public class BambooPumpBlock extends BlockWithEntity {
                     }
                     return ActionResult.success(world.isClient);
                 }
-                if (itemStack.isOf(Items.BUCKET) || itemStack.isOf(Items.GLASS_BOTTLE) || (itemStack.getItem() instanceof Leather_Flask && !Leather_Flask.isFlaskFull(itemStack))) {
+                if (itemStack.isOf(Items.BUCKET) || itemStack.isOf(Items.GLASS_BOTTLE) || (itemStack.getItem() instanceof LeatherFlask && !LeatherFlask.isFlaskFull(itemStack))) {
                     if (ConfigInit.CONFIG.pump_requires_water) {
                         boolean foundWater = false;
                         for (int i = 0; i < 50; i++) {

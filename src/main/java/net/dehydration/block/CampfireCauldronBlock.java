@@ -4,7 +4,7 @@ import net.dehydration.block.entity.CampfireCauldronEntity;
 import net.dehydration.init.BlockInit;
 import net.dehydration.init.ItemInit;
 import net.dehydration.init.SoundInit;
-import net.dehydration.item.Leather_Flask;
+import net.dehydration.item.LeatherFlask;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
@@ -170,9 +170,9 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                     return ActionResult.success(world.isClient);
 
                 } else {
-                    if (i > 0 && item instanceof Leather_Flask) {
+                    if (i > 0 && item instanceof LeatherFlask) {
                         NbtCompound tags = itemStack.getNbt();
-                        if (tags != null && tags.getInt("leather_flask") < 2 + ((Leather_Flask) item).addition) {
+                        if (tags != null && tags.getInt("leather_flask") < 2 + ((LeatherFlask) item).addition) {
                             if (this.isPurifiedWater(world, pos)) {
                                 if ((tags.getInt("purified_water") == 0 || tags.getInt("leather_flask") == 0)) {
                                     tags.putInt("purified_water", 0);
