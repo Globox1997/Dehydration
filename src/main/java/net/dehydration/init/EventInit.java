@@ -16,6 +16,7 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.BinomialLootNumberProvider;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.state.property.Properties;
 import net.minecraft.tag.BiomeTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.ActionResult;
@@ -53,7 +54,10 @@ public class EventInit {
                         if (drinkTime > 20) {
                             if (!world.isClient) {
                                 if (!ConfigInit.CONFIG.allow_non_flowing_water_sip && world.getFluidState(blockPos).isStill())
-                                    world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
+                                    if (world.getBlockState(blockPos).contains(Properties.WATERLOGGED))
+                                        world.setBlockState(blockPos, world.getBlockState(blockPos).with(Properties.WATERLOGGED, false));
+                                    else
+                                        world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
 
                                 thirstManager.add(ConfigInit.CONFIG.water_souce_quench);
                                 if (!world.getFluidState(blockPos).isIn(TagInit.PURIFIED_WATER)) {
