@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.dehydration.DehydrationMain;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.TagInit;
@@ -23,7 +24,7 @@ public class ItemMixin {
 
     @Inject(method = "finishUsing", at = @At(value = "HEAD"))
     private void finishUsingMixin(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info) {
-        if (user instanceof PlayerEntity player) {
+        if (!stack.isFood() && user instanceof PlayerEntity player) {
             int thirstQuench = 0;
             if (stack.isIn(TagInit.HYDRATING_STEW))
                 thirstQuench = ConfigInit.CONFIG.stew_thirst_quench;
@@ -37,6 +38,13 @@ public class ItemMixin {
                 thirstQuench = ConfigInit.CONFIG.stronger_food_thirst_quench;
             if (stack.isIn(TagInit.STRONGER_HYDRATING_DRINKS))
                 thirstQuench = ConfigInit.CONFIG.stronger_drinks_thirst_quench;
+
+            for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
+                if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
+                    thirstQuench = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
+                    break;
+                }
+            }
             ((ThirstManagerAccess) player).getThirstManager().add(thirstQuench);
         }
     }
@@ -56,6 +64,14 @@ public class ItemMixin {
             thirstQuench = ConfigInit.CONFIG.stronger_food_thirst_quench;
         if (stack.isIn(TagInit.STRONGER_HYDRATING_DRINKS))
             thirstQuench = ConfigInit.CONFIG.stronger_drinks_thirst_quench;
+
+        for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
+            if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
+                thirstQuench = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
+                break;
+            }
+        }
+
         if (thirstQuench > 0)
             info.setReturnValue(Optional.of(new ThirstTooltipData(0, thirstQuench)));
     }

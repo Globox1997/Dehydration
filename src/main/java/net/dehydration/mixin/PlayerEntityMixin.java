@@ -5,16 +5,20 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.dehydration.DehydrationMain;
 import net.dehydration.access.PlayerAccess;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
+import net.dehydration.init.TagInit;
 import net.dehydration.thirst.ThirstManager;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
@@ -88,7 +92,32 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
             this.thirstManager.setThirstLevel(thirstLevel >= thirstConsumption ? thirstLevel - thirstConsumption : 0);
             this.hungerManager.setFoodLevel(hungerLevel >= hungerConsumption ? hungerLevel - hungerConsumption : 0);
         }
+    }
 
+    @Inject(method = "eatFood", at = @At(value = "HEAD"))
+    private void eatFoodMixin(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
+        int thirstQuench = 0;
+        if (stack.isIn(TagInit.HYDRATING_STEW))
+            thirstQuench = ConfigInit.CONFIG.stew_thirst_quench;
+        if (stack.isIn(TagInit.HYDRATING_FOOD))
+            thirstQuench = ConfigInit.CONFIG.food_thirst_quench;
+        if (stack.isIn(TagInit.HYDRATING_DRINKS))
+            thirstQuench = ConfigInit.CONFIG.drinks_thirst_quench;
+        if (stack.isIn(TagInit.STRONGER_HYDRATING_STEW))
+            thirstQuench = ConfigInit.CONFIG.stronger_stew_thirst_quench;
+        if (stack.isIn(TagInit.STRONGER_HYDRATING_FOOD))
+            thirstQuench = ConfigInit.CONFIG.stronger_food_thirst_quench;
+        if (stack.isIn(TagInit.STRONGER_HYDRATING_DRINKS))
+            thirstQuench = ConfigInit.CONFIG.stronger_drinks_thirst_quench;
+
+        for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
+            if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
+                thirstQuench = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
+                break;
+            }
+        }
+        if (thirstQuench > 0)
+            ((ThirstManagerAccess) (PlayerEntity) (Object) this).getThirstManager().add(thirstQuench);
     }
 
     @Override

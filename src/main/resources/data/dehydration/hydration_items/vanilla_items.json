@@ -1,0 +1,34 @@
+{
+    "1": {
+        "replace": false,
+        "items": [
+            "minecraft:melon_slice"
+        ]
+    },
+    "2": {
+        "replace": false,
+        "items": [
+            "minecraft:potion"
+        ]
+    },
+    "3": {
+        "replace": false,
+        "items": [
+            "minecraft:suspicious_stew",
+            "minecraft:mushroom_stew",
+            "minecraft:beetroot_soup"
+        ]
+    },
+    "6": {
+        "replace": false,
+        "items": [
+            "minecraft:rabbit_stew"
+        ]
+    },
+    "8": {
+        "replace": false,
+        "items": [
+            "minecraft:milk_bucket"
+        ]
+    }
+}

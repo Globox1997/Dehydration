@@ -24,6 +24,7 @@ public class PlayerManagerMixin {
     @Inject(method = "onPlayerConnect", at = @At(value = "TAIL"))
     private void onPlayerConnectMixin(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
         ThirstServerPacket.writeS2CExcludedSyncPacket(player, ((ThirstManagerAccess) player).getThirstManager().hasThirst());
+        ThirstServerPacket.writeS2CHydrationTemplateSyncPacket(player);
     }
 
     @Inject(method = "respawnPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;onPlayerRespawned(Lnet/minecraft/server/network/ServerPlayerEntity;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)

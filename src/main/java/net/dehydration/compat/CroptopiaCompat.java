@@ -2,6 +2,7 @@ package net.dehydration.compat;
 
 import com.epherical.croptopia.event.DrinkEvent;
 
+import net.dehydration.DehydrationMain;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.TagInit;
@@ -25,7 +26,15 @@ public class CroptopiaCompat {
                 thirst = ConfigInit.CONFIG.stronger_food_thirst_quench;
             if (stack.isIn(TagInit.STRONGER_HYDRATING_DRINKS))
                 thirst = ConfigInit.CONFIG.stronger_drinks_thirst_quench;
-            thirstManager.add(thirst);
+
+            for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
+                if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
+                    thirst = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
+                    break;
+                }
+            }
+            if (thirst > 0)
+                thirstManager.add(thirst);
         });
     }
 

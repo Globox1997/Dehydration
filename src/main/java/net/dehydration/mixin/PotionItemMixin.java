@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
+import net.dehydration.DehydrationMain;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.EffectInit;
@@ -40,7 +41,16 @@ public abstract class PotionItemMixin extends Item {
                 player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.potion_bad_thirst_duration, 0, false, false, true));
             }
             ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
-            thirstManager.add(ConfigInit.CONFIG.potion_thirst_quench);
+            int thirstQuench = 0;
+            for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
+                if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
+                    thirstQuench = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
+                    break;
+                }
+            }
+            if (thirstQuench == 0)
+                thirstQuench = ConfigInit.CONFIG.potion_thirst_quench;
+            thirstManager.add(thirstQuench);
         }
     }
 
@@ -56,10 +66,21 @@ public abstract class PotionItemMixin extends Item {
     @Override
     public Optional<TooltipData> getTooltipData(ItemStack stack) {
         if (!(stack.getItem() instanceof ThrowablePotionItem)) {
-            if (isBadPotion(PotionUtil.getPotion(stack)))
-                return Optional.of(new ThirstTooltipData(2, ConfigInit.CONFIG.potion_thirst_quench));
 
-            return Optional.of(new ThirstTooltipData(0, ConfigInit.CONFIG.potion_thirst_quench));
+            int thirstQuench = 0;
+            for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
+                if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
+                    thirstQuench = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
+                    break;
+                }
+            }
+            if (thirstQuench == 0)
+                thirstQuench = ConfigInit.CONFIG.potion_thirst_quench;
+
+            if (isBadPotion(PotionUtil.getPotion(stack)))
+                return Optional.of(new ThirstTooltipData(2, thirstQuench));
+
+            return Optional.of(new ThirstTooltipData(0, thirstQuench));
         }
         return Optional.empty();
     }
