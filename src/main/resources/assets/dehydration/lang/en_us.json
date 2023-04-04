@@ -3,6 +3,7 @@
   "death.attack.thirst": "%1$s died of thirst",
 
   "effect.dehydration.thirst_effect": "Thirst",
+  "effect.dehydration.hydration_effect": "Hydration",
 
   "text.autoconfig.dehydration.title": "Dehydration Config",
   "text.autoconfig.dehydration.category.default": "Default Settings",
@@ -56,6 +57,10 @@
   "item.minecraft.potion.effect.purified_water": "Purified Water Bottle",
   "item.minecraft.lingering_potion.effect.purified_water": "Lingering Purified Water",
   "item.minecraft.splash_potion.effect.purified_water": "Splash Potion of Purified Water",
+  "item.minecraft.potion.effect.hydration": "Potion of Hydration",
+  "item.minecraft.lingering_potion.effect.hydration": "Lingering Potion of Hydration",
+  "item.minecraft.splash_potion.effect.hydration": "Splash Potion of Hydration",
+  "item.minecraft.tipped_arrow.effect.hydration": "Arrow of Hydration",
 
   "item.dehydration.dirty_potion.tooltip":"Dirty",
   

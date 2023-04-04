@@ -28,6 +28,7 @@ public class ItemInit {
     public static final LeatherFlask NETHERITE_LEATHER_FLASK = register("netherite_leather_flask", new LeatherFlask(4, new Item.Settings().group(ItemGroup.MISC).maxCount(1).fireproof()));
     // Potion
     public static final Potion PURIFIED_WATER = new Potion(new StatusEffectInstance[0]);
+    public static final Potion HYDRATION = new Potion(new StatusEffectInstance(EffectInit.HYDRATION, 900));
     // Handbook
     public static final Item HANDBOOK = register("handbook", new HandbookItem(new Item.Settings().group(ItemGroup.MISC)));
     // Bucket
@@ -46,6 +47,7 @@ public class ItemInit {
             Registry.register(Registry.ITEM, id, ITEMS.get(id));
 
         Registry.register(Registry.POTION, "purified_water", PURIFIED_WATER);
+        Registry.register(Registry.POTION, "hydration", HYDRATION);
     }
 
 }
