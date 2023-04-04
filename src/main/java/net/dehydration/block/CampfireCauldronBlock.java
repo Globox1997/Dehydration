@@ -242,6 +242,10 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
         }
     }
 
+    public boolean isFull(BlockState state) {
+        return (Integer) state.get(LEVEL) == 4;
+    }
+
     public boolean isFireBurning(World world, BlockPos pos) {
         if (world.getBlockState(pos.down()).getBlock() instanceof CampfireBlock && CampfireBlock.isLitCampfire(world.getBlockState(pos.down()))) {
             return true;

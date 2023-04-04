@@ -7,6 +7,11 @@ import org.jetbrains.annotations.Nullable;
 
 import eu.midnightdust.puddles.Puddles;
 import net.dehydration.access.ThirstManagerAccess;
+import net.dehydration.block.AbstractCopperCauldronBlock;
+import net.dehydration.block.CampfireCauldronBlock;
+import net.dehydration.block.CopperCauldronBlock;
+import net.dehydration.block.CopperLeveledCauldronBlock;
+import net.dehydration.init.BlockInit;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.init.EffectInit;
 import net.dehydration.init.SoundInit;
@@ -16,6 +21,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.block.AbstractCauldronBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
@@ -66,18 +72,47 @@ public class LeatherFlask extends Item {
         BlockState state = context.getWorld().getBlockState(pos);
         NbtCompound tags = itemStack.getNbt();
 
-        if (state.getBlock() instanceof LeveledCauldronBlock || state.getBlock() instanceof CauldronBlock) {
+        if (state.getBlock() instanceof LeveledCauldronBlock || state.getBlock() instanceof CauldronBlock || state.getBlock() instanceof CopperCauldronBlock
+                || state.getBlock() instanceof CopperLeveledCauldronBlock || state.getBlock() instanceof CampfireCauldronBlock) {
+
             // Empty flask
             if (player.isSneaking()) {
                 if ((itemStack.hasNbt() && tags.getInt("leather_flask") > 0) || !itemStack.hasNbt()) {
                     if (!player.world.isClient) {
-                        if (state.getBlock() instanceof LeveledCauldronBlock) {
-                            if (((LeveledCauldronBlock) state.getBlock()).isFull(state))
-                                return super.useOnBlock(context);
-                            player.world.setBlockState(pos, (BlockState) state.cycle(LeveledCauldronBlock.LEVEL));
+                        if (state.getBlock() instanceof AbstractCauldronBlock) {
+                            if (state.getBlock() instanceof LeveledCauldronBlock) {
+                                if (((LeveledCauldronBlock) state.getBlock()).isFull(state)) {
+                                    return super.useOnBlock(context);
+                                }
+                                player.world.setBlockState(pos, (BlockState) state.cycle(LeveledCauldronBlock.LEVEL));
+                            } else {
+                                player.world.setBlockState(pos, Blocks.WATER_CAULDRON.getDefaultState());
+                                player.world.emitGameEvent(null, GameEvent.BLOCK_CHANGE, pos);
+                            }
+                        } else if (state.getBlock() instanceof AbstractCopperCauldronBlock) {
+                            if (state.getBlock() instanceof CopperLeveledCauldronBlock) {
+                                if (((CopperLeveledCauldronBlock) state.getBlock()).isFull(state)) {
+                                    return super.useOnBlock(context);
+                                }
+                                if (tags.getInt("purified_water") != 0) {
+                                    player.world.setBlockState(pos,
+                                            BlockInit.COPPER_WATER_CAULDRON_BLOCK.getDefaultState().with(CopperLeveledCauldronBlock.LEVEL, state.get(CopperLeveledCauldronBlock.LEVEL) + 1));
+                                } else {
+                                    player.world.setBlockState(pos, (BlockState) state.cycle(CopperLeveledCauldronBlock.LEVEL));
+                                }
+                            } else {
+                                if (tags.getInt("purified_water") == 0) {
+                                    player.world.setBlockState(pos, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK.getDefaultState());
+                                } else {
+                                    player.world.setBlockState(pos, BlockInit.COPPER_WATER_CAULDRON_BLOCK.getDefaultState());
+                                }
+                                player.world.emitGameEvent(null, GameEvent.BLOCK_CHANGE, pos);
+                            }
                         } else {
-                            player.world.setBlockState(pos, Blocks.WATER_CAULDRON.getDefaultState());
-                            player.world.emitGameEvent(null, GameEvent.BLOCK_CHANGE, pos);
+                            if (((CampfireCauldronBlock) state.getBlock()).isFull(state)) {
+                                return super.useOnBlock(context);
+                            }
+                            player.world.setBlockState(pos, (BlockState) state.cycle(CampfireCauldronBlock.LEVEL));
                         }
                         player.world.playSound((PlayerEntity) null, pos, SoundInit.EMPTY_FLASK_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         player.incrementStat(Stats.USE_CAULDRON);
