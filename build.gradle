@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.0-SNAPSHOT'
+	id 'fabric-loom' version '1.1-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -58,13 +58,13 @@ dependencies {
 	// 	exclude(group: "net.fabricmc.fabric-api")
 	// }
 	// Origins
-	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.0.0-beta.1")
-	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.0.0-beta.1")
-	modCompileOnly 'com.github.apace100:origins-fabric:v1.7.0',{
-		exclude(group: "net.fabricmc.fabric-api")
-		exclude(group: "maven.modrinth")
-		exclude(group: "me.shedaniel.cloth")
-	}
+	// modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-base:5.0.0-beta.1")
+	// modCompileOnly("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:5.0.0-beta.1")
+	// modCompileOnly 'com.github.apace100:origins-fabric:v1.7.0',{
+	// 	exclude(group: "net.fabricmc.fabric-api")
+	// 	exclude(group: "maven.modrinth")
+	// 	exclude(group: "me.shedaniel.cloth")
+	// }
 	// Patchouli
 	modCompileOnly modRuntimeOnly("vazkii.patchouli:Patchouli:${project.patchouli_version}"),{
 		exclude(group: "net.fabricmc.fabric-api")
