@@ -18,6 +18,7 @@ public class BrewingRecipeRegistryMixin {
 
     @Inject(method = "registerDefaults", at = @At("TAIL"))
     private static void registerDefaultsMixin(CallbackInfo info) {
+        registerPotionRecipe(Potions.WATER, Items.CHARCOAL, ItemInit.PURIFIED_WATER);
         registerPotionRecipe(Potions.WATER, Items.KELP, ItemInit.PURIFIED_WATER);
         registerPotionRecipe(ItemInit.PURIFIED_WATER, Items.GHAST_TEAR, ItemInit.HYDRATION);
     }
