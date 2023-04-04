@@ -38,7 +38,7 @@ public class ThirstManager {
         } else {
             this.dehydrationTimer = 0;
         }
-        if (!player.isCreative()) {
+        if (!player.isCreative() && ConfigInit.CONFIG.special_effects) {
             if (thirstLevel == 2 && !player.hasStatusEffect(StatusEffects.HASTE)) {
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.HASTE, 409, 0, false, false, false));
             }

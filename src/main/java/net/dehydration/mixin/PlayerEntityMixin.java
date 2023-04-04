@@ -75,7 +75,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
     @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;addExhaustion(F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V", shift = Shift.AFTER))
     private void addExhaustionMixin(float exhaustion, CallbackInfo info) {
         if (this.thirstManager.hasThirst()) {
-            if (ConfigInit.CONFIG.harder_nether && this.world.getRegistryKey() == World.NETHER) {
+            if (ConfigInit.CONFIG.harder_nether && this.world.getDimension().ultrawarm()) {
                 exhaustion *= ConfigInit.CONFIG.nether_factor;
             }
             this.thirstManager.addDehydration(exhaustion / ConfigInit.CONFIG.hydrating_factor);

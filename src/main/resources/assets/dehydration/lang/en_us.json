@@ -41,6 +41,7 @@
   "text.autoconfig.dehydration.option.pump_cooldown": "Pump Cooldown",
   "text.autoconfig.dehydration.option.pump_requires_water": "Pump Requires Water",
   "text.autoconfig.dehydration.option.bottle_consumes_source_block": "Bottle Consumes Source Block",
+  "text.autoconfig.dehydration.option.special_effects": "Special Effects",
 
   "item.dehydration.leather_flask": "Leather Flask",
   "item.dehydration.iron_leather_flask": "Iron Leather Flask",
