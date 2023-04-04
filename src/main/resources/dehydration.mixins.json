@@ -23,9 +23,7 @@
     "CauldronBehaviorMixin",
     "WaterFluidMixin",
     "GlassBottleItemMixin",
-    "accessor.CampfireBlockEntityAccessor",
-    "compat.OriginCommandMixin",
-    "compat.PlayerOriginComponentMixin"
+    "accessor.CampfireBlockEntityAccessor"
   ],
   "client": [
     "client.InGameHudMixin",
