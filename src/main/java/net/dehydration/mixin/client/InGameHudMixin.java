@@ -15,8 +15,8 @@ import net.dehydration.access.HudAccess;
 import net.dehydration.thirst.ThirstHudRender;
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -41,8 +41,8 @@ public abstract class InGameHudMixin implements HudAccess {
     private float otherFlashAlpha = 0f;
 
     @Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V", ordinal = 1))
-    private void renderStatusBarsMixin(MatrixStack matrices, CallbackInfo info) {
-        ThirstHudRender.renderThirstHud(matrices, client, this.getCameraPlayer(), scaledWidth, scaledHeight, ticks, this.getHeartCount(this.getRiddenEntity()), flashAlpha, otherFlashAlpha);
+    private void renderStatusBarsMixin(DrawContext context, CallbackInfo info) {
+        ThirstHudRender.renderThirstHud(context, client, this.getCameraPlayer(), scaledWidth, scaledHeight, ticks, this.getHeartCount(this.getRiddenEntity()), flashAlpha, otherFlashAlpha);
     }
 
     @Inject(method = "getHeartRows", at = @At(value = "HEAD"), cancellable = true)

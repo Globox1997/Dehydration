@@ -53,7 +53,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
 
     @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;updateItems()V", shift = Shift.BEFORE))
     private void tickMovementMixin(CallbackInfo info) {
-        if (this.world.getDifficulty() == Difficulty.PEACEFUL && this.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION) && this.thirstManager.hasThirst()) {
+        if (this.getWorld().getDifficulty() == Difficulty.PEACEFUL && this.getWorld().getGameRules().getBoolean(GameRules.NATURAL_REGENERATION) && this.thirstManager.hasThirst()) {
             PlayerEntity player = (PlayerEntity) (Object) this;
             this.thirstManager.update(player);
             if (this.thirstManager.isNotFull() && this.age % 10 == 0) {
@@ -75,7 +75,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
     @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;addExhaustion(F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V", shift = Shift.AFTER))
     private void addExhaustionMixin(float exhaustion, CallbackInfo info) {
         if (this.thirstManager.hasThirst()) {
-            if (ConfigInit.CONFIG.harder_nether && this.world.getDimension().ultrawarm()) {
+            if (ConfigInit.CONFIG.harder_nether && this.getWorld().getDimension().ultrawarm()) {
                 exhaustion *= ConfigInit.CONFIG.nether_factor;
             }
             this.thirstManager.addDehydration(exhaustion / ConfigInit.CONFIG.hydrating_factor);
@@ -84,7 +84,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
 
     @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;wakeUp(ZZ)V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;sleepTimer:I"))
     private void wakeUpMixin(boolean bl, boolean updateSleepingPlayers, CallbackInfo info) {
-        if (!this.world.isClient && this.thirstManager.hasThirst() && this.sleepTimer >= 100) {
+        if (!this.getWorld().isClient() && this.thirstManager.hasThirst() && this.sleepTimer >= 100) {
             int thirstLevel = this.thirstManager.getThirstLevel();
             int hungerLevel = this.hungerManager.getFoodLevel();
             int thirstConsumption = ConfigInit.CONFIG.sleep_thirst_consumption;

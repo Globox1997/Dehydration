@@ -15,10 +15,10 @@ import net.dehydration.DehydrationMain;
 import net.dehydration.api.HydrationTemplate;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.registry.Registry;
 
 public class DataLoader implements SimpleSynchronousResourceReloadListener {
 
@@ -59,11 +59,11 @@ public class DataLoader implements SimpleSynchronousResourceReloadListener {
 
                             List<Item> items = new ArrayList<Item>();
                             for (int u = 0; u < jsonObject.getAsJsonArray("items").size(); u++) {
-                                if (!Registry.ITEM.containsId(new Identifier(jsonObject.getAsJsonArray("items").get(u).getAsString()))) {
+                                if (!Registries.ITEM.containsId(new Identifier(jsonObject.getAsJsonArray("items").get(u).getAsString()))) {
                                     DehydrationMain.LOGGER.warn("{} is not a valid item identifier", jsonObject.getAsJsonArray("items").get(u).getAsString());
                                     continue;
                                 }
-                                items.add(Registry.ITEM.get(new Identifier(jsonObject.getAsJsonArray("items").get(u).getAsString())));
+                                items.add(Registries.ITEM.get(new Identifier(jsonObject.getAsJsonArray("items").get(u).getAsString())));
                             }
                             DehydrationMain.HYDRATION_TEMPLATES.add(new HydrationTemplate(i, items));
 

@@ -15,21 +15,21 @@ import net.fabricmc.api.EnvType;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.encryption.PlayerPublicKey;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
 
-    public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile, PlayerPublicKey publicKey) {
-        super(world, profile, publicKey);
+    public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
+        super(world, profile);
     }
 
     @Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;setSprinting(Z)V", shift = Shift.AFTER))
     public void tickMovementMixin(CallbackInfo info) {
         ThirstManager thirstManager = ((ThirstManagerAccess) this).getThirstManager();
-        if (thirstManager.hasThirst() && !this.isCreative() && thirstManager.getThirstLevel() < 6)
+        if (thirstManager.hasThirst() && !this.isCreative() && thirstManager.getThirstLevel() < 6) {
             this.setSprinting(false);
+        }
     }
 
 }

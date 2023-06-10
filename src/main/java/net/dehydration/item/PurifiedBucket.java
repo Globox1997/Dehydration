@@ -7,7 +7,6 @@ import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidFillable;
-import net.minecraft.block.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowableFluid;
@@ -72,13 +71,13 @@ public class PurifiedBucket extends Item implements FluidModificationItem {
     public void onEmptied(PlayerEntity player, World world, ItemStack stack, BlockPos pos) {
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean placeFluid(@Nullable PlayerEntity player, World world, BlockPos pos, @Nullable BlockHitResult hitResult) {
         boolean bl2;
 
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
-        Material material = blockState.getMaterial();
         boolean bl = blockState.canBucketPlace(FluidInit.PURIFIED_WATER);
         bl2 = blockState.isAir() || bl || block instanceof FluidFillable && ((FluidFillable) ((Object) block)).canFillWithFluid(world, pos, blockState, FluidInit.PURIFIED_WATER);
         if (!bl2) {
@@ -100,7 +99,7 @@ public class PurifiedBucket extends Item implements FluidModificationItem {
             this.playEmptyingSound(player, world, pos);
             return true;
         }
-        if (!world.isClient && bl && !material.isLiquid()) {
+        if (!world.isClient && bl && !blockState.isLiquid()) {
             world.breakBlock(pos, true);
         }
         if (world.setBlockState(pos, FluidInit.PURIFIED_WATER.getDefaultState().getBlockState(), Block.NOTIFY_ALL | Block.REDRAW_ON_MAIN_THREAD) || blockState.getFluidState().isStill()) {

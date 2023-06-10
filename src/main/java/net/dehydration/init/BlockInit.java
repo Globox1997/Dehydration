@@ -2,6 +2,7 @@ package net.dehydration.init;
 
 import net.dehydration.block.*;
 import net.dehydration.block.entity.*;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.AbstractBlock;
@@ -9,45 +10,50 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.block.MapColor;
-import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class BlockInit {
     // Block
-    public static final CampfireCauldronBlock CAMPFIRE_CAULDRON_BLOCK = new CampfireCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON));
-    public static final CopperCauldronBlock COPPER_CAULDRON_BLOCK = new CopperCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON));
-    public static final CopperLeveledCauldronBlock COPPER_WATER_CAULDRON_BLOCK = new CopperLeveledCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON), CopperLeveledCauldronBlock.RAIN_PREDICATE,
-            CopperCauldronBehavior.WATER_COPPER_CAULDRON_BEHAVIOR);
-    public static final CopperLeveledCauldronBlock COPPER_POWDERED_CAULDRON_BLOCK = new CopperLeveledCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
-            CopperLeveledCauldronBlock.SNOW_PREDICATE, CopperCauldronBehavior.POWDER_SNOW_COPPER_CAULDRON_BEHAVIOR);
-    public static final CopperLeveledCauldronBlock COPPER_PURIFIED_WATER_CAULDRON_BLOCK = new CopperLeveledCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON),
-            CopperLeveledCauldronBlock.RAIN_PREDICATE, CopperCauldronBehavior.PURIFIED_WATER_COPPER_CAULDRON_BEHAVIOR);
-    public static final BambooPumpBlock BAMBOO_PUMP_BLOCK = new BambooPumpBlock(FabricBlockSettings.of(Material.STONE, MapColor.DARK_GREEN).strength(1.2f, 4.0f).sounds(BlockSoundGroup.BAMBOO));
-    public static final Block PURIFIED_WATER = new FluidBlock(FluidInit.PURIFIED_WATER, AbstractBlock.Settings.of(Material.WATER).noCollision().strength(100.0f).dropsNothing());
+    public static final Block CAMPFIRE_CAULDRON_BLOCK = register("campfire_cauldron", true,
+            new CampfireCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON).pistonBehavior(PistonBehavior.DESTROY)));
+    public static final Block COPPER_CAULDRON_BLOCK = register("copper_cauldron", true, new CopperCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON)));
+    public static final Block COPPER_WATER_CAULDRON_BLOCK = register("water_copper_cauldron", false,
+            new CopperLeveledCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON), CopperLeveledCauldronBlock.RAIN_PREDICATE, CopperCauldronBehavior.WATER_COPPER_CAULDRON_BEHAVIOR));
+    public static final Block COPPER_POWDERED_CAULDRON_BLOCK = register("powder_snow_copper_cauldron", false,
+            new CopperLeveledCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON), CopperLeveledCauldronBlock.SNOW_PREDICATE, CopperCauldronBehavior.POWDER_SNOW_COPPER_CAULDRON_BEHAVIOR));
+    public static final Block COPPER_PURIFIED_WATER_CAULDRON_BLOCK = register("purified_water_copper_cauldron", false,
+            new CopperLeveledCauldronBlock(FabricBlockSettings.copy(Blocks.CAULDRON), CopperLeveledCauldronBlock.RAIN_PREDICATE, CopperCauldronBehavior.PURIFIED_WATER_COPPER_CAULDRON_BEHAVIOR));
+    public static final Block BAMBOO_PUMP_BLOCK = register("bamboo_pump", true,
+            new BambooPumpBlock(FabricBlockSettings.create().mapColor(MapColor.DARK_GREEN).pistonBehavior(PistonBehavior.DESTROY).strength(1.2f, 4.0f).sounds(BlockSoundGroup.BAMBOO)));
+    public static final Block PURIFIED_WATER = register("purified_water", false, new FluidBlock(FluidInit.PURIFIED_WATER, AbstractBlock.Settings.create().mapColor(MapColor.WATER_BLUE).noCollision()
+            .strength(100.0f).pistonBehavior(PistonBehavior.DESTROY).dropsNothing().liquid().sounds(BlockSoundGroup.field_44608)));
 
     // Entity
     public static BlockEntityType<CampfireCauldronEntity> CAMPFIRE_CAULDRON_ENTITY = FabricBlockEntityTypeBuilder.create(CampfireCauldronEntity::new, CAMPFIRE_CAULDRON_BLOCK).build(null);
     public static final BlockEntityType<BambooPumpEntity> BAMBOO_PUMP_ENTITY = FabricBlockEntityTypeBuilder.create(BambooPumpEntity::new, BAMBOO_PUMP_BLOCK).build(null);
 
+    private static Block register(String id, boolean addItemGroup, Block block) {
+        return register(new Identifier("dehydration", id), addItemGroup, block);
+    }
+
+    private static Block register(Identifier id, boolean addItemGroup, Block block) {
+        if (addItemGroup) {
+            Item item = Registry.register(Registries.ITEM, id, new BlockItem(block, new Item.Settings()));
+            ItemGroupEvents.modifyEntriesEvent(ItemInit.DEHYDRATION_ITEM_GROUP).register(entries -> entries.add(item));
+        }
+        return Registry.register(Registries.BLOCK, id, block);
+    }
+
     public static void init() {
-        Registry.register(Registry.ITEM, new Identifier("dehydration", "campfire_cauldron"), new BlockItem(CAMPFIRE_CAULDRON_BLOCK, new Item.Settings().group(ItemGroup.DECORATIONS)));
-        Registry.register(Registry.BLOCK, new Identifier("dehydration", "campfire_cauldron"), CAMPFIRE_CAULDRON_BLOCK);
-        Registry.register(Registry.BLOCK_ENTITY_TYPE, "dehydration:campfire_cauldron_entity", CAMPFIRE_CAULDRON_ENTITY);
-        Registry.register(Registry.ITEM, new Identifier("dehydration", "copper_cauldron"), new BlockItem(COPPER_CAULDRON_BLOCK, new Item.Settings().group(ItemGroup.DECORATIONS)));
-        Registry.register(Registry.BLOCK, new Identifier("dehydration", "copper_cauldron"), COPPER_CAULDRON_BLOCK);
-        Registry.register(Registry.BLOCK, new Identifier("dehydration", "water_copper_cauldron"), COPPER_WATER_CAULDRON_BLOCK);
-        Registry.register(Registry.BLOCK, new Identifier("dehydration", "powder_snow_copper_cauldron"), COPPER_POWDERED_CAULDRON_BLOCK);
-        Registry.register(Registry.BLOCK, new Identifier("dehydration", "purified_water_copper_cauldron"), COPPER_PURIFIED_WATER_CAULDRON_BLOCK);
-        Registry.register(Registry.ITEM, new Identifier("dehydration", "bamboo_pump"), new BlockItem(BAMBOO_PUMP_BLOCK, new Item.Settings().group(ItemGroup.DECORATIONS)));
-        Registry.register(Registry.BLOCK, new Identifier("dehydration", "bamboo_pump"), BAMBOO_PUMP_BLOCK);
-        Registry.register(Registry.BLOCK_ENTITY_TYPE, "dehydration:bamboo_pump_entity", BAMBOO_PUMP_ENTITY);
-        Registry.register(Registry.BLOCK, new Identifier("dehydration", "purified_water"), PURIFIED_WATER);
+        Registry.register(Registries.BLOCK_ENTITY_TYPE, "dehydration:campfire_cauldron_entity", CAMPFIRE_CAULDRON_ENTITY);
+        Registry.register(Registries.BLOCK_ENTITY_TYPE, "dehydration:bamboo_pump_entity", BAMBOO_PUMP_ENTITY);
     }
 
 }

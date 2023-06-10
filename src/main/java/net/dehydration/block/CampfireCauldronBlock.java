@@ -11,7 +11,6 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,12 +21,12 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.IntProperty;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Hand;
@@ -70,7 +69,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext itemPlacementContext) {
-        return (BlockState) this.getDefaultState().with(FACING, itemPlacementContext.getPlayerFacing().rotateYClockwise());
+        return (BlockState) this.getDefaultState().with(FACING, itemPlacementContext.getPlayerLookDirection().rotateYClockwise());
     }
 
     @Override
@@ -85,16 +84,12 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
     }
 
     @Override
-    public PistonBehavior getPistonBehavior(BlockState state) {
-        return PistonBehavior.DESTROY;
-    }
-
-    @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         if (world.getBlockState(pos.down()).isIn(BlockTags.CAMPFIRES)) {
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 
     @Override

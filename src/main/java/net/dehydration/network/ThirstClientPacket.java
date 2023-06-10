@@ -13,7 +13,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 
 @Environment(EnvType.CLIENT)
 public class ThirstClientPacket {
@@ -24,8 +24,8 @@ public class ThirstClientPacket {
             int entityId = bufferArray[0];
             int thirstLevel = bufferArray[1];
             client.execute(() -> {
-                if (client.player.world.getEntityById(entityId) != null) {
-                    PlayerEntity player = (PlayerEntity) client.player.world.getEntityById(entityId);
+                if (client.player.getWorld().getEntityById(entityId) != null) {
+                    PlayerEntity player = (PlayerEntity) client.player.getWorld().getEntityById(entityId);
                     ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
                     thirstManager.setThirstLevel(thirstLevel);
                 }
@@ -43,7 +43,7 @@ public class ThirstClientPacket {
             for (int i = 0; i < intList.size(); i += 2) {
                 List<Item> items = new ArrayList<Item>();
                 for (int u = 0; u < intList.getInt(i + 1); u++) {
-                    items.add(Registry.ITEM.get(buffer.readIdentifier()));
+                    items.add(Registries.ITEM.get(buffer.readIdentifier()));
                 }
                 hydrationTemplates.add(new HydrationTemplate(intList.getInt(i), items));
             }

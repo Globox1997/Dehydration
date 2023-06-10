@@ -6,9 +6,9 @@ import net.dehydration.DehydrationMain;
 import net.dehydration.access.ThirstManagerAccess;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class ThirstServerPacket {
 
@@ -42,7 +42,7 @@ public class ThirstServerPacket {
 
         DehydrationMain.HYDRATION_TEMPLATES.forEach((template) -> {
             template.getItems().forEach((item) -> {
-                buf.writeIdentifier(Registry.ITEM.getId(item));
+                buf.writeIdentifier(Registries.ITEM.getId(item));
             });
         });
         serverPlayerEntity.networkHandler.sendPacket(new CustomPayloadS2CPacket(ThirstServerPacket.HYDRATION_TEMPLATE_SYNC, buf));

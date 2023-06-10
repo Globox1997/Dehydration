@@ -15,11 +15,11 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
@@ -63,11 +63,6 @@ public abstract class PurifiedWaterFluid extends FlowableFluid {
     @Nullable
     public ParticleEffect getParticle() {
         return ParticleTypes.DRIPPING_WATER;
-    }
-
-    @Override
-    protected boolean isInfinite() {
-        return false;
     }
 
     @Override
@@ -138,6 +133,11 @@ public abstract class PurifiedWaterFluid extends FlowableFluid {
         public boolean isStill(FluidState state) {
             return false;
         }
+
+        @Override
+        protected boolean isInfinite(World var1) {
+            return false;
+        }
     }
 
     public static class Still extends PurifiedWaterFluid {
@@ -149,6 +149,11 @@ public abstract class PurifiedWaterFluid extends FlowableFluid {
         @Override
         public boolean isStill(FluidState state) {
             return true;
+        }
+
+        @Override
+        protected boolean isInfinite(World var1) {
+            return false;
         }
     }
 }

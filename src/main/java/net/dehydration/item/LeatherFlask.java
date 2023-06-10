@@ -36,11 +36,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.tag.BiomeTags;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.stat.Stats;
-import net.minecraft.tag.BiomeTags;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
@@ -78,16 +78,16 @@ public class LeatherFlask extends Item {
             // Empty flask
             if (player.isSneaking()) {
                 if ((itemStack.hasNbt() && tags.getInt("leather_flask") > 0) || !itemStack.hasNbt()) {
-                    if (!player.world.isClient) {
+                    if (!player.getWorld().isClient()) {
                         if (state.getBlock() instanceof AbstractCauldronBlock) {
                             if (state.getBlock() instanceof LeveledCauldronBlock) {
                                 if (((LeveledCauldronBlock) state.getBlock()).isFull(state)) {
                                     return super.useOnBlock(context);
                                 }
-                                player.world.setBlockState(pos, (BlockState) state.cycle(LeveledCauldronBlock.LEVEL));
+                                player.getWorld().setBlockState(pos, (BlockState) state.cycle(LeveledCauldronBlock.LEVEL));
                             } else {
-                                player.world.setBlockState(pos, Blocks.WATER_CAULDRON.getDefaultState());
-                                player.world.emitGameEvent(null, GameEvent.BLOCK_CHANGE, pos);
+                                player.getWorld().setBlockState(pos, Blocks.WATER_CAULDRON.getDefaultState());
+                                player.getWorld().emitGameEvent(null, GameEvent.BLOCK_CHANGE, pos);
                             }
                         } else if (state.getBlock() instanceof AbstractCopperCauldronBlock) {
                             if (state.getBlock() instanceof CopperLeveledCauldronBlock) {
@@ -95,26 +95,26 @@ public class LeatherFlask extends Item {
                                     return super.useOnBlock(context);
                                 }
                                 if (tags.getInt("purified_water") != 0) {
-                                    player.world.setBlockState(pos,
+                                    player.getWorld().setBlockState(pos,
                                             BlockInit.COPPER_WATER_CAULDRON_BLOCK.getDefaultState().with(CopperLeveledCauldronBlock.LEVEL, state.get(CopperLeveledCauldronBlock.LEVEL) + 1));
                                 } else {
-                                    player.world.setBlockState(pos, (BlockState) state.cycle(CopperLeveledCauldronBlock.LEVEL));
+                                    player.getWorld().setBlockState(pos, (BlockState) state.cycle(CopperLeveledCauldronBlock.LEVEL));
                                 }
                             } else {
                                 if (tags.getInt("purified_water") == 0) {
-                                    player.world.setBlockState(pos, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK.getDefaultState());
+                                    player.getWorld().setBlockState(pos, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK.getDefaultState());
                                 } else {
-                                    player.world.setBlockState(pos, BlockInit.COPPER_WATER_CAULDRON_BLOCK.getDefaultState());
+                                    player.getWorld().setBlockState(pos, BlockInit.COPPER_WATER_CAULDRON_BLOCK.getDefaultState());
                                 }
-                                player.world.emitGameEvent(null, GameEvent.BLOCK_CHANGE, pos);
+                                player.getWorld().emitGameEvent(null, GameEvent.BLOCK_CHANGE, pos);
                             }
                         } else {
                             if (((CampfireCauldronBlock) state.getBlock()).isFull(state)) {
                                 return super.useOnBlock(context);
                             }
-                            player.world.setBlockState(pos, (BlockState) state.cycle(CampfireCauldronBlock.LEVEL));
+                            player.getWorld().setBlockState(pos, (BlockState) state.cycle(CampfireCauldronBlock.LEVEL));
                         }
-                        player.world.playSound((PlayerEntity) null, pos, SoundInit.EMPTY_FLASK_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        player.getWorld().playSound((PlayerEntity) null, pos, SoundInit.EMPTY_FLASK_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         player.incrementStat(Stats.USE_CAULDRON);
 
                         if (itemStack.hasNbt())
@@ -126,19 +126,19 @@ public class LeatherFlask extends Item {
                         }
                         itemStack.setNbt(tags);
                     }
-                    return ActionResult.success(player.world.isClient);
+                    return ActionResult.success(player.getWorld().isClient());
                 }
             } else if (state.getBlock() instanceof LeveledCauldronBlock && state.get(LeveledCauldronBlock.LEVEL) > 0 && itemStack.hasNbt() && tags.getInt("leather_flask") < 2 + this.addition) {
                 // Fill up flask
-                if (!player.world.isClient) {
-                    player.world.playSound((PlayerEntity) null, pos, SoundInit.FILL_FLASK_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                if (!player.getWorld().isClient()) {
+                    player.getWorld().playSound((PlayerEntity) null, pos, SoundInit.FILL_FLASK_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     player.incrementStat(Stats.USE_CAULDRON);
-                    LeveledCauldronBlock.decrementFluidLevel(state, player.world, pos);
+                    LeveledCauldronBlock.decrementFluidLevel(state, player.getWorld(), pos);
                     tags.putInt("leather_flask", tags.getInt("leather_flask") + 1);
                     tags.putInt("purified_water", 2);
                     itemStack.setNbt(tags);
                 }
-                return ActionResult.success(player.world.isClient);
+                return ActionResult.success(player.getWorld().isClient());
             }
         }
         return super.useOnBlock(context);

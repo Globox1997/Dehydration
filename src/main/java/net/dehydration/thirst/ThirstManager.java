@@ -1,14 +1,22 @@
 package net.dehydration.thirst;
 
 import net.dehydration.init.ConfigInit;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.Difficulty;
 
 public class ThirstManager {
+
+    // Damage Type
+    public static final RegistryKey<DamageType> THIRST = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, new Identifier("dehydration", "thirst"));
 
     public float dehydration;
     private boolean hasThirst = true;
@@ -20,7 +28,7 @@ public class ThirstManager {
     }
 
     public void update(PlayerEntity player) {
-        Difficulty difficulty = player.world.getDifficulty();
+        Difficulty difficulty = player.getWorld().getDifficulty();
         if (this.dehydration > 4.0F) {
             this.dehydration -= 4.0F;
             if (difficulty != Difficulty.PEACEFUL) {
@@ -31,7 +39,7 @@ public class ThirstManager {
             ++this.dehydrationTimer;
             if (this.dehydrationTimer >= 90) {
                 if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD || (player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL)) {
-                    player.damage(THIRST, ConfigInit.CONFIG.thirst_damage);
+                    player.damage(createDamageSource(player), ConfigInit.CONFIG.thirst_damage);
                 }
                 this.dehydrationTimer = 0;
             }
@@ -89,21 +97,8 @@ public class ThirstManager {
         this.hasThirst = canHaveThirst;
     }
 
-    public static final DamageSource THIRST = new DamageSource("thirst") {
+    private DamageSource createDamageSource(Entity entity) {
+        return entity.getDamageSources().create(THIRST, entity);
+    }
 
-        @Override
-        public boolean bypassesArmor() {
-            return true;
-        }
-
-        @Override
-        public boolean isUnblockable() {
-            return true;
-        }
-
-        @Override
-        public float getExhaustion() {
-            return 0F;
-        }
-    };
 }

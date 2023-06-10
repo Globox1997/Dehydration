@@ -10,11 +10,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 
 @Environment(EnvType.CLIENT)
 public class BambooPumpRenderer implements BlockEntityRenderer<BambooPumpEntity> {
@@ -31,19 +31,19 @@ public class BambooPumpRenderer implements BlockEntityRenderer<BambooPumpEntity>
                 matrices.push();
                 if (blockDirection == Direction.NORTH) {
                     matrices.translate(0.5D, -0.05D, 0.38D);
-                    matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion((180F)));
+                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((180F)));
                 } else if (blockDirection == Direction.EAST) {
                     matrices.translate(0.62D, -0.05D, 0.5D);
-                    matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion((90F)));
+                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((90F)));
                 } else if (blockDirection == Direction.SOUTH)
                     matrices.translate(0.5D, -0.05D, 0.62D);
                 else if (blockDirection == Direction.WEST) {
                     matrices.translate(0.38D, -0.05D, 0.5D);
-                    matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion((270F)));
+                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((270F)));
                 }
                 matrices.scale(0.5F, 0.5F, 0.5F);
 
-                MinecraftClient.getInstance().getItemRenderer().renderItem(blockEntity.getStack(0), ModelTransformation.Mode.HEAD, light, overlay, matrices, vertexConsumers,
+                MinecraftClient.getInstance().getItemRenderer().renderItem(blockEntity.getStack(0), ModelTransformationMode.HEAD, light, overlay, matrices, vertexConsumers, blockEntity.getWorld(),
                         (int) blockEntity.getPos().asLong());
                 matrices.pop();
             }

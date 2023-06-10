@@ -43,6 +43,8 @@
   "text.autoconfig.dehydration.option.bottle_consumes_source_block": "Bottle Consumes Source Block",
   "text.autoconfig.dehydration.option.special_effects": "Special Effects",
 
+  "item.dehydration.item_group": "Dehydration",
+
   "item.dehydration.leather_flask": "Leather Flask",
   "item.dehydration.iron_leather_flask": "Iron Leather Flask",
   "item.dehydration.golden_leather_flask": "Golden Leather Flask",

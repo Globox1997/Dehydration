@@ -4,7 +4,8 @@ import net.dehydration.fluid.PurifiedWaterFluid;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 public class FluidInit {
 
@@ -15,11 +16,11 @@ public class FluidInit {
     }
 
     private static <T extends Fluid> T register(String id, T value) {
-        return (T) Registry.register(Registry.FLUID, id, value);
+        return (T) Registry.register(Registries.FLUID, id, value);
     }
 
     static {
-        for (Fluid fluid : Registry.FLUID) {
+        for (Fluid fluid : Registries.FLUID) {
             for (FluidState fluidState : fluid.getStateManager().getStates()) {
                 Fluid.STATE_IDS.add(fluidState);
             }

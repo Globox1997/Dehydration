@@ -34,7 +34,7 @@ public class CommandInit {
             ((ThirstManagerAccess) serverPlayerEntity).getThirstManager().setThirst(setThirst);
             ThirstServerPacket.writeS2CExcludedSyncPacket(serverPlayerEntity, setThirst);
         }
-        source.sendFeedback(Text.translatable("commands.dehydration.changed"), true);
+        source.sendFeedback(() -> Text.translatable("commands.dehydration.changed"), true);
 
         return targets.size();
     }
