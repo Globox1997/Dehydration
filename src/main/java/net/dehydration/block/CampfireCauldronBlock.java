@@ -69,7 +69,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext itemPlacementContext) {
-        return (BlockState) this.getDefaultState().with(FACING, itemPlacementContext.getPlayerLookDirection().rotateYClockwise());
+        return (BlockState) this.getDefaultState().with(FACING, itemPlacementContext.getHorizontalPlayerFacing().rotateYClockwise());
     }
 
     @Override
