@@ -261,20 +261,24 @@ public class LeatherFlask extends Item {
                 }
                 tooltip.add(Text.translatable("item.dehydration.leather_flask.tooltip3." + string));
             }
-        } else
+        } else {
             tooltip.add(Text.translatable("item.dehydration.leather_flask.tooltip2", addition + 2).formatted(Formatting.GRAY));
+        }
         super.appendTooltip(stack, world, tooltip, context);
     }
 
     @Override
     public Optional<TooltipData> getTooltipData(ItemStack stack) {
-        if (stack.hasNbt() && stack.getNbt().contains("leather_flask")) {
-            if (stack.getNbt().getInt("leather_flask") == 0)
-                return Optional.empty();
-
-            return Optional.of(new ThirstTooltipData(stack.getNbt().getInt("purified_water"), stack.getNbt().getInt("leather_flask") * ConfigInit.CONFIG.flask_thirst_quench));
+        if (ConfigInit.CONFIG.thirst_preview) {
+            if (stack.hasNbt() && stack.getNbt().contains("leather_flask")) {
+                if (stack.getNbt().getInt("leather_flask") == 0) {
+                    return Optional.empty();
+                }
+                return Optional.of(new ThirstTooltipData(stack.getNbt().getInt("purified_water"), stack.getNbt().getInt("leather_flask") * ConfigInit.CONFIG.flask_thirst_quench));
+            }
+            return Optional.of(new ThirstTooltipData(0, (2 + this.addition) * ConfigInit.CONFIG.flask_thirst_quench));
         }
-        return Optional.of(new ThirstTooltipData(0, (2 + this.addition) * ConfigInit.CONFIG.flask_thirst_quench));
+        return super.getTooltipData(stack);
     }
 
     public static void fillFlask(ItemStack itemStack, int quench) {
@@ -284,8 +288,9 @@ public class LeatherFlask extends Item {
             nbt.putInt("purified_water", 0);
         } else {
             nbt = itemStack.getNbt().copy();
-            if (nbt.getInt("leather_flask") == 0)
+            if (nbt.getInt("leather_flask") == 0) {
                 nbt.putInt("purified_water", 0);
+            }
         }
         int fillQuench = nbt.getInt("leather_flask") + quench;
         int addition = ((LeatherFlask) itemStack.getItem()).addition;
@@ -296,23 +301,27 @@ public class LeatherFlask extends Item {
     public static boolean isFlaskEmpty(ItemStack stack) {
         NbtCompound tags = stack.getNbt();
         if (tags != null) {
-            if (tags.getInt("leather_flask") != 0)
+            if (tags.getInt("leather_flask") != 0) {
                 return false;
-            else
+            } else {
                 return true;
-        } else
+            }
+        } else {
             return false;
+        }
     }
 
     public static boolean isFlaskFull(ItemStack stack) {
         NbtCompound tags = stack.getNbt();
         if (tags != null) {
-            if (tags.getInt("leather_flask") >= ((LeatherFlask) stack.getItem()).addition + 2)
+            if (tags.getInt("leather_flask") >= ((LeatherFlask) stack.getItem()).addition + 2) {
                 return true;
-            else
+            } else {
                 return false;
-        } else
+            }
+        } else {
             return true;
+        }
     }
 
     // purified_water: 0 = purified, 1 impurified, 2 dirty

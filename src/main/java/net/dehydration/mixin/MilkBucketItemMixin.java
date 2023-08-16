@@ -51,16 +51,20 @@ public abstract class MilkBucketItemMixin extends Item {
 
     @Override
     public Optional<TooltipData> getTooltipData(ItemStack stack) {
-        int thirstQuench = 0;
-        for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
-            if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
-                thirstQuench = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
-                break;
+        if (ConfigInit.CONFIG.thirst_preview) {
+            int thirstQuench = 0;
+            for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
+                if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
+                    thirstQuench = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
+                    break;
+                }
             }
-        }
-        if (thirstQuench == 0)
-            thirstQuench = ConfigInit.CONFIG.milk_thirst_quench;
-        return Optional.of(new ThirstTooltipData(1, thirstQuench));
+            if (thirstQuench == 0) {
+                thirstQuench = ConfigInit.CONFIG.milk_thirst_quench;
+            }
+            return Optional.of(new ThirstTooltipData(1, thirstQuench));
+        } else
+            return super.getTooltipData(stack);
     }
 
 }

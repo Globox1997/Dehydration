@@ -1,6 +1,6 @@
 ### Added:
-- 
+- Added thirst preview config option
 ### Fixed:
-- Fixed pump place crash
+- 
 ### Changed:
-- Updated to mc 1.20.1
+- 

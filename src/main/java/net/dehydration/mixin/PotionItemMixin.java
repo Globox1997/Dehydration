@@ -89,7 +89,7 @@ public abstract class PotionItemMixin extends Item {
 
     @Override
     public Optional<TooltipData> getTooltipData(ItemStack stack) {
-        if (!(stack.getItem() instanceof ThrowablePotionItem)) {
+        if (ConfigInit.CONFIG.thirst_preview && !(stack.getItem() instanceof ThrowablePotionItem)) {
 
             int thirstQuench = 0;
             for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
@@ -98,12 +98,12 @@ public abstract class PotionItemMixin extends Item {
                     break;
                 }
             }
-            if (thirstQuench == 0)
+            if (thirstQuench == 0) {
                 thirstQuench = ConfigInit.CONFIG.potion_thirst_quench;
-
-            if (isBadPotion(PotionUtil.getPotion(stack)))
+            }
+            if (isBadPotion(PotionUtil.getPotion(stack))) {
                 return Optional.of(new ThirstTooltipData(2, thirstQuench));
-
+            }
             return Optional.of(new ThirstTooltipData(0, thirstQuench));
         }
         return Optional.empty();

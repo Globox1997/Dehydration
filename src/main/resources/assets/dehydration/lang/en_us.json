@@ -42,6 +42,7 @@
   "text.autoconfig.dehydration.option.pump_requires_water": "Pump Requires Water",
   "text.autoconfig.dehydration.option.bottle_consumes_source_block": "Bottle Consumes Source Block",
   "text.autoconfig.dehydration.option.special_effects": "Special Effects",
+  "text.autoconfig.dehydration.option.thirst_preview": "Thirst Preview",
 
   "item.dehydration.item_group": "Dehydration",
 

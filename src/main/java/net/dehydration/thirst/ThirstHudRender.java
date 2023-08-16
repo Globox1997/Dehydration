@@ -35,7 +35,7 @@ public class ThirstHudRender {
                 if (vehicleHeartCount == 0) {
 
                     ItemStack itemStack = null;
-                    if (thirst < 20)
+                    if (ConfigInit.CONFIG.thirst_preview && thirst < 20) {
                         if (!playerEntity.getMainHandStack().isEmpty() && !playerEntity.getMainHandStack().getTooltipData().isEmpty()
                                 && playerEntity.getMainHandStack().getTooltipData().get() instanceof ThirstTooltipData) {
                             itemStack = playerEntity.getMainHandStack();
@@ -43,7 +43,7 @@ public class ThirstHudRender {
                                 && playerEntity.getOffHandStack().getTooltipData().get() instanceof ThirstTooltipData) {
                             itemStack = playerEntity.getOffHandStack();
                         }
-
+                    }
                     if (itemStack != null) {
                         ((HudAccess) client.inGameHud).setOtherFlashAlpha(otherFlashAlpha += MathHelper.PI / (48F));
                         ((HudAccess) client.inGameHud).setFlashAlpha((MathHelper.cos(otherFlashAlpha + MathHelper.PI) + 1f) / 2f);

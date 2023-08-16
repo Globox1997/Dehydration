@@ -81,4 +81,6 @@ public class DehydrationConfig implements ConfigData {
     public int hud_x = 0;
     @ConfigEntry.Category("advanced_settings")
     public int hud_y = 0;
+    @ConfigEntry.Category("advanced_settings")
+    public boolean thirst_preview = true;
 }

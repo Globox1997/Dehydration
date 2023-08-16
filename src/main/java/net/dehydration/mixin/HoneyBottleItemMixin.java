@@ -45,15 +45,19 @@ public abstract class HoneyBottleItemMixin extends Item {
     // check here and for milk and potion
     @Override
     public Optional<TooltipData> getTooltipData(ItemStack stack) {
-        int thirstQuench = 0;
-        for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
-            if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
-                thirstQuench = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
-                break;
+        if (ConfigInit.CONFIG.thirst_preview) {
+            int thirstQuench = 0;
+            for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
+                if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
+                    thirstQuench = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
+                    break;
+                }
             }
+            if (thirstQuench == 0) {
+                thirstQuench = ConfigInit.CONFIG.honey_quench;
+            }
+            return Optional.of(new ThirstTooltipData(0, thirstQuench));
         }
-        if (thirstQuench == 0)
-            thirstQuench = ConfigInit.CONFIG.honey_quench;
-        return Optional.of(new ThirstTooltipData(0, thirstQuench));
+        return super.getTooltipData(stack);
     }
 }

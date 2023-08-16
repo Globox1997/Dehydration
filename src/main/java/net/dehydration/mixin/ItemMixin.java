@@ -26,54 +26,59 @@ public class ItemMixin {
     private void finishUsingMixin(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info) {
         if (!stack.isFood() && user instanceof PlayerEntity player) {
             int thirstQuench = 0;
-            if (stack.isIn(TagInit.HYDRATING_STEW))
+            if (stack.isIn(TagInit.HYDRATING_STEW)) {
                 thirstQuench = ConfigInit.CONFIG.stew_thirst_quench;
-            if (stack.isIn(TagInit.HYDRATING_FOOD))
+            } else if (stack.isIn(TagInit.HYDRATING_FOOD)) {
                 thirstQuench = ConfigInit.CONFIG.food_thirst_quench;
-            if (stack.isIn(TagInit.HYDRATING_DRINKS))
+            } else if (stack.isIn(TagInit.HYDRATING_DRINKS)) {
                 thirstQuench = ConfigInit.CONFIG.drinks_thirst_quench;
-            if (stack.isIn(TagInit.STRONGER_HYDRATING_STEW))
+            } else if (stack.isIn(TagInit.STRONGER_HYDRATING_STEW)) {
                 thirstQuench = ConfigInit.CONFIG.stronger_stew_thirst_quench;
-            if (stack.isIn(TagInit.STRONGER_HYDRATING_FOOD))
+            } else if (stack.isIn(TagInit.STRONGER_HYDRATING_FOOD)) {
                 thirstQuench = ConfigInit.CONFIG.stronger_food_thirst_quench;
-            if (stack.isIn(TagInit.STRONGER_HYDRATING_DRINKS))
+            } else if (stack.isIn(TagInit.STRONGER_HYDRATING_DRINKS)) {
                 thirstQuench = ConfigInit.CONFIG.stronger_drinks_thirst_quench;
-
+            }
             for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
                 if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
                     thirstQuench = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
                     break;
                 }
             }
-            ((ThirstManagerAccess) player).getThirstManager().add(thirstQuench);
+            if (thirstQuench > 0) {
+                ((ThirstManagerAccess) player).getThirstManager().add(thirstQuench);
+            }
         }
     }
 
     @Inject(method = "getTooltipData", at = @At("HEAD"), cancellable = true)
     private void getTooltipDataMixin(ItemStack stack, CallbackInfoReturnable<Optional<TooltipData>> info) {
-        int thirstQuench = 0;
-        if (stack.isIn(TagInit.HYDRATING_STEW))
-            thirstQuench = ConfigInit.CONFIG.stew_thirst_quench;
-        if (stack.isIn(TagInit.HYDRATING_FOOD))
-            thirstQuench = ConfigInit.CONFIG.food_thirst_quench;
-        if (stack.isIn(TagInit.HYDRATING_DRINKS))
-            thirstQuench = ConfigInit.CONFIG.drinks_thirst_quench;
-        if (stack.isIn(TagInit.STRONGER_HYDRATING_STEW))
-            thirstQuench = ConfigInit.CONFIG.stronger_stew_thirst_quench;
-        if (stack.isIn(TagInit.STRONGER_HYDRATING_FOOD))
-            thirstQuench = ConfigInit.CONFIG.stronger_food_thirst_quench;
-        if (stack.isIn(TagInit.STRONGER_HYDRATING_DRINKS))
-            thirstQuench = ConfigInit.CONFIG.stronger_drinks_thirst_quench;
+        if (ConfigInit.CONFIG.thirst_preview) {
+            int thirstQuench = 0;
+            if (stack.isIn(TagInit.HYDRATING_STEW)) {
+                thirstQuench = ConfigInit.CONFIG.stew_thirst_quench;
+            } else if (stack.isIn(TagInit.HYDRATING_FOOD)) {
+                thirstQuench = ConfigInit.CONFIG.food_thirst_quench;
+            } else if (stack.isIn(TagInit.HYDRATING_DRINKS)) {
+                thirstQuench = ConfigInit.CONFIG.drinks_thirst_quench;
+            } else if (stack.isIn(TagInit.STRONGER_HYDRATING_STEW)) {
+                thirstQuench = ConfigInit.CONFIG.stronger_stew_thirst_quench;
+            } else if (stack.isIn(TagInit.STRONGER_HYDRATING_FOOD)) {
+                thirstQuench = ConfigInit.CONFIG.stronger_food_thirst_quench;
+            } else if (stack.isIn(TagInit.STRONGER_HYDRATING_DRINKS)) {
+                thirstQuench = ConfigInit.CONFIG.stronger_drinks_thirst_quench;
+            }
+            for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
+                if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
+                    thirstQuench = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
+                    break;
+                }
+            }
 
-        for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
-            if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
-                thirstQuench = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
-                break;
+            if (thirstQuench > 0) {
+                info.setReturnValue(Optional.of(new ThirstTooltipData(0, thirstQuench)));
             }
         }
-
-        if (thirstQuench > 0)
-            info.setReturnValue(Optional.of(new ThirstTooltipData(0, thirstQuench)));
     }
 
 }
