@@ -98,7 +98,7 @@ public class ThirstManager {
     }
 
     private DamageSource createDamageSource(Entity entity) {
-        return entity.getDamageSources().create(THIRST, entity);
+        return entity.getDamageSources().create(THIRST, null);
     }
 
 }
