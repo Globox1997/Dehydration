@@ -1,6 +1,6 @@
 ### Added:
-- Added thirst preview config option
+- Added water bowl
 ### Fixed:
-- 
+- Fixed patchouli compat
 ### Changed:
 - 
