@@ -39,13 +39,14 @@ public abstract class MilkBucketItemMixin extends Item {
                     break;
                 }
             }
-            if (thirstQuench == 0)
+            if (thirstQuench == 0) {
                 thirstQuench = ConfigInit.CONFIG.milk_thirst_quench;
-
+            }
             ((ThirstManagerAccess) player).getThirstManager().add(thirstQuench);
 
-            if (!world.isClient && world.random.nextFloat() >= ConfigInit.CONFIG.milk_thirst_chance)
+            if (!world.isClient() && world.random.nextFloat() >= ConfigInit.CONFIG.milk_thirst_chance) {
                 player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.potion_bad_thirst_duration / 2, 0, false, false, true));
+            }
         }
     }
 
@@ -63,8 +64,9 @@ public abstract class MilkBucketItemMixin extends Item {
                 thirstQuench = ConfigInit.CONFIG.milk_thirst_quench;
             }
             return Optional.of(new ThirstTooltipData(1, thirstQuench));
-        } else
+        } else {
             return super.getTooltipData(stack);
+        }
     }
 
 }

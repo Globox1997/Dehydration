@@ -48,11 +48,9 @@ public abstract class PotionItemMixin extends Item {
         BlockHitResult hitResult = Item.raycast(world, user, RaycastContext.FluidHandling.SOURCE_ONLY);
         if (((HitResult) hitResult).getType() == HitResult.Type.BLOCK) {
             BlockPos blockPos = hitResult.getBlockPos();
-            if (world.canPlayerModifyAt(user, blockPos)) {
-                if (world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
-                    world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.NEUTRAL, 1.0f, 1.0f);
-                    info.setReturnValue(TypedActionResult.success(new ItemStack(Items.GLASS_BOTTLE), world.isClient()));
-                }
+            if (world.canPlayerModifyAt(user, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
+                world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundEvents.ITEM_BOTTLE_EMPTY, SoundCategory.NEUTRAL, 1.0f, 1.0f);
+                info.setReturnValue(TypedActionResult.success(new ItemStack(Items.GLASS_BOTTLE), world.isClient()));
             }
         }
     }
@@ -61,7 +59,7 @@ public abstract class PotionItemMixin extends Item {
     public void finishUsingMixin(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info) {
         if (user instanceof PlayerEntity player) {
             Potion potion = PotionUtil.getPotion(stack);
-            if (!world.isClient && this.isBadPotion(potion) && world.random.nextFloat() >= ConfigInit.CONFIG.potion_bad_thirst_chance) {
+            if (!world.isClient() && this.isBadPotion(potion) && world.random.nextFloat() >= ConfigInit.CONFIG.potion_bad_thirst_chance) {
                 player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.potion_bad_thirst_duration, 0, false, false, true));
             }
             ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
@@ -72,8 +70,9 @@ public abstract class PotionItemMixin extends Item {
                     break;
                 }
             }
-            if (thirstQuench == 0)
+            if (thirstQuench == 0) {
                 thirstQuench = ConfigInit.CONFIG.potion_thirst_quench;
+            }
             thirstManager.add(thirstQuench);
         }
     }
@@ -83,8 +82,9 @@ public abstract class PotionItemMixin extends Item {
                 || potion == Potions.LONG_WEAKNESS || potion == Potions.MUNDANE || potion == Potions.POISON || potion == Potions.SLOWNESS || potion == Potions.STRONG_HARMING
                 || potion == Potions.STRONG_POISON || potion == Potions.STRONG_SLOWNESS || potion == Potions.WEAKNESS) {
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 
     @Override

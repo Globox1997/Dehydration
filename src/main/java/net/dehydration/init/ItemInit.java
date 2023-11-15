@@ -8,6 +8,7 @@ import java.util.Map;
 import net.dehydration.item.HandbookItem;
 import net.dehydration.item.LeatherFlask;
 import net.dehydration.item.PurifiedBucket;
+import net.dehydration.item.WaterBowlItem;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -42,6 +43,9 @@ public class ItemInit {
     public static final Item HANDBOOK = register("handbook", new HandbookItem(new Item.Settings()));
     // Bucket
     public static final Item PURIFIED_BUCKET = register("purified_water_bucket", new PurifiedBucket(new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1)));
+    // Bowl
+    public static final Item WATER_BOWL = register("water_bowl", new WaterBowlItem(new Item.Settings().maxCount(1), true));
+    public static final Item PURIFIED_WATER_BOWL = register("purified_water_bowl", new WaterBowlItem(new Item.Settings().maxCount(1), true));
 
     private static Item register(String name, Item item) {
         ItemGroupEvents.modifyEntriesEvent(DEHYDRATION_ITEM_GROUP).register(entries -> entries.add(item));

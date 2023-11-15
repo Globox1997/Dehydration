@@ -27,6 +27,10 @@ public class DehydrationConfig implements ConfigData {
     public float milk_thirst_chance = 0.4F;
     @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
     public int honey_quench = 1;
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
+    public int water_bowl_quench = 3;
+    @Comment("1.0F = 100%, 0.5F = 50%, 0.0F = 0%")
+    public float water_bowl_thirst_chance = 0.4F;
     @Comment("Applies on items added to the drinks tag")
     @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
     public int drinks_thirst_quench = 2;

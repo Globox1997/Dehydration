@@ -1,0 +1,17 @@
+{
+    "name": "Water Bowl",
+    "icon": "dehydration:water_bowl",
+    "category": "dehydration:item_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "dehydration:water_bowl",
+            "link_recipe": true,
+            "text": "The water bowl can hold water to drink."
+        },
+        {
+            "type": "crafting",
+            "recipe": "dehydration:water_bowl"
+        }
+    ]
+}
