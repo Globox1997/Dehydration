@@ -39,7 +39,7 @@ public class ThirstHudRender {
                         if (!playerEntity.getMainHandStack().isEmpty() && !playerEntity.getMainHandStack().getTooltipData().isEmpty()
                                 && playerEntity.getMainHandStack().getTooltipData().get() instanceof ThirstTooltipData) {
                             itemStack = playerEntity.getMainHandStack();
-                        } else if (playerEntity.getOffHandStack().isEmpty() && !playerEntity.getOffHandStack().getTooltipData().isEmpty()
+                        } else if (!playerEntity.getOffHandStack().isEmpty() && !playerEntity.getOffHandStack().getTooltipData().isEmpty()
                                 && playerEntity.getOffHandStack().getTooltipData().get() instanceof ThirstTooltipData) {
                             itemStack = playerEntity.getOffHandStack();
                         }
