@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "dehydration:netherite_leather_flask"
+    }
+  ],
+  "result": {
+    "item": "dehydration:netherite_leather_flask"
+  }
+}
