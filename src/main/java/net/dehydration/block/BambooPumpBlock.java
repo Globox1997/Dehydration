@@ -225,4 +225,16 @@ public class BambooPumpBlock extends BlockWithEntity {
         return checkType(type, BlockInit.BAMBOO_PUMP_ENTITY, world.isClient ? BambooPumpEntity::clientTick : BambooPumpEntity::serverTick);
     }
 
+    @Override
+    public void onBlockBreakStart(BlockState state, World world, BlockPos pos, PlayerEntity player) {
+        if (world.isClient()) return;
+        BambooPumpEntity bambooPumpEntity = (BambooPumpEntity) world.getBlockEntity(pos);
+        if (bambooPumpEntity == null) return;
+        ItemStack itemStack = bambooPumpEntity.getStack(0);
+        if (itemStack.isEmpty()) return;
+        if (player.giveItemStack(itemStack)) {
+            bambooPumpEntity.clear();
+            world.setBlockState(pos, state.with(ATTACHED, false).with(EXTENDED, false), Block.NOTIFY_LISTENERS);
+        }
+    }
 }
