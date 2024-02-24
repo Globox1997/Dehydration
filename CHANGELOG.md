@@ -1,6 +1,6 @@
 ### Added:
-- Added water bowl
+- 
 ### Fixed:
-- Fixed patchouli compat
+- Fixed bamboo pump cooldown
 ### Changed:
 - 

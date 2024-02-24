@@ -1,5 +1,7 @@
 package net.dehydration.block;
 
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.dehydration.block.entity.BambooPumpEntity;
@@ -16,14 +18,19 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.loot.context.LootContextParameterSet.Builder;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -78,34 +85,35 @@ public class BambooPumpBlock extends BlockWithEntity {
             ItemStack itemStack2 = player.getStackInHand(hand);
             if (itemStack.isEmpty()) {
                 if (itemStack2.isOf(Items.BUCKET) || itemStack2.isOf(Items.GLASS_BOTTLE) || (itemStack2.getItem() instanceof LeatherFlask && !LeatherFlask.isFlaskFull(itemStack2))) {
-                    if (!world.isClient) {
-                        if (player.isCreative())
+                    if (!world.isClient()) {
+                        if (player.isCreative()) {
                             bambooPumpEntity.setStack(0, itemStack2.copy());
-                        else
+                        } else {
                             bambooPumpEntity.setStack(0, itemStack2.split(1));
-
-                        if (bambooPumpEntity.getStack(0).isOf(Items.BUCKET))
+                        }
+                        if (bambooPumpEntity.getStack(0).isOf(Items.BUCKET)) {
                             world.setBlockState(pos, state.with(ATTACHED, true), Block.NOTIFY_LISTENERS);
+                        }
                     }
-                    return ActionResult.success(world.isClient);
+                    return ActionResult.success(world.isClient());
                 }
                 // can get used to place a water source block infront of the pump
                 // else {
-                // if (world.isClient) {
+                // if (world.isClient()) {
                 // if (state.get(EXTENDED))
                 // world.playSound(player, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0f, 1.0f);
                 // } else
                 // world.setBlockState(pos, state.with(EXTENDED, !state.get(EXTENDED)), Block.NOTIFY_LISTENERS);
                 // }
-                // return ActionResult.success(world.isClient);
+                // return ActionResult.success(world.isClient());
             } else {
                 if (itemStack2.isEmpty() && player.isSneaking()) {
-                    if (!world.isClient) {
+                    if (!world.isClient()) {
                         player.setStackInHand(hand, bambooPumpEntity.getStack(0));
                         bambooPumpEntity.clear();
                         world.setBlockState(pos, state.with(ATTACHED, false).with(EXTENDED, false), Block.NOTIFY_LISTENERS);
                     }
-                    return ActionResult.success(world.isClient);
+                    return ActionResult.success(world.isClient());
                 }
                 if (itemStack.isOf(Items.BUCKET) || itemStack.isOf(Items.GLASS_BOTTLE) || (itemStack.getItem() instanceof LeatherFlask && !LeatherFlask.isFlaskFull(itemStack))) {
                     if (ConfigInit.CONFIG.pump_requires_water) {
@@ -117,32 +125,38 @@ public class BambooPumpBlock extends BlockWithEntity {
                             }
                         }
                         if (!foundWater) {
-                            if (world.isClient) {
-                                if (state.get(EXTENDED))
+                            if (world.isClient()) {
+                                if (state.get(EXTENDED)) {
                                     world.playSound(player, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0f, 1.0f);
-                            } else
+                                }
+                            } else {
                                 player.sendMessage(Text.translatable("block.dehydration.bamboo_pump.no_water"), true);
+                            }
                             return ActionResult.FAIL;
                         }
                     }
                     if (ConfigInit.CONFIG.pump_cooldown != 0 && bambooPumpEntity.getCooldown() > 0) {
-                        if (world.isClient) {
-                            if (state.get(EXTENDED))
+                        if (world.isClient()) {
+                            if (state.get(EXTENDED)) {
                                 world.playSound(player, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0f, 1.0f);
-                        } else
+                            }
+                        } else {
                             player.sendMessage(Text.translatable("block.dehydration.bamboo_pump.cooldown", bambooPumpEntity.getCooldown() / 20), true);
+                        }
                         return ActionResult.FAIL;
                     }
 
-                    if (state.get(EXTENDED))
+                    if (state.get(EXTENDED)) {
                         bambooPumpEntity.increasePumpCount(1);
-                    if (world.isClient) {
-                        if (state.get(EXTENDED))
+                    }
+                    if (world.isClient()) {
+                        if (state.get(EXTENDED)) {
                             world.playSound(player, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0f, 1.0f);
-                    } else
+                        }
+                    } else {
                         world.setBlockState(pos, state.with(EXTENDED, !state.get(EXTENDED)), Block.NOTIFY_LISTENERS);
-
-                    return ActionResult.success(world.isClient);
+                    }
+                    return ActionResult.success(world.isClient());
                 }
             }
 
@@ -219,10 +233,34 @@ public class BambooPumpBlock extends BlockWithEntity {
         }
     }
 
+    @Override
+    public List<ItemStack> getDroppedStacks(BlockState state, Builder builder) {
+        List<ItemStack> stacks = super.getDroppedStacks(state, builder);
+        for (int i = 0; i < stacks.size(); i++) {
+            if (stacks.get(i).getItem() instanceof BlockItem blockItem && blockItem.getBlock().equals(BlockInit.BAMBOO_PUMP_BLOCK)
+                    && builder.get(LootContextParameters.BLOCK_ENTITY) instanceof BambooPumpEntity bambooPumpEntity) {
+                ItemStack stack = stacks.get(i);
+                NbtCompound nbtCompound = stack.getOrCreateNbt();
+                nbtCompound.putInt("Cooldown", bambooPumpEntity.getCooldown());
+                stack.setNbt(nbtCompound);
+                break;
+            }
+        }
+        return stacks;
+    }
+
+    @Override
+    public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
+        super.onPlaced(world, pos, state, placer, itemStack);
+        if (itemStack.hasNbt() && itemStack.getNbt().contains("Cooldown") && world.getBlockEntity(pos) instanceof BambooPumpEntity bambooPumpEntity) {
+            bambooPumpEntity.setCooldown(itemStack.getNbt().getInt("Cooldown"));
+        }
+    }
+
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, BlockInit.BAMBOO_PUMP_ENTITY, world.isClient ? BambooPumpEntity::clientTick : BambooPumpEntity::serverTick);
+        return checkType(type, BlockInit.BAMBOO_PUMP_ENTITY, world.isClient() ? BambooPumpEntity::clientTick : BambooPumpEntity::serverTick);
     }
 
 }
