@@ -72,18 +72,18 @@ public class BambooPumpEntity extends BlockEntity implements Inventory {
             ItemStack itemStack = getStack(0);
             if (itemStack.isOf(Items.BUCKET)) {
                 if (pumpCount > 3) {
-                    if (!this.world.isClient)
+                    if (!this.world.isClient())
                         setStack(0, new ItemStack(ItemInit.PURIFIED_BUCKET));
                     pumpCount = 0;
                     cooldown = ConfigInit.CONFIG.pump_cooldown;
                 }
             } else if (itemStack.isOf(Items.GLASS_BOTTLE)) {
-                if (!this.world.isClient)
+                if (!this.world.isClient())
                     setStack(0, PotionUtil.setPotion(new ItemStack(Items.POTION), ItemInit.PURIFIED_WATER));
                 pumpCount = 0;
                 cooldown = ConfigInit.CONFIG.pump_cooldown;
             } else if (itemStack.getItem() instanceof LeatherFlask) {
-                if (!this.world.isClient) {
+                if (!this.world.isClient()) {
                     LeatherFlask.fillFlask(itemStack, 2);
                     setStack(0, itemStack);
                 }

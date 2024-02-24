@@ -36,7 +36,7 @@ public abstract class CampfireBlockMixin extends BlockWithEntity {
     @Inject(method = "onUse", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/block/entity/CampfireBlockEntity;getRecipeFor(Lnet/minecraft/item/ItemStack;)Ljava/util/Optional;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
     private void onUseMixin(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info, BlockEntity blockEntity,
             CampfireBlockEntity campfireBlockEntity, ItemStack itemStack, Optional<CampfireCookingRecipe> optional) {
-        if (!world.isClient && itemStack.getItem() instanceof PotionItem && PotionUtil.getPotion(itemStack) == Potions.WATER
+        if (!world.isClient() && itemStack.getItem() instanceof PotionItem && PotionUtil.getPotion(itemStack) == Potions.WATER
                 && campfireBlockEntity.addItem(player, player.getAbilities().creativeMode ? itemStack.copy() : itemStack, 1000)) {
             player.incrementStat(Stats.INTERACT_WITH_CAMPFIRE);
             info.setReturnValue(ActionResult.SUCCESS);

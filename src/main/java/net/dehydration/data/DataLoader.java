@@ -48,14 +48,16 @@ public class DataLoader implements SimpleSynchronousResourceReloadListener {
                             replaceList.replace(i, true);
 
                         if (jsonObject.getAsJsonArray("items") != null) {
-
                             if (JsonHelper.getBoolean(jsonObject, "replace", false)) {
                                 Iterator<HydrationTemplate> iterator = DehydrationMain.HYDRATION_TEMPLATES.iterator();
-                                while (iterator.hasNext())
-                                    if (iterator.next().getHydration() == i)
+                                while (iterator.hasNext()) {
+                                    if (iterator.next().getHydration() == i) {
                                         iterator.remove();
-                            } else if (replaceList.get(i))
+                                    }
+                                }
+                            } else if (replaceList.get(i)) {
                                 continue;
+                            }
 
                             List<Item> items = new ArrayList<Item>();
                             for (int u = 0; u < jsonObject.getAsJsonArray("items").size(); u++) {
@@ -76,53 +78,6 @@ public class DataLoader implements SimpleSynchronousResourceReloadListener {
             } catch (Exception e) {
                 DehydrationMain.LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
-
-            // try {
-            // InputStream stream = resourceRef.getInputStream();
-            // JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
-
-            // // for (int u = 0; u < data.getAsJsonArray("drops").size(); u++) {
-            // // JsonObject data2 = (JsonObject) data.getAsJsonArray("drops").get(u);
-            // // if (Registry.BLOCK.get(new Identifier(data2.get("block_id").getAsString())) == Blocks.AIR) {
-            // // DehydrationMain.LOGGER.warn("Block Id: " + data2.get("block_id").getAsString() + " is not a valid block id");
-            // // continue;
-            // // }
-
-            // // Item blockItem = Registry.BLOCK.get(new Identifier(data2.get("block_id").getAsString())).asItem();
-
-            // // List<Item> blockDrops = new ArrayList<Item>();
-            // // List<Float> dropChances = new ArrayList<Float>();
-            // // List<Integer> rollCount = new ArrayList<Integer>();
-
-            // // if (JsonHelper.getBoolean(data2, "replace", false)) {
-            // // for (int i = 0; i < EarlyStageMain.SIEVE_DROP_TEMPLATES.size(); i++)
-            // // if (EarlyStageMain.SIEVE_DROP_TEMPLATES.get(i).getBlockItem() == blockItem) {
-            // // EarlyStageMain.SIEVE_DROP_TEMPLATES.remove(i);
-            // // break;
-            // // }
-            // // } else {
-            // // // checks if it already exist
-            // // for (int i = 0; i < EarlyStageMain.SIEVE_DROP_TEMPLATES.size(); i++)
-            // // if (EarlyStageMain.SIEVE_DROP_TEMPLATES.get(i).getBlockItem() == blockItem) {
-            // // blockDrops.addAll(EarlyStageMain.SIEVE_DROP_TEMPLATES.get(i).getBlockDrops());
-            // // dropChances.addAll(EarlyStageMain.SIEVE_DROP_TEMPLATES.get(i).getDropChances());
-            // // rollCount.addAll(EarlyStageMain.SIEVE_DROP_TEMPLATES.get(i).getRollCount());
-            // // EarlyStageMain.SIEVE_DROP_TEMPLATES.remove(i);
-            // // break;
-            // // }
-            // // }
-
-            // // for (int i = 0; i < data2.getAsJsonArray("block_drops").size(); i++) {
-            // // JsonObject data3 = (JsonObject) data2.getAsJsonArray("block_drops").get(i);
-            // // blockDrops.add(Registry.ITEM.get(new Identifier(data3.get("item_id").getAsString())));
-            // // dropChances.add(data3.get("chance").getAsFloat());
-            // // rollCount.add(data3.get("rolls").getAsInt());
-            // // }
-            // // EarlyStageMain.SIEVE_DROP_TEMPLATES.add(new SieveDropTemplate(blockItem, blockDrops, dropChances, rollCount));
-            // // }
-            // } catch (Exception e) {
-            // DehydrationMain.LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
-            // }
         });
 
     }

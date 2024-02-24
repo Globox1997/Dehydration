@@ -97,18 +97,24 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
     @Inject(method = "eatFood", at = @At(value = "HEAD"))
     private void eatFoodMixin(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
         int thirstQuench = 0;
-        if (stack.isIn(TagInit.HYDRATING_STEW))
+        if (stack.isIn(TagInit.HYDRATING_STEW)) {
             thirstQuench = ConfigInit.CONFIG.stew_thirst_quench;
-        if (stack.isIn(TagInit.HYDRATING_FOOD))
+        }
+        if (stack.isIn(TagInit.HYDRATING_FOOD)) {
             thirstQuench = ConfigInit.CONFIG.food_thirst_quench;
-        if (stack.isIn(TagInit.HYDRATING_DRINKS))
+        }
+        if (stack.isIn(TagInit.HYDRATING_DRINKS)) {
             thirstQuench = ConfigInit.CONFIG.drinks_thirst_quench;
-        if (stack.isIn(TagInit.STRONGER_HYDRATING_STEW))
+        }
+        if (stack.isIn(TagInit.STRONGER_HYDRATING_STEW)) {
             thirstQuench = ConfigInit.CONFIG.stronger_stew_thirst_quench;
-        if (stack.isIn(TagInit.STRONGER_HYDRATING_FOOD))
+        }
+        if (stack.isIn(TagInit.STRONGER_HYDRATING_FOOD)) {
             thirstQuench = ConfigInit.CONFIG.stronger_food_thirst_quench;
-        if (stack.isIn(TagInit.STRONGER_HYDRATING_DRINKS))
+        }
+        if (stack.isIn(TagInit.STRONGER_HYDRATING_DRINKS)) {
             thirstQuench = ConfigInit.CONFIG.stronger_drinks_thirst_quench;
+        }
 
         for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
             if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {

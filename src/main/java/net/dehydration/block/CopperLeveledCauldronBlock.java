@@ -49,7 +49,7 @@ public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
 
     @Override
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        if (!world.isClient && entity.isOnFire() && this.isEntityTouchingFluid(state, pos, entity)) {
+        if (!world.isClient() && entity.isOnFire() && this.isEntityTouchingFluid(state, pos, entity)) {
             entity.extinguish();
             if (entity.canModifyAt(world, pos)) {
                 this.onFireCollision(state, world, pos);

@@ -36,8 +36,9 @@ public abstract class HoneyBottleItemMixin extends Item {
                     break;
                 }
             }
-            if (thirstQuench == 0)
+            if (thirstQuench == 0) {
                 thirstQuench = ConfigInit.CONFIG.honey_quench;
+            }
             ((ThirstManagerAccess) player).getThirstManager().add(thirstQuench);
         }
     }

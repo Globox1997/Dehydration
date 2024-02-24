@@ -102,7 +102,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
             int i = (Integer) state.get(LEVEL);
             Item item = itemStack.getItem();
             if (item == Items.WATER_BUCKET) {
-                if (i < 4 && !world.isClient) {
+                if (i < 4 && !world.isClient()) {
                     if (!player.isCreative()) {
                         player.setStackInHand(hand, new ItemStack(Items.BUCKET));
                     }
@@ -110,10 +110,10 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                     this.setLevel(world, pos, state, 4);
                     world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
-                return ActionResult.success(world.isClient);
+                return ActionResult.success(world.isClient());
 
             } else if (item == Items.BUCKET) {
-                if (i == 4 && !world.isClient) {
+                if (i == 4 && !world.isClient()) {
                     if (!player.isCreative()) {
                         itemStack.decrement(1);
                         if (itemStack.isEmpty()) {
@@ -125,13 +125,13 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                     this.setLevel(world, pos, state, 0);
                     world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
-                return ActionResult.success(world.isClient);
+                return ActionResult.success(world.isClient());
 
             } else {
 
                 ItemStack newItemStack;
                 if (item == Items.GLASS_BOTTLE) {
-                    if (i > 0 && !world.isClient) {
+                    if (i > 0 && !world.isClient()) {
                         if (!player.isCreative()) {
                             itemStack.decrement(1);
                             if (this.isPurifiedWater(world, pos)) {
@@ -148,10 +148,10 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                         world.playSound((PlayerEntity) null, pos, SoundEvents.ITEM_BOTTLE_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         this.setLevel(world, pos, state, i - 1);
                     }
-                    return ActionResult.success(world.isClient);
+                    return ActionResult.success(world.isClient());
 
                 } else if (item == Items.POTION && (PotionUtil.getPotion(itemStack) == Potions.WATER || PotionUtil.getPotion(itemStack) == ItemInit.PURIFIED_WATER)) {
-                    if (i < 4 && !world.isClient) {
+                    if (i < 4 && !world.isClient()) {
                         if (!player.isCreative()) {
                             newItemStack = new ItemStack(Items.GLASS_BOTTLE);
                             player.setStackInHand(hand, newItemStack);
@@ -162,7 +162,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                         }
                         this.setLevel(world, pos, state, i + 1);
                     }
-                    return ActionResult.success(world.isClient);
+                    return ActionResult.success(world.isClient());
 
                 } else {
                     if (i > 0 && item instanceof LeatherFlask) {
@@ -180,7 +180,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
                             tags.putInt("leather_flask", tags.getInt("leather_flask") + 1);
                             this.setLevel(world, pos, state, i - 1);
                             world.playSound((PlayerEntity) null, pos, SoundInit.FILL_FLASK_EVENT, SoundCategory.NEUTRAL, 1.0F, 1.0F);
-                            return ActionResult.success(world.isClient);
+                            return ActionResult.success(world.isClient());
                         } else
                             return ActionResult.PASS;
 

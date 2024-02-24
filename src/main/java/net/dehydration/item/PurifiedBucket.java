@@ -99,7 +99,7 @@ public class PurifiedBucket extends Item implements FluidModificationItem {
             this.playEmptyingSound(player, world, pos);
             return true;
         }
-        if (!world.isClient && bl && !blockState.isLiquid()) {
+        if (!world.isClient() && bl && !blockState.isLiquid()) {
             world.breakBlock(pos, true);
         }
         if (world.setBlockState(pos, FluidInit.PURIFIED_WATER.getDefaultState().getBlockState(), Block.NOTIFY_ALL | Block.REDRAW_ON_MAIN_THREAD) || blockState.getFluidState().isStill()) {

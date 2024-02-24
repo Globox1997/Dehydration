@@ -117,9 +117,9 @@ public class LeatherFlask extends Item {
                         player.getWorld().playSound((PlayerEntity) null, pos, SoundInit.EMPTY_FLASK_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         player.incrementStat(Stats.USE_CAULDRON);
 
-                        if (itemStack.hasNbt())
+                        if (itemStack.hasNbt()) {
                             tags.putInt("leather_flask", tags.getInt("leather_flask") - 1);
-                        else {
+                        } else {
                             tags = new NbtCompound();
                             tags.putInt("leather_flask", 1 + this.addition);
                             tags.putInt("purified_water", 2);
@@ -163,12 +163,14 @@ public class LeatherFlask extends Item {
 
                 boolean isEmpty = tags.getInt("leather_flask") == 0;
                 boolean isDirtyWater = tags.getInt("purified_water") == 2;
-                if (!isEmpty && !isDirtyWater)
+                if (!isEmpty && !isDirtyWater) {
                     waterPurity = 1;
+                }
 
                 if (FabricLoader.getInstance().isModLoaded("puddles") && world.getBlockState(blockPos) == Puddles.Puddle.getDefaultState()) {
-                    if (!world.isClient)
+                    if (!world.isClient()) {
                         world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
+                    }
                     if (!isEmpty && !isDirtyWater) {
                         fillLevel = 2;
                         waterPurity = 0;
@@ -176,8 +178,9 @@ public class LeatherFlask extends Item {
                 }
 
                 boolean riverWater = world.getBiome(blockPos).isIn(BiomeTags.IS_RIVER);
-                if (riverWater && (isEmpty || (!isEmpty && !isDirtyWater)))
+                if (riverWater && (isEmpty || (!isEmpty && !isDirtyWater))) {
                     waterPurity = 0;
+                }
 
                 world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.FILL_FLASK_EVENT, SoundCategory.NEUTRAL, 1.0F, 1.0F);
                 tags.putInt("purified_water", waterPurity);
@@ -185,10 +188,11 @@ public class LeatherFlask extends Item {
                 return TypedActionResult.consume(itemStack);
             }
         }
-        if (itemStack.hasNbt() && tags.getInt("leather_flask") == 0)
+        if (itemStack.hasNbt() && tags.getInt("leather_flask") == 0) {
             return TypedActionResult.pass(itemStack);
-        else
+        } else {
             return ItemUsage.consumeHeldItem(world, user, hand);
+        }
     }
 
     @Override
@@ -212,11 +216,13 @@ public class LeatherFlask extends Item {
                     tags.putInt("leather_flask", tags.getInt("leather_flask") - 1);
                     ThirstManager thirstManager = ((ThirstManagerAccess) playerEntity).getThirstManager();
                     thirstManager.add(ConfigInit.CONFIG.flask_thirst_quench);
-                    if (!world.isClient)
-                        if (tags.getInt("purified_water") == 2 && world.random.nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance)
+                    if (!world.isClient()) {
+                        if (tags.getInt("purified_water") == 2 && world.random.nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance) {
                             playerEntity.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.flask_dirty_thirst_duration, 1, false, false, true));
-                        else if (tags.getInt("purified_water") == 1 && world.random.nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance * 0.5F)
+                        } else if (tags.getInt("purified_water") == 1 && world.random.nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance * 0.5F) {
                             playerEntity.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.flask_dirty_thirst_duration, 0, false, false, true));
+                        }
+                    }
                 }
             }
         }

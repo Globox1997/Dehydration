@@ -36,8 +36,9 @@ public class HandbookItem extends Item {
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        if (!isPatchouliLoaded)
+        if (!isPatchouliLoaded) {
             tooltip.add(Text.translatable("item.dehydration.patchouli_book.tooltip"));
+        }
         super.appendTooltip(stack, world, tooltip, context);
     }
 

@@ -15,8 +15,8 @@ public interface TooltipComponentMixin {
 
     @Inject(method = "Lnet/minecraft/client/gui/tooltip/TooltipComponent;of(Lnet/minecraft/client/item/TooltipData;)Lnet/minecraft/client/gui/tooltip/TooltipComponent;", at = @At("HEAD"), cancellable = true)
     private static void ofMixin(TooltipData data, CallbackInfoReturnable<TooltipComponent> info) {
-        if (data instanceof ThirstTooltipData)
+        if (data instanceof ThirstTooltipData) {
             info.setReturnValue(new ThirstTooltipComponent((ThirstTooltipData) data));
-
+        }
     }
 }
