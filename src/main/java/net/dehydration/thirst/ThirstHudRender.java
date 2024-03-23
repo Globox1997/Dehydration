@@ -36,10 +36,10 @@ public class ThirstHudRender {
 
                     ItemStack itemStack = null;
                     if (ConfigInit.CONFIG.thirst_preview && thirst < 20) {
-                        if (!playerEntity.getMainHandStack().isEmpty() && !playerEntity.getMainHandStack().getTooltipData().isEmpty()
+                        if (!playerEntity.getMainHandStack().isEmpty() && playerEntity.getMainHandStack().getTooltipData().isPresent()
                                 && playerEntity.getMainHandStack().getTooltipData().get() instanceof ThirstTooltipData) {
                             itemStack = playerEntity.getMainHandStack();
-                        } else if (!playerEntity.getOffHandStack().isEmpty() && !playerEntity.getOffHandStack().getTooltipData().isEmpty()
+                        } else if (!playerEntity.getOffHandStack().isEmpty() && playerEntity.getOffHandStack().getTooltipData().isPresent()
                                 && playerEntity.getOffHandStack().getTooltipData().get() instanceof ThirstTooltipData) {
                             itemStack = playerEntity.getOffHandStack();
                         }
