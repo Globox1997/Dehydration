@@ -46,7 +46,7 @@ public abstract class DispenserBlockMixin extends BlockWithEntity {
                     world.syncWorldEvent(WorldEvents.DISPENSER_DISPENSES, pos, 0);
                     info.cancel();
                 } else if (blockState.isOf(BlockInit.COPPER_CAULDRON_BLOCK)
-                        || (blockState.isOf(BlockInit.COPPER_WATER_CAULDRON_BLOCK) && !((CopperLeveledCauldronBlock) state.getBlock()).isFull(state))) {
+                        || (blockState.isOf(BlockInit.COPPER_WATER_CAULDRON_BLOCK) && !((CopperLeveledCauldronBlock) blockState.getBlock()).isFull(blockState))) {
                     itemStack.decrement(1);
                     dispenserBlockEntity.setStack(i, new ItemStack(Items.BUCKET));
                     world.setBlockState(newPos, BlockInit.COPPER_WATER_CAULDRON_BLOCK.getDefaultState().with(CopperLeveledCauldronBlock.LEVEL, 3), 3);
@@ -62,7 +62,7 @@ public abstract class DispenserBlockMixin extends BlockWithEntity {
                     world.syncWorldEvent(WorldEvents.DISPENSER_DISPENSES, pos, 0);
                     info.cancel();
                 } else if (blockState.isOf(BlockInit.COPPER_CAULDRON_BLOCK)
-                        || (blockState.isOf(BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK) && !((CopperLeveledCauldronBlock) state.getBlock()).isFull(state))) {
+                        || (blockState.isOf(BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK) && !((CopperLeveledCauldronBlock) blockState.getBlock()).isFull(blockState))) {
                     itemStack.decrement(1);
                     dispenserBlockEntity.setStack(i, new ItemStack(Items.BUCKET));
                     world.setBlockState(newPos, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK.getDefaultState().with(CopperLeveledCauldronBlock.LEVEL, 3), 3);
@@ -76,10 +76,10 @@ public abstract class DispenserBlockMixin extends BlockWithEntity {
                     world.setBlockState(newPos, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK.getDefaultState(), 3);
                     world.syncWorldEvent(WorldEvents.DISPENSER_DISPENSES, pos, 0);
                     info.cancel();
-                } else if (blockState.isOf(BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK) && !((CopperLeveledCauldronBlock) state.getBlock()).isFull(state)) {
+                } else if (blockState.isOf(BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK) && !((CopperLeveledCauldronBlock) blockState.getBlock()).isFull(blockState)) {
                     itemStack.decrement(1);
                     dispenserBlockEntity.setStack(i, new ItemStack(Items.GLASS_BOTTLE));
-                    world.setBlockState(pos, (BlockState) state.cycle(CopperLeveledCauldronBlock.LEVEL));
+                    world.setBlockState(pos, (BlockState) blockState.cycle(CopperLeveledCauldronBlock.LEVEL));
                     world.syncWorldEvent(WorldEvents.DISPENSER_DISPENSES, pos, 0);
                     info.cancel();
                 }
