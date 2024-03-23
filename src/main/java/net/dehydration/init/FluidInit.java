@@ -19,20 +19,15 @@ public class FluidInit {
     public static final FlowableFluid PURIFIED_FLOWING_WATER = register("dehydration:purified_flowing_water", new PurifiedWaterFluid.Flowing());
     public static final FlowableFluid PURIFIED_WATER = register("dehydration:purified_water", new PurifiedWaterFluid.Still());
 
-    public static void init()
-    {
+    public static void init() {
         initFluidStorage();
     }
 
-    private static void initFluidStorage()
-    {
-        FluidStorage.GENERAL_COMBINED_PROVIDER.register(context ->
-        {
-            if(context.getItemVariant().getItem() instanceof PurifiedBucket bucketItem)
-            {
+    private static void initFluidStorage() {
+        FluidStorage.GENERAL_COMBINED_PROVIDER.register(context -> {
+            if (context.getItemVariant().getItem() instanceof PurifiedBucket bucketItem) {
                 Fluid bucketFluid = FluidInit.PURIFIED_WATER;
-                if(bucketFluid != null && bucketFluid.getBucketItem() == bucketItem)
-                {
+                if (bucketFluid != null && bucketFluid.getBucketItem() == bucketItem) {
                     return new FullItemFluidStorage(context, Items.BUCKET, FluidVariant.of(bucketFluid), FluidConstants.BUCKET);
                 }
             }

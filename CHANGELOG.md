@@ -1,6 +1,6 @@
 ### Added:
 - 
 ### Fixed:
-- Fixed bamboo pump cooldown
+- Fixed purified bucket compatibility (by Tiviacz1337)
 ### Changed:
 - 
