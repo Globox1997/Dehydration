@@ -83,5 +83,8 @@
   "block.dehydration.bamboo_pump.cooldown": "冷却: %ss",
   "block.dehydration.bamboo_pump.no_water": "泵不到水",
 
-  "commands.dehydration.changed": "水分值已改变"
+  "commands.dehydration.changed": "水分值已改变",
+
+  "book.landing_text": "这是《脱水手册》，包含如何获取淡水和解渴的信息！",
+  "book.subtitle": "解渴"
 }
