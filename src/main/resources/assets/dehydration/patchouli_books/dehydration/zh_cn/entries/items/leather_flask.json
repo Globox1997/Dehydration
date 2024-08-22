@@ -1,0 +1,17 @@
+{
+    "name": "水壶",
+    "icon": "dehydration:leather_flask",
+    "category": "dehydration:item_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "dehydration:leather_flask",
+            "link_recipe": true,
+            "text": "水壶可以装纯净水，但不要把纯净水和脏水混在一起，否则也会变脏。它可以升级到更好的等级。"
+        },
+        {
+            "type": "crafting",
+            "recipe": "dehydration:leather_flask"
+        }
+    ]
+}

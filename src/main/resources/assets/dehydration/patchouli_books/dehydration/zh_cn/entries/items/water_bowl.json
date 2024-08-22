@@ -1,0 +1,17 @@
+{
+    "name": "水碗",
+    "icon": "dehydration:water_bowl",
+    "category": "dehydration:item_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "dehydration:water_bowl",
+            "link_recipe": true,
+            "text": "水碗可以装水喝。"
+        },
+        {
+            "type": "crafting",
+            "recipe": "dehydration:water_bowl"
+        }
+    ]
+}

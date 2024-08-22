@@ -1,0 +1,15 @@
+{
+    "name": "随便喝点",
+    "icon": "dehydration:leather_flask",
+    "category": "dehydration:info_category",
+    "pages": [
+        {
+            "type": "text",
+            "text": "玩家空手蹲下并按住右键几秒钟，就能喝到水源方块中的水。只有河流生物群落才有淡水！"
+        },
+        {
+            "type": "empty",
+            "draw_filler": false
+        }
+    ]
+}

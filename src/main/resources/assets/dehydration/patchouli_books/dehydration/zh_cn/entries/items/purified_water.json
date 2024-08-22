@@ -1,0 +1,17 @@
+{
+    "name": "纯净水瓶",
+    "icon": "minecraft:potion{Potion:'minecraft:purified_water'}",
+    "category": "dehydration:item_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "minecraft:potion{Potion:'minecraft:purified_water'}",
+            "link_recipe": false,
+            "text": "将水瓶放在篝火上或用海带酿造水药，就能获得瓶装纯净水。"
+        },
+        {
+            "type": "empty",
+            "draw_filler": false
+        }
+    ]
+}

@@ -1,0 +1,40 @@
+{
+    "name": "篝火大锅",
+    "icon": "dehydration:campfire_cauldron",
+    "category": "dehydration:block_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "dehydration:campfire_cauldron",
+            "link_recipe": false,
+            "text": "篝火大锅用于净化水。把它放在篝火上，装满水，稍等片刻就能得到纯净水。"
+        },
+        {
+            "type": "multiblock",
+            "text": "只能放在篝火上面",
+            "multiblock": {
+                "pattern": [
+                    [
+                        "P"
+                    ],
+                    [
+                        "0"
+                    ]
+                ],
+                "mapping": {
+                    "0": "minecraft:campfire",
+                    "P": "dehydration:campfire_cauldron"
+                },
+                "symmetrical": true
+            }
+        },
+        {
+            "type": "crafting",
+            "recipe": "dehydration:campfire_cauldron"
+        },
+        {
+            "type": "empty",
+            "draw_filler": false
+        }
+    ]
+}

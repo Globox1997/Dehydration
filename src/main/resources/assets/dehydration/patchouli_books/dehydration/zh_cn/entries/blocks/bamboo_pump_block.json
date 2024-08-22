@@ -1,0 +1,17 @@
+{
+    "name": "竹泵",
+    "icon": "dehydration:bamboo_pump",
+    "category": "dehydration:block_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "dehydration:bamboo_pump",
+            "link_recipe": false,
+            "text": "竹泵用于将淡水送往地表。把铁桶、水壶或玻璃瓶放在上面，就能把它们装满水。默认情况下，冷却时间为一分钟。"
+        },
+        {
+            "type": "crafting",
+            "recipe": "dehydration:bamboo_pump"
+        }
+    ]
+}

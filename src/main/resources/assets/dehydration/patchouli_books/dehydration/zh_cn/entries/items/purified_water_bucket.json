@@ -1,0 +1,16 @@
+{
+    "name": "纯净水桶",
+    "icon": "dehydration:purified_water_bucket",
+    "category": "dehydration:item_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "dehydration:purified_water_bucket",
+            "text": "只是一个装着纯净水的桶。"
+        },
+        {
+            "type": "empty",
+            "draw_filler": false
+        }
+    ]
+}

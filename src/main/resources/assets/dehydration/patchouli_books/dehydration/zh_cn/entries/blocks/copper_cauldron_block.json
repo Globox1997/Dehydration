@@ -1,0 +1,17 @@
+{
+    "name": "铜锅",
+    "icon": "dehydration:copper_cauldron",
+    "category": "dehydration:block_category",
+    "pages": [
+        {
+            "type": "spotlight",
+            "item": "dehydration:copper_cauldron",
+            "link_recipe": false,
+            "text": "铜锅是用来装纯净水的，而炼药锅不能。下雨时，它会慢慢装满水。"
+        },
+        {
+            "type": "crafting",
+            "recipe": "dehydration:copper_cauldron"
+        }
+    ]
+}
