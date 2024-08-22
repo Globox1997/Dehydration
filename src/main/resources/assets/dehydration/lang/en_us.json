@@ -83,5 +83,8 @@
   "block.dehydration.bamboo_pump.cooldown": "Pump Cooldown: %ss",
   "block.dehydration.bamboo_pump.no_water": "Pump found no water",
 
-  "commands.dehydration.changed": "thirst got changed"
+  "commands.dehydration.changed": "thirst got changed",
+
+  "book.landing_text": "This is the Dehydration handbook and contains information about how to get fresh water and quench your thirst!",
+  "book.subtitle": "Quench your thirst"
 }
