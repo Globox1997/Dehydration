@@ -72,13 +72,13 @@ public abstract class PurifiedWaterFluid extends FlowableFluid {
     }
 
     @Override
-    public int getFlowSpeed(WorldView world) {
+    protected int getMaxFlowDistance(WorldView world) {
         return 4;
     }
 
     @Override
     public BlockState toBlockState(FluidState state) {
-        return (BlockState) BlockInit.PURIFIED_WATER.getDefaultState().with(FluidBlock.LEVEL, PurifiedWaterFluid.getBlockStateLevel(state));
+        return BlockInit.PURIFIED_WATER.getDefaultState().with(FluidBlock.LEVEL, PurifiedWaterFluid.getBlockStateLevel(state));
     }
 
     @Override
@@ -113,8 +113,9 @@ public abstract class PurifiedWaterFluid extends FlowableFluid {
 
     @Override
     protected void flow(WorldAccess world, BlockPos pos, BlockState state, Direction direction, FluidState fluidState) {
-        if (!state.getFluidState().isIn(FluidTags.WATER))
+        if (!state.getFluidState().isIn(FluidTags.WATER)) {
             super.flow(world, pos, state, direction, fluidState);
+        }
     }
 
     public static class Flowing extends PurifiedWaterFluid {
