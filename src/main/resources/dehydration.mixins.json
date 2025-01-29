@@ -20,7 +20,8 @@
     "PlayerScreenHandlerMixin",
     "PotionContentsComponentMixin",
     "PotionItemMixin",
-    "accessor.CampfireBlockEntityAccessor"
+    "accessor.CampfireBlockEntityAccessor",
+    "compat.PuddleBlockMixin"
   ],
   "client": [
     "client.InGameHudMixin",

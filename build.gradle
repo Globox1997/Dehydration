@@ -34,7 +34,7 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	// Puddles
-	modCompileOnly ('maven.modrinth:puddles:1.2.2'){
+	modCompileOnly ('maven.modrinth:puddles:2.0.0'){
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	// Croptopia
@@ -43,7 +43,7 @@ dependencies {
 		exclude(group: "com.terraformersmc")
 	}
 	// Patchouli
-	modCompileOnly ("vazkii.patchouli:Patchouli:${project.patchouli_version}"),{
+	modCompileOnly ("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 }

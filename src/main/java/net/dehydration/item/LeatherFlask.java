@@ -1,26 +1,16 @@
 package net.dehydration.item;
 
-import java.util.List;
-import java.util.Optional;
-
-import net.dehydration.init.*;
-import net.dehydration.item.component.FlaskComponent;
-
-import eu.midnightdust.puddles.Puddles;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.block.AbstractCopperCauldronBlock;
 import net.dehydration.block.CampfireCauldronBlock;
 import net.dehydration.block.CopperCauldronBlock;
 import net.dehydration.block.CopperLeveledCauldronBlock;
+import net.dehydration.init.*;
+import net.dehydration.item.component.FlaskComponent;
 import net.dehydration.misc.ThirstTooltipData;
 import net.dehydration.thirst.ThirstManager;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.block.AbstractCauldronBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CauldronBlock;
-import net.minecraft.block.LeveledCauldronBlock;
+import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,11 +26,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.UseAction;
+import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -48,8 +34,10 @@ import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
-// Thanks to Pois1x for the texture
+import java.util.List;
+import java.util.Optional;
 
+// Thanks to Pois1x for the texture
 public class LeatherFlask extends Item {
 
     private final int addition;
@@ -79,7 +67,7 @@ public class LeatherFlask extends Item {
                                 if (((LeveledCauldronBlock) state.getBlock()).isFull(state)) {
                                     return super.useOnBlock(context);
                                 }
-                                player.getWorld().setBlockState(pos, (BlockState) state.cycle(LeveledCauldronBlock.LEVEL));
+                                player.getWorld().setBlockState(pos, state.cycle(LeveledCauldronBlock.LEVEL));
                             } else {
                                 player.getWorld().setBlockState(pos, Blocks.WATER_CAULDRON.getDefaultState());
                                 player.getWorld().emitGameEvent(null, GameEvent.BLOCK_CHANGE, pos);
@@ -93,7 +81,7 @@ public class LeatherFlask extends Item {
                                     player.getWorld().setBlockState(pos,
                                             BlockInit.COPPER_WATER_CAULDRON_BLOCK.getDefaultState().with(CopperLeveledCauldronBlock.LEVEL, state.get(CopperLeveledCauldronBlock.LEVEL) + 1));
                                 } else {
-                                    player.getWorld().setBlockState(pos, (BlockState) state.cycle(CopperLeveledCauldronBlock.LEVEL));
+                                    player.getWorld().setBlockState(pos, state.cycle(CopperLeveledCauldronBlock.LEVEL));
                                 }
                             } else {
                                 if (flaskComponent.qualityLevel() == 0) {
@@ -107,9 +95,9 @@ public class LeatherFlask extends Item {
                             if (((CampfireCauldronBlock) state.getBlock()).isFull(state)) {
                                 return super.useOnBlock(context);
                             }
-                            player.getWorld().setBlockState(pos, (BlockState) state.cycle(CampfireCauldronBlock.LEVEL));
+                            player.getWorld().setBlockState(pos, state.cycle(CampfireCauldronBlock.LEVEL));
                         }
-                        player.getWorld().playSound((PlayerEntity) null, pos, SoundInit.EMPTY_FLASK_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        player.getWorld().playSound(null, pos, SoundInit.EMPTY_FLASK_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
                         player.incrementStat(Stats.USE_CAULDRON);
 
                         if (flaskComponent.fillLevel() > 0) {
@@ -121,7 +109,7 @@ public class LeatherFlask extends Item {
             } else if (state.getBlock() instanceof LeveledCauldronBlock && state.get(LeveledCauldronBlock.LEVEL) > 0 && flaskComponent.fillLevel() < 2 + this.addition) {
                 // Fill up flask
                 if (!player.getWorld().isClient()) {
-                    player.getWorld().playSound((PlayerEntity) null, pos, SoundInit.FILL_FLASK_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    player.getWorld().playSound(null, pos, SoundInit.FILL_FLASK_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     player.incrementStat(Stats.USE_CAULDRON);
                     LeveledCauldronBlock.decrementFluidLevel(state, player.getWorld(), pos);
                     itemStack.set(ItemInit.FLASK_DATA, new FlaskComponent(flaskComponent.fillLevel() + 1, 2));
@@ -136,8 +124,9 @@ public class LeatherFlask extends Item {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack itemStack = user.getStackInHand(hand);
         FlaskComponent flaskComponent = itemStack.getOrDefault(ItemInit.FLASK_DATA, FlaskComponent.DEFAULT);
-        HitResult hitResult = raycast(world, user, RaycastContext.FluidHandling.SOURCE_ONLY);
-        BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
+        BlockHitResult hitResult = raycast(world, user, RaycastContext.FluidHandling.SOURCE_ONLY);
+        BlockPos blockPos = hitResult.getBlockPos();
+
 
         if (hitResult.getType() == HitResult.Type.BLOCK && world.canPlayerModifyAt(user, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
             if (user.isSneaking() && flaskComponent.fillLevel() != 0) {
@@ -153,16 +142,6 @@ public class LeatherFlask extends Item {
                 boolean isDirtyWater = flaskComponent.qualityLevel() == 2;
                 if (!isEmpty && !isDirtyWater) {
                     waterPurity = 1;
-                }
-
-                if (FabricLoader.getInstance().isModLoaded("puddles") && world.getBlockState(blockPos) == Puddles.Puddle.getDefaultState()) {
-                    if (!world.isClient()) {
-                        world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
-                    }
-                    if (!isEmpty && !isDirtyWater) {
-                        fillLevel = 2;
-                        waterPurity = 0;
-                    }
                 }
 
                 boolean riverWater = world.getBiome(blockPos).isIn(BiomeTags.IS_RIVER);
