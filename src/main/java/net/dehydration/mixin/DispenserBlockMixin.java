@@ -33,7 +33,7 @@ public abstract class DispenserBlockMixin extends BlockWithEntity {
 
     @Inject(method = "dispense", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/block/entity/DispenserBlockEntity;getStack(I)Lnet/minecraft/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     protected void dispenseMixin(ServerWorld world, BlockState state, BlockPos pos, CallbackInfo info, DispenserBlockEntity dispenserBlockEntity, BlockPointer blockPointer, int i,
-            ItemStack itemStack) {
+                                 ItemStack itemStack) {
         BlockPos newPos = pos.offset(state.get(DispenserBlock.FACING));
         BlockState blockState = world.getBlockState(newPos);
         if (!itemStack.isEmpty()) {
@@ -69,7 +69,7 @@ public abstract class DispenserBlockMixin extends BlockWithEntity {
                     world.syncWorldEvent(WorldEvents.DISPENSER_DISPENSES, pos, 0);
                     info.cancel();
                 }
-            } else if (itemStack.getItem() instanceof PotionItem && itemStack.get(DataComponentTypes.POTION_CONTENTS).potion().get() == ItemInit.PURIFIED_WATER) {
+            } else if (itemStack.getItem() instanceof PotionItem && itemStack.get(DataComponentTypes.POTION_CONTENTS) != null && itemStack.get(DataComponentTypes.POTION_CONTENTS).potion().isPresent() && itemStack.get(DataComponentTypes.POTION_CONTENTS).potion().get() == ItemInit.PURIFIED_WATER) {
                 if (blockState.isOf(BlockInit.COPPER_CAULDRON_BLOCK)) {
                     itemStack.decrement(1);
                     dispenserBlockEntity.setStack(i, new ItemStack(Items.GLASS_BOTTLE));
