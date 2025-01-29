@@ -6,5 +6,6 @@
 - Fixed bamboo pump crash
 - Fixed puddles compat
 - Fixed dispense crash
+- Fixed thirst from non food items
 ### Changed:
 - 
