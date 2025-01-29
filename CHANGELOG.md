@@ -1,6 +1,6 @@
 ### Added:
 - 
 ### Fixed:
-- 
+- Fixed uncraftable potion crash
 ### Changed:
-- Updated to mc 1.21.1
+- 

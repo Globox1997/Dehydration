@@ -99,7 +99,7 @@ public abstract class PotionItemMixin extends Item {
             if (thirstQuench == 0) {
                 thirstQuench = ConfigInit.CONFIG.potion_thirst_quench;
             }
-            if (isBadPotion(stack.getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT).potion().get())) {
+            if (stack.getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT).potion().isPresent() && isBadPotion(stack.getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT).potion().get())) {
                 return Optional.of(new ThirstTooltipData(2, thirstQuench));
             }
             return Optional.of(new ThirstTooltipData(0, thirstQuench));
