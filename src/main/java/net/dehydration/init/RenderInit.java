@@ -5,17 +5,14 @@ import net.dehydration.block.entity.CampfireCauldronEntity;
 import net.dehydration.block.render.BambooPumpRenderer;
 import net.dehydration.misc.ThirstTooltipComponent;
 import net.dehydration.misc.ThirstTooltipData;
-import net.dehydration.thirst.ThirstHudRender;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
@@ -49,10 +46,11 @@ public class RenderInit {
         FluidRenderHandlerRegistry.INSTANCE.register(FluidInit.PURIFIED_FLOWING_WATER, SimpleFluidRenderHandler.coloredWater(3708358));
         FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(BlockInit.PURIFIED_WATER, true);
 
-        HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
-            MinecraftClient client = MinecraftClient.getInstance();
-            ThirstHudRender.renderThirstHud(drawContext, client, client.player, drawContext.getScaledWindowWidth(), drawContext.getScaledWindowHeight(), client.inGameHud.getTicks());
-        });
+        // Can not be used cause injection point is not working properly with chat rendering
+        // HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
+        //     MinecraftClient client = MinecraftClient.getInstance();
+        //     ThirstHudRender.renderThirstHud(drawContext, client, client.player, drawContext.getScaledWindowWidth(), drawContext.getScaledWindowHeight(), client.inGameHud.getTicks());
+        // });
 
         TooltipComponentCallback.EVENT.register((data) -> {
             if (data instanceof ThirstTooltipData) {
