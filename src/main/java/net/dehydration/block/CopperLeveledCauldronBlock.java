@@ -1,8 +1,5 @@
 package net.dehydration.block;
 
-import java.util.Map;
-import java.util.function.Predicate;
-
 import net.dehydration.block.entity.CopperCauldronBehavior;
 import net.dehydration.init.BlockInit;
 import net.minecraft.block.AbstractBlock;
@@ -20,6 +17,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
 import net.minecraft.world.biome.Biome;
 
+import java.util.Map;
+import java.util.function.Predicate;
+
 public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
     public static final IntProperty LEVEL;
     public static final Predicate<Biome.Precipitation> RAIN_PREDICATE;
@@ -29,12 +29,12 @@ public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
     public CopperLeveledCauldronBlock(AbstractBlock.Settings settings, Predicate<Biome.Precipitation> precipitationPredicate, Map<Item, CopperCauldronBehavior> behaviorMap) {
         super(settings, behaviorMap);
         this.precipitationPredicate = precipitationPredicate;
-        this.setDefaultState((BlockState) ((BlockState) this.stateManager.getDefaultState()).with(LEVEL, 1));
+        this.setDefaultState(this.stateManager.getDefaultState().with(LEVEL, 1));
     }
 
     @Override
     public boolean isFull(BlockState state) {
-        return (Integer) state.get(LEVEL) == 3;
+        return state.get(LEVEL) == 3;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
 
     @Override
     protected double getFluidHeight(BlockState state) {
-        return (6.0D + (double) (Integer) state.get(LEVEL) * 3.0D) / 16.0D;
+        return (6.0D + (double) state.get(LEVEL) * 3.0D) / 16.0D;
     }
 
     @Override
@@ -63,20 +63,20 @@ public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
     }
 
     public static void decrementFluidLevel(BlockState state, World world, BlockPos pos) {
-        int i = (Integer) state.get(LEVEL) - 1;
-        world.setBlockState(pos, i <= 0 ? BlockInit.COPPER_CAULDRON_BLOCK.getDefaultState() : (BlockState) state.with(LEVEL, i));
+        int i = state.get(LEVEL) - 1;
+        world.setBlockState(pos, i <= 0 ? BlockInit.COPPER_CAULDRON_BLOCK.getDefaultState() : state.with(LEVEL, i));
     }
 
     @Override
     public void precipitationTick(BlockState state, World world, BlockPos pos, Biome.Precipitation precipitation) {
-        if (CopperCauldronBlock.canFillWithPrecipitation(world, precipitation) && (Integer) state.get(LEVEL) != 3 && this.precipitationPredicate.test(precipitation)) {
-            world.setBlockState(pos, (BlockState) state.cycle(LEVEL));
+        if (CopperCauldronBlock.canFillWithPrecipitation(world, precipitation) && state.get(LEVEL) != 3 && this.precipitationPredicate.test(precipitation)) {
+            world.setBlockState(pos, state.cycle(LEVEL));
         }
     }
 
     @Override
     public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return (Integer) state.get(LEVEL);
+        return state.get(LEVEL);
     }
 
     @Override
@@ -87,18 +87,14 @@ public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
     @Override
     protected void fillFromDripstone(BlockState state, World world, BlockPos pos, Fluid fluid) {
         if (!this.isFull(state)) {
-            world.setBlockState(pos, (BlockState) state.with(LEVEL, (Integer) state.get(LEVEL) + 1));
+            world.setBlockState(pos, state.with(LEVEL, state.get(LEVEL) + 1));
             world.syncWorldEvent(WorldEvents.POINTED_DRIPSTONE_DRIPS_WATER_INTO_CAULDRON, pos, 0);
         }
     }
 
     static {
         LEVEL = Properties.LEVEL_3;
-        RAIN_PREDICATE = (precipitation) -> {
-            return precipitation == Biome.Precipitation.RAIN;
-        };
-        SNOW_PREDICATE = (precipitation) -> {
-            return precipitation == Biome.Precipitation.SNOW;
-        };
+        RAIN_PREDICATE = (precipitation) -> precipitation == Biome.Precipitation.RAIN;
+        SNOW_PREDICATE = (precipitation) -> precipitation == Biome.Precipitation.SNOW;
     }
 }

@@ -9,17 +9,10 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
@@ -55,7 +48,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
 
     public CampfireCauldronBlock(AbstractBlock.Settings settings) {
         super(settings);
-        this.setDefaultState((BlockState) ((BlockState) this.stateManager.getDefaultState()).with(LEVEL, 0));
+        this.setDefaultState(this.stateManager.getDefaultState().with(LEVEL, 0));
     }
 
     @Override
@@ -71,27 +64,23 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
 
     @Override
     public BlockState getPlacementState(ItemPlacementContext itemPlacementContext) {
-        return (BlockState) this.getDefaultState().with(FACING, itemPlacementContext.getHorizontalPlayerFacing().rotateYClockwise());
+        return this.getDefaultState().with(FACING, itemPlacementContext.getHorizontalPlayerFacing().rotateYClockwise());
     }
 
     @Override
     public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return (BlockState) state.with(FACING, rotation.rotate((Direction) state.get(FACING)));
+        return state.with(FACING, rotation.rotate(state.get(FACING)));
     }
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        Direction direction = (Direction) state.get(FACING);
+        Direction direction = state.get(FACING);
         return direction.getAxis() == Direction.Axis.X ? X_BASE_SHAPE : Z_BASE_SHAPE;
     }
 
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        if (world.getBlockState(pos.down()).isIn(BlockTags.CAMPFIRES)) {
-            return true;
-        } else {
-            return false;
-        }
+        return world.getBlockState(pos.down()).isIn(BlockTags.CAMPFIRES);
     }
 
     @Override
@@ -106,7 +95,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
     }
 
     public void setLevel(World world, BlockPos pos, BlockState state, int level) {
-        world.setBlockState(pos, (BlockState) state.with(LEVEL, MathHelper.clamp(level, 0, 4)), 2);
+        world.setBlockState(pos, state.with(LEVEL, MathHelper.clamp(level, 0, 4)), 2);
         world.updateComparators(pos, this);
     }
 
@@ -115,7 +104,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
         if (world.getRandom().nextFloat() < 0.2f && world.isSkyVisible(pos) && world.getBiome(pos).value().getTemperature() >= 0.15F && world.getBiome(pos).value().getTemperature() < 2F) {
             if (precipitation == Biome.Precipitation.RAIN && state.get(LEVEL) < 4) {
                 this.setLevel(world, pos, state, state.get(LEVEL) + 1);
-                world.emitGameEvent((Entity) null, GameEvent.FLUID_PLACE, pos);
+                world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
             }
         }
     }
@@ -127,7 +116,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
 
     @Override
     public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return (Integer) state.get(LEVEL);
+        return state.get(LEVEL);
     }
 
     @Override
@@ -144,34 +133,31 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
     @Override
     @Environment(EnvType.CLIENT)
     public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        if (random.nextInt(12) == 0 && this.isFireBurning(world, pos) && (Integer) state.get(LEVEL) > 0) {
+        if (random.nextInt(12) == 0 && this.isFireBurning(world, pos) && state.get(LEVEL) > 0) {
             world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, SoundInit.CAULDRON_BUBBLE_EVENT, SoundCategory.BLOCKS, 0.5F,
                     random.nextFloat() * 0.4F + 0.8F, false);
         }
     }
 
     public boolean isFull(BlockState state) {
-        return (Integer) state.get(LEVEL) == 4;
+        return state.get(LEVEL) == 4;
     }
 
     public boolean isFireBurning(World world, BlockPos pos) {
-        if (world.getBlockState(pos.down()).getBlock() instanceof CampfireBlock && CampfireBlock.isLitCampfire(world.getBlockState(pos.down()))) {
-            return true;
-        } else
-            return false;
+        return world.getBlockState(pos.down()).getBlock() instanceof CampfireBlock && CampfireBlock.isLitCampfire(world.getBlockState(pos.down()));
     }
 
     public boolean isPurifiedWater(World world, BlockPos pos) {
-        if (((CampfireCauldronEntity) world.getBlockEntity(pos) != null)) {
+        if (world.getBlockEntity(pos) != null) {
             return ((CampfireCauldronEntity) world.getBlockEntity(pos)).isBoiled;
-        } else
+        } else {
             return false;
-
+        }
     }
 
     @SuppressWarnings("unchecked")
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> givenType, BlockEntityType<E> expectedType,
-            BlockEntityTicker<? super E> ticker) {
+                                                                                                   BlockEntityTicker<? super E> ticker) {
         return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;
     }
 

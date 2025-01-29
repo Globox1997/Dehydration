@@ -4,7 +4,6 @@ import net.dehydration.block.entity.CopperCauldronBehavior;
 import net.dehydration.init.BlockInit;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
@@ -39,10 +38,10 @@ public class CopperCauldronBlock extends AbstractCopperCauldronBlock {
         if (canFillWithPrecipitation(world, precipitation)) {
             if (precipitation == Biome.Precipitation.RAIN) {
                 world.setBlockState(pos, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK.getDefaultState());
-                world.emitGameEvent((Entity) null, GameEvent.FLUID_PLACE, pos);
+                world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
             } else if (precipitation == Biome.Precipitation.SNOW) {
                 world.setBlockState(pos, BlockInit.COPPER_POWDERED_CAULDRON_BLOCK.getDefaultState());
-                world.emitGameEvent((Entity) null, GameEvent.FLUID_PLACE, pos);
+                world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
             }
 
         }
@@ -58,7 +57,7 @@ public class CopperCauldronBlock extends AbstractCopperCauldronBlock {
         if (fluid == Fluids.WATER) {
             world.setBlockState(pos, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK.getDefaultState());
             world.syncWorldEvent(WorldEvents.POINTED_DRIPSTONE_DRIPS_WATER_INTO_CAULDRON, pos, 0);
-            world.emitGameEvent((Entity) null, GameEvent.FLUID_PLACE, pos);
+            world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
         }
 
     }

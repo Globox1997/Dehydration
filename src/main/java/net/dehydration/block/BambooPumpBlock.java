@@ -10,13 +10,7 @@ import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -40,11 +34,7 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ItemActionResult;
-import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -205,7 +195,7 @@ public class BambooPumpBlock extends BlockWithEntity {
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
         if (direction == Direction.DOWN && !state.canPlaceAt(world, pos)) {
             return Blocks.AIR.getDefaultState();
-        } else if ((Boolean) state.get(WATERLOGGED)) {
+        } else if (state.get(WATERLOGGED)) {
             world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
         return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
@@ -214,17 +204,17 @@ public class BambooPumpBlock extends BlockWithEntity {
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-        return (BlockState) this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER).with(EXTENDED, false);
+        return this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER).with(EXTENDED, false);
     }
 
     @Override
     public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return (BlockState) state.with(FACING, rotation.rotate((Direction) state.get(FACING)));
+        return state.with(FACING, rotation.rotate(state.get(FACING)));
     }
 
     @Override
     public BlockState mirror(BlockState state, BlockMirror mirror) {
-        return state.rotate(mirror.getRotation((Direction) state.get(FACING)));
+        return state.rotate(mirror.getRotation(state.get(FACING)));
     }
 
     @Override
@@ -243,11 +233,10 @@ public class BambooPumpBlock extends BlockWithEntity {
     @Override
     public List<ItemStack> getDroppedStacks(BlockState state, Builder builder) {
         List<ItemStack> stacks = super.getDroppedStacks(state, builder);
-        for (int i = 0; i < stacks.size(); i++) {
-            if (stacks.get(i).getItem() instanceof BlockItem blockItem && blockItem.getBlock().equals(BlockInit.BAMBOO_PUMP_BLOCK)
+        for (ItemStack itemStack : stacks) {
+            if (itemStack.getItem() instanceof BlockItem blockItem && blockItem.getBlock().equals(BlockInit.BAMBOO_PUMP_BLOCK)
                     && builder.get(LootContextParameters.BLOCK_ENTITY) instanceof BambooPumpEntity bambooPumpEntity) {
-                ItemStack stack = stacks.get(i);
-                stack.set(ItemInit.COOLDOWN, bambooPumpEntity.getCooldown());
+                itemStack.set(ItemInit.COOLDOWN, bambooPumpEntity.getCooldown());
                 break;
             }
         }

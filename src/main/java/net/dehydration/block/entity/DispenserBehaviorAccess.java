@@ -10,12 +10,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.FallibleItemDispenserBehavior;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
-import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 
 public class DispenserBehaviorAccess {
 
@@ -26,7 +24,7 @@ public class DispenserBehaviorAccess {
             public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
                 this.setSuccess(false);
                 ServerWorld serverWorld = pointer.world();
-                BlockPos blockPos = pointer.pos().offset((Direction) pointer.state().get(DispenserBlock.FACING));
+                BlockPos blockPos = pointer.pos().offset(pointer.state().get(DispenserBlock.FACING));
                 BlockState blockState = serverWorld.getBlockState(blockPos);
                 if (blockState.isOf(BlockInit.CAMPFIRE_CAULDRON_BLOCK) && blockState.get(CampfireCauldronBlock.LEVEL) > 0) {
                     CampfireCauldronBlock campfireCauldronBlock = (CampfireCauldronBlock) blockState.getBlock();
@@ -69,7 +67,7 @@ public class DispenserBehaviorAccess {
         if (stack.isEmpty()) {
             return newStack.copy();
         } else {
-            if (!((DispenserBlockEntity) pointer.blockEntity()).addToFirstFreeSlot(newStack.copy()).isEmpty()) {
+            if (!pointer.blockEntity().addToFirstFreeSlot(newStack.copy()).isEmpty()) {
                 new ItemDispenserBehavior().dispense(pointer, newStack.copy());
             }
 

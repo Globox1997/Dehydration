@@ -27,7 +27,7 @@ import net.minecraft.world.World;
 
 public class BambooPumpEntity extends BlockEntity implements Inventory {
 
-    private DefaultedList<ItemStack> inventory = DefaultedList.ofSize(1, ItemStack.EMPTY);
+    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(1, ItemStack.EMPTY);
     private int pumpCount = 0;
     private int cooldown = 0;
 

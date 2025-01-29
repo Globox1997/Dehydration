@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.dehydration.block.CopperLeveledCauldronBlock;
 import net.dehydration.init.BlockInit;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -62,7 +61,7 @@ public interface CopperCauldronBehavior {
     }
 
     static ItemActionResult emptyCauldron(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack, ItemStack output, Predicate<BlockState> predicate,
-            SoundEvent soundEvent) {
+                                          SoundEvent soundEvent) {
         if (!predicate.test(state)) {
             return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         } else {
@@ -72,8 +71,8 @@ public interface CopperCauldronBehavior {
                 player.incrementStat(Stats.USE_CAULDRON);
                 player.incrementStat(Stats.USED.getOrCreateStat(item));
                 world.setBlockState(pos, BlockInit.COPPER_CAULDRON_BLOCK.getDefaultState());
-                world.playSound((PlayerEntity) null, pos, soundEvent, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                world.emitGameEvent((Entity) null, GameEvent.FLUID_PICKUP, pos);
+                world.playSound(null, pos, soundEvent, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.emitGameEvent(null, GameEvent.FLUID_PICKUP, pos);
             }
 
             return ItemActionResult.success(world.isClient());
@@ -87,8 +86,8 @@ public interface CopperCauldronBehavior {
             player.incrementStat(Stats.FILL_CAULDRON);
             player.incrementStat(Stats.USED.getOrCreateStat(item));
             world.setBlockState(pos, state);
-            world.playSound((PlayerEntity) null, pos, soundEvent, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            world.emitGameEvent((Entity) null, GameEvent.FLUID_PLACE, pos);
+            world.playSound(null, pos, soundEvent, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
         }
 
         return ItemActionResult.success(world.isClient());
