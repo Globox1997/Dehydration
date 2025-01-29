@@ -1,6 +1,7 @@
 package net.dehydration.block.render;
 
 import net.dehydration.block.entity.BambooPumpEntity;
+import net.dehydration.init.BlockInit;
 import net.dehydration.init.ItemInit;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -26,7 +27,7 @@ public class BambooPumpRenderer implements BlockEntityRenderer<BambooPumpEntity>
     public void render(BambooPumpEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (blockEntity.getWorld() != null && !blockEntity.isEmpty() && !blockEntity.getStack(0).isOf(Items.BUCKET) && !blockEntity.getStack(0).isOf(ItemInit.PURIFIED_BUCKET)) {
             BlockState blockState = blockEntity.getWorld().getBlockState(blockEntity.getPos());
-            if (!blockState.isAir()) {
+            if (!blockState.isAir() && blockState.isOf(BlockInit.BAMBOO_PUMP_BLOCK)) {
                 Direction blockDirection = blockState.get(HorizontalFacingBlock.FACING);
                 matrices.push();
                 if (blockDirection == Direction.NORTH) {
