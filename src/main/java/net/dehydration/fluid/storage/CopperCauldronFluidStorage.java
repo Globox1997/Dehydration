@@ -68,20 +68,24 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
         }
 
         CopperCauldronFluidContent currentContent = getCurrentContent();
+        CopperCauldronFluidContent mixedContent;
 
         if (fluidVariant.isOf(currentContent.fluid)) {
-            // Otherwise we can only accept the same fluid as the current one.
-            int currentLevel = currentContent.currentLevel(createSnapshot());
-            int levelsInserted = Math.min(maxLevelsInserted, currentContent.maxLevel - currentLevel);
-
-            if (levelsInserted > 0) {
-                updateLevel(currentContent, currentLevel + levelsInserted, transaction);
-            }
-
-            return levelsInserted * currentContent.amountPerLevel;
+            mixedContent = currentContent;
+        } else if (fluidVariant.isOf(Fluids.WATER) || fluidVariant.isOf(FluidInit.PURIFIED_WATER)) {
+            mixedContent = new CopperCauldronFluidContent(Fluids.WATER);
+        } else {
+            return 0;
         }
 
-        return 0;
+        int currentLevel = currentContent.currentLevel(createSnapshot());
+        int levelsInserted = Math.min(maxLevelsInserted, currentContent.maxLevel - currentLevel);
+
+        if (levelsInserted > 0) {
+            updateLevel(mixedContent, currentLevel + levelsInserted, transaction);
+        }
+
+        return levelsInserted * mixedContent.amountPerLevel;
     }
 
     @Override
