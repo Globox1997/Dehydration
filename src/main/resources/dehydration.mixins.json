@@ -10,10 +10,8 @@
     "ItemStackMixin",
     "MilkBucketItemMixin",
     "ItemMixin",
-    "CampfireBlockMixin",
     "BootstrapMixin",
     "DispenserBlockMixin",
-    "CampfireBlockEntityMixin",
     "HoneyBottleItemMixin",
     "CauldronBehaviorMixin",
     "WaterFluidMixin",
@@ -21,7 +19,6 @@
     "PlayerScreenHandlerMixin",
     "PotionContentsComponentMixin",
     "PotionItemMixin",
-    "accessor.CampfireBlockEntityAccessor",
     "compat.PuddleBlockMixin"
   ],
   "client": [

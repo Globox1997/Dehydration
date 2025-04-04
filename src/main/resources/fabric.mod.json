@@ -24,6 +24,9 @@
     ],
     "modmenu": [
       "net.dehydration.config.ModMenuIntegration"
+    ],
+    "emi": [
+      "net.dehydration.compat.EMICompat"
     ]
   },
   "mixins": [
