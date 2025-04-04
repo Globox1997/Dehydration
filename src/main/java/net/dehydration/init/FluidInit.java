@@ -2,6 +2,7 @@ package net.dehydration.init;
 
 import net.dehydration.block.entity.CampfireCauldronEntity;
 import net.dehydration.fluid.PurifiedWaterFluid;
+import net.dehydration.fluid.storage.BowlFluidStorage;
 import net.dehydration.fluid.storage.CampfireCauldronFluidStorage;
 import net.dehydration.fluid.storage.CopperCauldronFluidStorage;
 import net.dehydration.fluid.storage.LeatherFlaskFluidStorage;
@@ -37,6 +38,8 @@ public class FluidInit {
         FluidStorage.combinedItemApiProvider(Items.POTION).register(PurifiedWaterPotionStorage::find);
         // Register flask storage
         FluidStorage.ITEM.registerForItems((itemStack, context) -> new LeatherFlaskFluidStorage(context), ItemInit.LEATHER_FLASK, ItemInit.IRON_LEATHER_FLASK, ItemInit.GOLDEN_LEATHER_FLASK, ItemInit.DIAMOND_LEATHER_FLASK, ItemInit.NETHERITE_LEATHER_FLASK);
+        // Register bowl storage
+        FluidStorage.ITEM.registerForItems((itemStack, context) -> new BowlFluidStorage(itemStack, context), Items.BOWL, ItemInit.WATER_BOWL, ItemInit.PURIFIED_WATER_BOWL);
         // Register campfire cauldron storage
         FluidStorage.SIDED.registerForBlocks((world, pos, state, blockEntity, context) -> new CampfireCauldronFluidStorage(world, pos, state, (CampfireCauldronEntity) blockEntity), BlockInit.CAMPFIRE_CAULDRON_BLOCK);
         //register copper cauldron fluid storage
