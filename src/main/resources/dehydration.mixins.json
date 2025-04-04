@@ -19,6 +19,7 @@
     "WaterFluidMixin",
     "GlassBottleItemMixin",
     "PlayerScreenHandlerMixin",
+    "PointedDripstoneBlockMixin",
     "PotionContentsComponentMixin",
     "PotionItemMixin",
     "accessor.CampfireBlockEntityAccessor",

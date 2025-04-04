@@ -38,7 +38,7 @@ public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
     }
 
     @Override
-    protected boolean canBeFilledByDripstone(Fluid fluid) {
+    public boolean canBeFilledByDripstone(Fluid fluid) {
         return fluid == Fluids.WATER && this.precipitationPredicate == RAIN_PREDICATE;
     }
 
