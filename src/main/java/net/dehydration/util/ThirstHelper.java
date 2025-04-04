@@ -45,7 +45,7 @@ public class ThirstHelper {
         }
         if (stack.getItem() instanceof PotionItem) {
             PotionContentsComponent potionContentsComponent = stack.getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT);
-            if (ThirstHelper.isBadPotion(potionContentsComponent.potion().get()) && serverPlayerEntity.getRandom().nextFloat() >= ConfigInit.CONFIG.potion_bad_thirst_chance) {
+            if (ThirstHelper.isBadPotion(potionContentsComponent.potion().orElse(Potions.WATER)) && serverPlayerEntity.getRandom().nextFloat() >= ConfigInit.CONFIG.potion_bad_thirst_chance) {
                 serverPlayerEntity.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.potion_bad_thirst_duration, 0, false, false, true));
             }
             if (thirstQuench == 0) {
