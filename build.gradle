@@ -46,6 +46,13 @@ dependencies {
 	modCompileOnly ("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
+	// EMI
+	modCompileOnly ("dev.emi:emi-fabric:${emi_version}:api") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	modRuntimeOnly ("dev.emi:emi-fabric:${emi_version}") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
 }
 
 processResources {
