@@ -8,6 +8,7 @@ import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
@@ -28,6 +29,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -62,32 +64,40 @@ public class EventInit {
             }
         });
 
-        UseBlockCallback.EVENT.register((player, world, hand, result) -> {
-            if (!player.isCreative() && !player.isSpectator() && player.isSneaking() && (player.getMainHandStack().isEmpty() || player.getMainHandStack().isOf(Items.BOWL))) {
-                HitResult hitResult = player.raycast(1.5D, 0.0F, true);
+        UseItemCallback.EVENT.register((player, world, hand) -> {
+            if (!player.isCreative() && !player.isSpectator() && player.isSneaking() && player.getStackInHand(hand).isOf(Items.BOWL)) {
+                HitResult hitResult = player.raycast(player.getBlockInteractionRange(), 0.0F, true);
                 BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
                 if (world.canPlayerModifyAt(player, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
-                    if (player.getMainHandStack().isOf(Items.BOWL)) {
-                        if (world.getFluidState(blockPos).isStill()) {
-                            world.playSound(null, blockPos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0f, 1.0f);
-                            if (!world.isClient()) {
-                                ItemStack itemStack = new ItemStack(ItemInit.WATER_BOWL);
-                                if (world.getFluidState(blockPos).isIn(TagInit.PURIFIED_WATER)) {
-                                    itemStack = new ItemStack(ItemInit.PURIFIED_WATER_BOWL);
-                                }
-                                player.setStackInHand(hand, ItemUsage.exchangeStack(player.getMainHandStack(), player, itemStack));
-                                player.incrementStat(Stats.USED.getOrCreateStat(player.getMainHandStack().getItem()));
-                                if (world.getBlockState(blockPos).contains(Properties.WATERLOGGED)) {
-                                    world.setBlockState(blockPos, world.getBlockState(blockPos).with(Properties.WATERLOGGED, false));
-                                } else {
-                                    world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
-                                }
+                    if (world.getFluidState(blockPos).isStill()) {
+                        world.playSound(null, blockPos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                        if (!world.isClient()) {
+                            ItemStack itemStack = new ItemStack(ItemInit.WATER_BOWL);
+                            if (world.getFluidState(blockPos).isIn(TagInit.PURIFIED_WATER)) {
+                                itemStack = new ItemStack(ItemInit.PURIFIED_WATER_BOWL);
                             }
-                            return ActionResult.SUCCESS;
-                        } else {
-                            return ActionResult.PASS;
+                            player.setStackInHand(hand, ItemUsage.exchangeStack(player.getStackInHand(hand), player, itemStack));
+                            player.incrementStat(Stats.USED.getOrCreateStat(player.getStackInHand(hand).getItem()));
+                            if (world.getBlockState(blockPos).contains(Properties.WATERLOGGED)) {
+                                world.setBlockState(blockPos, world.getBlockState(blockPos).with(Properties.WATERLOGGED, false));
+                            } else {
+                                world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
+                            }
                         }
+                        return TypedActionResult.success(player.getStackInHand(hand), true);
+                    } else {
+                        return TypedActionResult.pass(player.getStackInHand(hand));
                     }
+                }
+            }
+            return TypedActionResult.pass(player.getStackInHand(hand));
+        });
+        
+        UseBlockCallback.EVENT.register((player, world, hand, result) -> {
+            if (!player.isCreative() && !player.isSpectator() && player.isSneaking() && player.getMainHandStack().isEmpty()) {
+                HitResult hitResult = player.raycast(player.getBlockInteractionRange(), 0.0F, true);
+                BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
+                if (world.canPlayerModifyAt(player, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
                     if (world.getFluidState(blockPos).isStill() || ConfigInit.CONFIG.allow_non_flowing_water_sip) {
                         ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
                         if (thirstManager.isNotFull()) {
@@ -126,7 +136,6 @@ public class EventInit {
                         }
                     }
                 }
-                return ActionResult.PASS;
             }
             return ActionResult.PASS;
         });
