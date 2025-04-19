@@ -17,6 +17,7 @@
     "WaterFluidMixin",
     "GlassBottleItemMixin",
     "PlayerScreenHandlerMixin",
+    "PointedDripstoneBlockMixin",
     "PotionContentsComponentMixin",
     "PotionItemMixin",
     "compat.PuddleBlockMixin"

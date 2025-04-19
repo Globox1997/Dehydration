@@ -48,8 +48,8 @@ public class CopperCauldronBlock extends AbstractCopperCauldronBlock {
     }
 
     @Override
-    protected boolean canBeFilledByDripstone(Fluid fluid) {
-        return true;
+    public boolean canBeFilledByDripstone(Fluid fluid) {
+        return fluid == Fluids.WATER;
     }
 
     @Override

@@ -15,9 +15,12 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
@@ -34,6 +37,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldEvents;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.event.GameEvent;
@@ -159,6 +163,28 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> givenType, BlockEntityType<E> expectedType,
                                                                                                    BlockEntityTicker<? super E> ticker) {
         return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;
+    }
+
+    @Override
+    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        BlockPos blockPos = PointedDripstoneBlock.getDripPos(world, pos);
+        if (blockPos != null) {
+            Fluid fluid = PointedDripstoneBlock.getDripFluid(world, (BlockPos) blockPos);
+            if (fluid != Fluids.EMPTY && this.canBeFilledByDripstone(fluid)) {
+                this.fillFromDripstone(state, world, pos, fluid);
+            }
+        }
+    }
+
+    public boolean canBeFilledByDripstone(Fluid fluid) {
+        return fluid == Fluids.WATER;
+    }
+
+    protected void fillFromDripstone(BlockState state, World world, BlockPos pos, Fluid fluid) {
+        if (!this.isFull(state)) {
+            world.setBlockState(pos, state.with(LEVEL, state.get(LEVEL) + 1));
+            world.syncWorldEvent(WorldEvents.POINTED_DRIPSTONE_DRIPS_WATER_INTO_CAULDRON, pos, 0);
+        }
     }
 
     static {

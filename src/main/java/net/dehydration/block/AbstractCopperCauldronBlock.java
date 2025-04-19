@@ -95,7 +95,7 @@ public abstract class AbstractCopperCauldronBlock extends Block {
         }
     }
 
-    protected boolean canBeFilledByDripstone(Fluid fluid) {
+    public boolean canBeFilledByDripstone(Fluid fluid) {
         return false;
     }
 
