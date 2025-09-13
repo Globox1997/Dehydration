@@ -1,9 +1,12 @@
 {
-  "death.attack.dehydration": "%1$s 脱水而亡",
-  "death.attack.thirst": "%1$s 渴死了",
+  "death.attack.dehydration": "%1$s脱水而亡",
+  "death.attack.thirst": "%1$s渴死了",
 
   "effect.dehydration.thirst_effect": "口渴",
   "effect.dehydration.hydration_effect": "补水",
+  
+  "effect.dehydration.thirst_effect.description": "消耗水分值；等级越高，水分值消耗速度越快。",
+  "effect.dehydration.hydration_effect.description": "恢复水分值；等级越高，水分值恢复速度越快。",
 
   "text.autoconfig.dehydration.title": "Dehydration 配置",
   "text.autoconfig.dehydration.category.default": "默认配置",
@@ -59,7 +62,7 @@
   "item.dehydration.leather_flask.tooltip3.impurified": "§3饮用水",
   "item.dehydration.leather_flask.tooltip3.purified": "§b纯净水",
   "item.dehydration.handbook": "手册",
-  "item.dehydration.patchouli_book.tooltip": "§cPatchouli 模组未安装",
+  "item.dehydration.patchouli_book.tooltip": "§c帕秋莉手册模组未安装",
   "item.dehydration.purified_water_bucket": "纯净水桶",
   "item.dehydration.water_bowl": "水碗",
   "item.dehydration.purified_water_bowl": "纯净水碗",
@@ -77,7 +80,7 @@
   "block.dehydration.campfire_cauldron": "篝火大锅",
   "block.dehydration.copper_cauldron": "铜锅",
   "block.dehydration.water_copper_cauldron": "装水的铜锅",
-  "block.dehydration.purified_water": "净化水",
+  "block.dehydration.purified_water": "纯净水",
   "block.dehydration.purified_water_copper_cauldron": "装纯净水的铜锅",
   "block.dehydration.powder_snow_copper_cauldron": "装细雪的铜锅",
   "block.dehydration.bamboo_pump": "竹泵",
