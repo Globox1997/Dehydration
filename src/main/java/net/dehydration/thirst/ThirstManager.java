@@ -12,6 +12,8 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.GameRules;
+import net.minecraft.world.World;
 
 public class ThirstManager {
 
@@ -101,4 +103,12 @@ public class ThirstManager {
         return entity.getDamageSources().create(THIRST, null);
     }
 
+    public void doPeacefulRegeneration(World world, PlayerEntity player, int age) {
+        if (world.getDifficulty() == Difficulty.PEACEFUL && world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION) && this.hasThirst()) {
+            this.update(player);
+            if (this.isNotFull() && age % 10 == 0) {
+                this.setThirstLevel(this.getThirstLevel() + 1);
+            }
+        }
+    }
 }
