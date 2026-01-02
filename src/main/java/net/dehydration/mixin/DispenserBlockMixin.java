@@ -79,7 +79,7 @@ public abstract class DispenserBlockMixin extends BlockWithEntity {
                 } else if (blockState.isOf(BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK) && !((CopperLeveledCauldronBlock) blockState.getBlock()).isFull(blockState)) {
                     itemStack.decrement(1);
                     dispenserBlockEntity.setStack(i, new ItemStack(Items.GLASS_BOTTLE));
-                    world.setBlockState(pos, (BlockState) blockState.cycle(CopperLeveledCauldronBlock.LEVEL));
+                    world.setBlockState(newPos, (BlockState) blockState.cycle(CopperLeveledCauldronBlock.LEVEL));
                     world.syncWorldEvent(WorldEvents.DISPENSER_DISPENSES, pos, 0);
                     info.cancel();
                 }
