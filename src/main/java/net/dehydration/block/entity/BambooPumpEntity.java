@@ -90,6 +90,7 @@ public class BambooPumpEntity extends BlockEntity implements Inventory {
                         pumpCount = 0;
                         cooldown = ConfigInit.CONFIG.pump_cooldown;
                     }
+                } catch (Exception ignored) {
                 }
             }
         }

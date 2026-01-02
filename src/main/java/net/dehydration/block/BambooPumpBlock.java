@@ -116,9 +116,22 @@ public class BambooPumpBlock extends BlockWithEntity {
                     if (ConfigInit.CONFIG.pump_requires_water) {
                         boolean foundWater = false;
                         for (int i = 0; i < 50; i++) {
-                            if (world.getBlockState(pos.down(10 + i)).getFluidState().isIn(FluidTags.WATER)) {
-                                foundWater = true;
+                            BlockPos checkPos = pos.down(10 + i);
+                            if (world.getBlockState(checkPos).isAir()) {
                                 break;
+                            }
+                            if (world.getBlockState(checkPos).getFluidState().isIn(FluidTags.WATER)) {
+                                boolean notEnoughWater = false;
+                                for (Direction direction : Direction.values()) {
+                                    if (!world.getBlockState(checkPos.offset(direction)).getFluidState().isIn(FluidTags.WATER)) {
+                                        notEnoughWater = true;
+                                        break;
+                                    }
+                                }
+                                if (!notEnoughWater) {
+                                    foundWater = true;
+                                    break;
+                                }
                             }
                         }
                         if (!foundWater) {
