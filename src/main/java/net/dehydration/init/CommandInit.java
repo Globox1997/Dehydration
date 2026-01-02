@@ -27,10 +27,8 @@ public class CommandInit {
     }
 
     private static int executeThirstCommand(ServerCommandSource source, Collection<ServerPlayerEntity> targets, boolean setThirst) {
-        Iterator<ServerPlayerEntity> var3 = targets.iterator();
 
-        while (var3.hasNext()) {
-            ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) var3.next();
+        for (ServerPlayerEntity serverPlayerEntity : targets) {
             ((ThirstManagerAccess) serverPlayerEntity).getThirstManager().setThirst(setThirst);
             ThirstServerPacket.writeS2CExcludedSyncPacket(serverPlayerEntity, setThirst);
         }
