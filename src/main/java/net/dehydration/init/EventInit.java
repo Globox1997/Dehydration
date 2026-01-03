@@ -47,6 +47,7 @@ public class EventInit {
         });
 
         ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
+            ((ThirstManagerAccess) newPlayer).getThirstManager().setThirst(((ThirstManagerAccess) oldPlayer).getThirstManager().hasThirst());
             if (alive) {
                 ((ThirstManagerAccess) newPlayer).getThirstManager().setThirstLevel(((ThirstManagerAccess) oldPlayer).getThirstManager().getThirstLevel());
                 ((ServerPlayerAccess) newPlayer).setSyncedThirstLevel(-1);
