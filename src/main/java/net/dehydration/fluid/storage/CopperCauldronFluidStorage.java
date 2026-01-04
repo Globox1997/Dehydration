@@ -57,6 +57,9 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
         int maxLevelsInserted = Ints.saturatedCast(maxAmount / insertContent.amountPerLevel);
 
         if (getAmount() == 0) {
+            if(fluidVariant.isOf(Fluids.LAVA)){
+                return -1;
+            }
             // Currently empty, so we can accept any fluid.
             int levelsInserted = Math.min(maxLevelsInserted, insertContent.maxLevel);
 
