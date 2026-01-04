@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "dehydration:rainwater_collector",
+    "dehydration:water_rainwater_collector",
+    "dehydration:powder_snow_rainwater_collector",
+    "dehydration:purified_water_rainwater_collector"
+  ]
+}

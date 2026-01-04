@@ -1,0 +1,10 @@
+{
+  "parent": "dehydration:block/template_rainwater_collector_level2",
+  "textures": {
+    "content": "minecraft:block/powder_snow",
+    "inside": "dehydration:block/rainwater_collector_inner",
+    "particle": "dehydration:block/rainwater_collector_side",
+    "bottom": "dehydration:block/rainwater_collector_bottom",
+    "side": "dehydration:block/rainwater_collector_side"
+  }
+}

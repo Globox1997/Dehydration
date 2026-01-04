@@ -31,6 +31,8 @@ public class RenderInit {
                 BlockInit.CAMPFIRE_CAULDRON_BLOCK);
         ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> BiomeColors.getWaterColor(world, pos), BlockInit.COPPER_WATER_CAULDRON_BLOCK);
         ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> 3708358, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK);
+        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> BiomeColors.getWaterColor(world, pos), BlockInit.RAINWATER_WATER_COLLECTOR_BLOCK);
+        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> 3708358, BlockInit.RAINWATER_PURIFIED_WATER_COLLECTOR_BLOCK);
 
         BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.CAMPFIRE_CAULDRON_BLOCK, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.COPPER_CAULDRON_BLOCK, RenderLayer.getCutout());
@@ -38,6 +40,11 @@ public class RenderInit {
         BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.COPPER_POWDERED_CAULDRON_BLOCK, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.BAMBOO_PUMP_BLOCK, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.RAINWATER_COLLECTOR_BLOCK, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.RAINWATER_WATER_COLLECTOR_BLOCK, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.RAINWATER_POWDERED_COLLECTOR_BLOCK, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.RAINWATER_PURIFIED_WATER_COLLECTOR_BLOCK, RenderLayer.getCutout());
+
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), FluidInit.PURIFIED_WATER, FluidInit.PURIFIED_FLOWING_WATER);
 
         BlockEntityRendererFactories.register(BlockInit.BAMBOO_PUMP_ENTITY, BambooPumpRenderer::new);

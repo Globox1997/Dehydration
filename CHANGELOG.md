@@ -1,5 +1,5 @@
 ### Added:
-- 
+- Added rainwater collector
 ### Fixed:
 - Fixed dispenser gets changed to copper cauldron
 ### Changed:

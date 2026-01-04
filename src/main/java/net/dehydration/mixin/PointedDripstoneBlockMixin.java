@@ -2,6 +2,7 @@ package net.dehydration.mixin;
 
 import java.util.function.Predicate;
 
+import net.dehydration.block.AbstractRainwaterCollectorBlock;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,8 +25,10 @@ public abstract class PointedDripstoneBlockMixin extends Block {
     @ModifyVariable(method = "getCauldronPos", at = @At("STORE"), ordinal = 0)
     private static Predicate<BlockState> canBeFilledByDripstoneMixin(Predicate<BlockState> predicate, @Local Fluid fluid) {
         return predicate.or(state -> state.getBlock() instanceof AbstractCopperCauldronBlock
-				&& ((AbstractCopperCauldronBlock)state.getBlock()).canBeFilledByDripstone(fluid))
-            .or(state -> state.getBlock() instanceof CampfireCauldronBlock
-				&& ((CampfireCauldronBlock)state.getBlock()).canBeFilledByDripstone(fluid));
+                        && ((AbstractCopperCauldronBlock) state.getBlock()).canBeFilledByDripstone(fluid))
+                .or(state -> state.getBlock() instanceof CampfireCauldronBlock
+                        && ((CampfireCauldronBlock) state.getBlock()).canBeFilledByDripstone(fluid))
+                .or(state -> state.getBlock() instanceof AbstractRainwaterCollectorBlock
+                        && ((AbstractRainwaterCollectorBlock) state.getBlock()).canBeFilledByDripstone(fluid));
     }
 }

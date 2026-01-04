@@ -1,6 +1,6 @@
 package net.dehydration.block;
 
-import net.dehydration.block.entity.CopperCauldronBehavior;
+import net.dehydration.block.entity.RainwaterCollectorBehavior;
 import net.dehydration.init.BlockInit;
 import net.dehydration.init.FluidInit;
 import net.minecraft.block.AbstractBlock;
@@ -13,10 +13,10 @@ import net.minecraft.world.WorldEvents;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.event.GameEvent;
 
-public class CopperCauldronBlock extends AbstractCopperCauldronBlock {
+public class RainwaterCollectorBlock extends AbstractRainwaterCollectorBlock {
 
-    public CopperCauldronBlock(AbstractBlock.Settings settings) {
-        super(settings, CopperCauldronBehavior.EMPTY_COPPER_CAULDRON_BEHAVIOR);
+    public RainwaterCollectorBlock(AbstractBlock.Settings settings) {
+        super(settings, RainwaterCollectorBehavior.EMPTY_RAINWATER_COLLECTOR_BEHAVIOR);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class CopperCauldronBlock extends AbstractCopperCauldronBlock {
 
     public static boolean canFillWithPrecipitation(World world, Biome.Precipitation precipitation) {
         if (precipitation == Biome.Precipitation.RAIN) {
-            return world.getRandom().nextFloat() < 0.2F;
+            return world.getRandom().nextFloat() < 0.6F;
         } else if (precipitation == Biome.Precipitation.SNOW) {
             return world.getRandom().nextFloat() < 0.15F;
         } else {
@@ -38,10 +38,10 @@ public class CopperCauldronBlock extends AbstractCopperCauldronBlock {
     public void precipitationTick(BlockState state, World world, BlockPos pos, Biome.Precipitation precipitation) {
         if (canFillWithPrecipitation(world, precipitation)) {
             if (precipitation == Biome.Precipitation.RAIN) {
-                world.setBlockState(pos, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK.getDefaultState());
+                world.setBlockState(pos, BlockInit.RAINWATER_PURIFIED_WATER_COLLECTOR_BLOCK.getDefaultState());
                 world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
             } else if (precipitation == Biome.Precipitation.SNOW) {
-                world.setBlockState(pos, BlockInit.COPPER_POWDERED_CAULDRON_BLOCK.getDefaultState());
+                world.setBlockState(pos, BlockInit.RAINWATER_POWDERED_COLLECTOR_BLOCK.getDefaultState());
                 world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
             }
 
@@ -56,7 +56,7 @@ public class CopperCauldronBlock extends AbstractCopperCauldronBlock {
     @Override
     protected void fillFromDripstone(BlockState state, World world, BlockPos pos, Fluid fluid) {
         if (fluid == Fluids.WATER || fluid == FluidInit.PURIFIED_WATER) {
-            world.setBlockState(pos, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK.getDefaultState());
+            world.setBlockState(pos, BlockInit.RAINWATER_PURIFIED_WATER_COLLECTOR_BLOCK.getDefaultState());
             world.syncWorldEvent(WorldEvents.POINTED_DRIPSTONE_DRIPS_WATER_INTO_CAULDRON, pos, 0);
             world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
         }

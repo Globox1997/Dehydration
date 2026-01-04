@@ -86,6 +86,18 @@
   "block.dehydration.bamboo_pump": "Bamboo Pump",
   "block.dehydration.bamboo_pump.cooldown": "Pump Cooldown: %ss",
   "block.dehydration.bamboo_pump.no_water": "Pump found no water",
+  "block.dehydration.rainwater_collector": "Rainwater Collector",
+  "block.dehydration.water_rainwater_collector": "Water Rainwater Collector",
+  "block.dehydration.purified_water_rainwater_collector": "Purified Water Rainwater Collector",
+  "block.dehydration.powder_snow_rainwater_collector": "Powder Snow Rainwater Collector",
 
-  "commands.dehydration.changed": "thirst got changed"
+  "commands.dehydration.changed": "thirst got changed",
+
+  "tag.fluid.dehydration.purified_water": "Purified Water",
+  "tag.item.dehydration.hydrating_drinks": "Hydrating Drinks",
+  "tag.item.dehydration.hydrating_food": "Hydrating Food",
+  "tag.item.dehydration.hydrating_stew": "Hydrating Stew",
+  "tag.item.dehydration.stronger_hydrating_drinks": "Stronger Hydrating Drinks",
+  "tag.item.dehydration.stronger_hydrating_food": "Stronger Hydrating Food",
+  "tag.item.dehydration.stringer_hydrating_stew": "Stronger Hydrating Stew"
 }

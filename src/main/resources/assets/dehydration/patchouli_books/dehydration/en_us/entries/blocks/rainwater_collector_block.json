@@ -1,0 +1,17 @@
+{
+  "name": "Rainwater Collector",
+  "icon": "dehydration:rainwater_collector",
+  "category": "dehydration:block_category",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "dehydration:rainwater_collector",
+      "link_recipe": false,
+      "text": "The rainwater collector is an early stage block to produce purified water by doing nothing - except standing outside during rain. While it is raining, it will slowly fill up with fresh water."
+    },
+    {
+      "type": "crafting",
+      "recipe": "dehydration:rainwater_collector"
+    }
+  ]
+}

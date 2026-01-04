@@ -1,0 +1,10 @@
+{
+  "parent": "dehydration:block/template_rainwater_collector_level1",
+  "textures": {
+    "content": "minecraft:block/water_still",
+    "inside": "dehydration:block/rainwater_collector_inner",
+    "particle": "dehydration:block/rainwater_collector_side",
+    "bottom": "dehydration:block/rainwater_collector_bottom",
+    "side": "dehydration:block/rainwater_collector_side"
+  }
+}

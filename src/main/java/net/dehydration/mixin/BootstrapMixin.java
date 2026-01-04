@@ -1,5 +1,6 @@
 package net.dehydration.mixin;
 
+import net.dehydration.block.entity.RainwaterCollectorBehavior;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At.Shift;
@@ -19,5 +20,6 @@ public class BootstrapMixin {
         DispenserBehaviorAccess.registerDefaults();
         CauldronBehaviorAccess.registerBehavior();
         CopperCauldronBehavior.registerBehavior();
+        RainwaterCollectorBehavior.registerBehavior();
     }
 }

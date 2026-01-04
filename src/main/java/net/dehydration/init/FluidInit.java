@@ -2,11 +2,7 @@ package net.dehydration.init;
 
 import net.dehydration.block.entity.CampfireCauldronEntity;
 import net.dehydration.fluid.PurifiedWaterFluid;
-import net.dehydration.fluid.storage.BowlFluidStorage;
-import net.dehydration.fluid.storage.CampfireCauldronFluidStorage;
-import net.dehydration.fluid.storage.CopperCauldronFluidStorage;
-import net.dehydration.fluid.storage.LeatherFlaskFluidStorage;
-import net.dehydration.fluid.storage.PurifiedWaterPotionStorage;
+import net.dehydration.fluid.storage.*;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.EmptyItemFluidStorage;
@@ -44,6 +40,8 @@ public class FluidInit {
         FluidStorage.SIDED.registerForBlocks((world, pos, state, blockEntity, context) -> new CampfireCauldronFluidStorage(world, pos, state, (CampfireCauldronEntity) blockEntity), BlockInit.CAMPFIRE_CAULDRON_BLOCK);
         //register copper cauldron fluid storage
         FluidStorage.SIDED.registerForBlocks((world, pos, state, be, context) -> new CopperCauldronFluidStorage(world, pos), BlockInit.COPPER_CAULDRON_BLOCK, BlockInit.COPPER_WATER_CAULDRON_BLOCK, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK);
+        //register rainwater collector fluid storage
+        FluidStorage.SIDED.registerForBlocks((world, pos, state, be, context) -> new RainwaterCollectorFluidStorage(world, pos), BlockInit.RAINWATER_COLLECTOR_BLOCK, BlockInit.RAINWATER_WATER_COLLECTOR_BLOCK, BlockInit.RAINWATER_PURIFIED_WATER_COLLECTOR_BLOCK);
     }
 
     private static <T extends Fluid> T register(String id, T value) {

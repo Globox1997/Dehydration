@@ -1,18 +1,17 @@
 package net.dehydration.init;
 
-import net.dehydration.block.BambooPumpBlock;
-import net.dehydration.block.CampfireCauldronBlock;
-import net.dehydration.block.CopperCauldronBlock;
-import net.dehydration.block.CopperLeveledCauldronBlock;
+import net.dehydration.block.*;
 import net.dehydration.block.entity.BambooPumpEntity;
 import net.dehydration.block.entity.CampfireCauldronEntity;
 import net.dehydration.block.entity.CopperCauldronBehavior;
+import net.dehydration.block.entity.RainwaterCollectorBehavior;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.block.MapColor;
+import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
@@ -21,6 +20,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.biome.Biome;
 
 public class BlockInit {
     // Block
@@ -37,6 +37,14 @@ public class BlockInit {
             new BambooPumpBlock(AbstractBlock.Settings.create().mapColor(MapColor.DARK_GREEN).pistonBehavior(PistonBehavior.DESTROY).strength(1.2f, 4.0f).sounds(BlockSoundGroup.BAMBOO)));
     public static final Block PURIFIED_WATER = register("purified_water", false, new FluidBlock(FluidInit.PURIFIED_WATER, AbstractBlock.Settings.create().mapColor(MapColor.WATER_BLUE).replaceable()
             .noCollision().strength(100.0f).pistonBehavior(PistonBehavior.DESTROY).dropsNothing().liquid().sounds(BlockSoundGroup.INTENTIONALLY_EMPTY)));
+
+    public static final Block RAINWATER_COLLECTOR_BLOCK = register("rainwater_collector", true, new RainwaterCollectorBlock(AbstractBlock.Settings.copy(Blocks.BARREL)));
+    public static final Block RAINWATER_WATER_COLLECTOR_BLOCK = register("water_rainwater_collector", false,
+            new RainwaterLeveledCollectorBlock(AbstractBlock.Settings.copy(Blocks.BARREL), RainwaterLeveledCollectorBlock.RAIN_PREDICATE, RainwaterCollectorBehavior.WATER_RAINWATER_COLLECTOR_BEHAVIOR));
+    public static final Block RAINWATER_POWDERED_COLLECTOR_BLOCK = register("powder_snow_rainwater_collector", false,
+            new RainwaterLeveledCollectorBlock(AbstractBlock.Settings.copy(Blocks.BARREL), RainwaterLeveledCollectorBlock.SNOW_PREDICATE, RainwaterCollectorBehavior.POWDER_SNOW_RAINWATER_COLLECTOR_BEHAVIOR));
+    public static final Block RAINWATER_PURIFIED_WATER_COLLECTOR_BLOCK = register("purified_water_rainwater_collector", false,
+            new RainwaterLeveledCollectorBlock(AbstractBlock.Settings.copy(Blocks.BARREL), RainwaterLeveledCollectorBlock.RAIN_PREDICATE, RainwaterCollectorBehavior.PURIFIED_WATER_RAINWATER_COLLECTOR_BEHAVIOR));
 
     // Entity
     public static BlockEntityType<CampfireCauldronEntity> CAMPFIRE_CAULDRON_ENTITY = BlockEntityType.Builder.create(CampfireCauldronEntity::new, CAMPFIRE_CAULDRON_BLOCK).build(null);
