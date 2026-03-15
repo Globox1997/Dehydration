@@ -29,17 +29,11 @@ public interface RainwaterCollectorBehavior {
     Map<Item, RainwaterCollectorBehavior> POWDER_SNOW_RAINWATER_COLLECTOR_BEHAVIOR = createMap();
     Map<Item, RainwaterCollectorBehavior> PURIFIED_WATER_RAINWATER_COLLECTOR_BEHAVIOR = createMap();
 
-    RainwaterCollectorBehavior FILL_WITH_POWDER_SNOW = (state, world, pos, player, hand, stack) -> {
-        return fillCauldron(world, pos, player, hand, stack, BlockInit.RAINWATER_POWDERED_COLLECTOR_BLOCK.getDefaultState().with(RainwaterLeveledCollectorBlock.LEVEL, 3),
-                SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW);
-    };
+    RainwaterCollectorBehavior FILL_WITH_POWDER_SNOW = (state, world, pos, player, hand, stack) -> fillCollector(world, pos, player, hand, stack, BlockInit.RAINWATER_POWDERED_COLLECTOR_BLOCK.getDefaultState().with(RainwaterLeveledCollectorBlock.LEVEL, 3),
+            SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW);
 
     static Object2ObjectOpenHashMap<Item, RainwaterCollectorBehavior> createMap() {
-        return Util.make(new Object2ObjectOpenHashMap<Item, RainwaterCollectorBehavior>(), (map) -> {
-            map.defaultReturnValue((state, world, pos, player, hand, stack) -> {
-                return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-            });
-        });
+        return Util.make(new Object2ObjectOpenHashMap<>(), (map) -> map.defaultReturnValue((state, world, pos, player, hand, stack) -> ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION));
     }
 
     ItemActionResult interact(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack);
@@ -47,11 +41,7 @@ public interface RainwaterCollectorBehavior {
     static void registerBehavior() {
         registerBucketBehavior(EMPTY_RAINWATER_COLLECTOR_BEHAVIOR);
         registerBucketBehavior(WATER_RAINWATER_COLLECTOR_BEHAVIOR);
-        POWDER_SNOW_RAINWATER_COLLECTOR_BEHAVIOR.put(Items.BUCKET, (state, world, pos, player, hand, stack) -> {
-            return emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(Items.POWDER_SNOW_BUCKET), (statex) -> {
-                return (Integer) statex.get(RainwaterLeveledCollectorBlock.LEVEL) == 3;
-            }, SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW);
-        });
+        POWDER_SNOW_RAINWATER_COLLECTOR_BEHAVIOR.put(Items.BUCKET, (state, world, pos, player, hand, stack) -> emptyCollector(state, world, pos, player, hand, stack, new ItemStack(Items.POWDER_SNOW_BUCKET), (statex) -> statex.get(RainwaterLeveledCollectorBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW));
         registerBucketBehavior(POWDER_SNOW_RAINWATER_COLLECTOR_BEHAVIOR);
         registerBucketBehavior(PURIFIED_WATER_RAINWATER_COLLECTOR_BEHAVIOR);
     }
@@ -60,8 +50,7 @@ public interface RainwaterCollectorBehavior {
         behavior.put(Items.POWDER_SNOW_BUCKET, FILL_WITH_POWDER_SNOW);
     }
 
-    static ItemActionResult emptyCauldron(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack, ItemStack output, Predicate<BlockState> predicate,
-                                          SoundEvent soundEvent) {
+    static ItemActionResult emptyCollector(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack, ItemStack output, Predicate<BlockState> predicate, SoundEvent soundEvent) {
         if (!predicate.test(state)) {
             return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         } else {
@@ -79,7 +68,7 @@ public interface RainwaterCollectorBehavior {
         }
     }
 
-    static ItemActionResult fillCauldron(World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack, BlockState state, SoundEvent soundEvent) {
+    static ItemActionResult fillCollector(World world, BlockPos pos, PlayerEntity player, Hand hand, ItemStack stack, BlockState state, SoundEvent soundEvent) {
         if (!world.isClient()) {
             Item item = stack.getItem();
             player.setStackInHand(hand, ItemUsage.exchangeStack(stack, player, new ItemStack(Items.BUCKET)));

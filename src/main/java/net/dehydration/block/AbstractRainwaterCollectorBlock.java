@@ -58,8 +58,8 @@ public abstract class AbstractRainwaterCollectorBlock extends Block {
             return ItemActionResult.success(world.isClient());
         }
         ItemStack itemStack = player.getStackInHand(hand);
-        RainwaterCollectorBehavior cauldronBehavior = this.behaviorMap.get(itemStack.getItem());
-        return cauldronBehavior.interact(state, world, pos, player, hand, itemStack);
+        RainwaterCollectorBehavior collectorBehavior = this.behaviorMap.get(itemStack.getItem());
+        return collectorBehavior.interact(state, world, pos, player, hand, itemStack);
     }
 
     @Override

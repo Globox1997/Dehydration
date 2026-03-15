@@ -6,12 +6,7 @@ import net.dehydration.block.entity.CampfireCauldronEntity;
 import net.dehydration.block.entity.CopperCauldronBehavior;
 import net.dehydration.block.entity.RainwaterCollectorBehavior;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FluidBlock;
-import net.minecraft.block.MapColor;
-import net.minecraft.block.cauldron.CauldronBehavior;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
@@ -20,7 +15,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
 
 public class BlockInit {
     // Block

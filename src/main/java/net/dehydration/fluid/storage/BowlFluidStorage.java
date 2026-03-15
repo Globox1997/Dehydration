@@ -15,7 +15,7 @@ import net.minecraft.item.Items;
 
 public class BowlFluidStorage extends SingleVariantStorage<FluidVariant> {
 
-    private final static long BOWL_CAPACITY = FluidConstants.BOTTLE * 2;
+    private final static long BOWL_CAPACITY = FluidConstants.BOTTLE;
 
     private final ItemStack stack;
     private final ContainerItemContext context;
@@ -31,24 +31,24 @@ public class BowlFluidStorage extends SingleVariantStorage<FluidVariant> {
     }
 
     @Override
-	public boolean isResourceBlank() {
-		return stack.isOf(Items.BOWL);
-	}
+    public boolean isResourceBlank() {
+        return stack.isOf(Items.BOWL);
+    }
 
-	@Override
-	public FluidVariant getResource() {
+    @Override
+    public FluidVariant getResource() {
         if (stack.isOf(ItemInit.WATER_BOWL)) {
             return FluidVariant.of(Fluids.WATER);
         } else if (stack.isOf(ItemInit.PURIFIED_WATER_BOWL)) {
             return FluidVariant.of(FluidInit.PURIFIED_WATER);
         }
-		return getBlankVariant();
-	}
+        return getBlankVariant();
+    }
 
-	@Override
-	public long getAmount() {
-		return (stack.isOf(ItemInit.WATER_BOWL) || stack.isOf(ItemInit.PURIFIED_WATER_BOWL)) ? BOWL_CAPACITY : 0;
-	}
+    @Override
+    public long getAmount() {
+        return (stack.isOf(ItemInit.WATER_BOWL) || stack.isOf(ItemInit.PURIFIED_WATER_BOWL)) ? BOWL_CAPACITY : 0;
+    }
 
     @Override
     protected long getCapacity(FluidVariant variant) {
@@ -76,12 +76,10 @@ public class BowlFluidStorage extends SingleVariantStorage<FluidVariant> {
         if (!canInsert(insertedVariant)) {
             return 0;
         }
-        // bowls will always accept exactly BOWL_CAPACITY
         if (maxAmount < BOWL_CAPACITY) {
             return 0;
         }
 
-        //exchange item
         ItemStack newStack = new ItemStack(insertedVariant.isOf(FluidInit.PURIFIED_WATER) ? ItemInit.PURIFIED_WATER_BOWL : ItemInit.WATER_BOWL);
         if (context.exchange(ItemVariant.of(newStack), 1, transaction) == 1) {
             return BOWL_CAPACITY;
@@ -95,12 +93,10 @@ public class BowlFluidStorage extends SingleVariantStorage<FluidVariant> {
         if (!canExtract(extractedVariant)) {
             return 0;
         }
-        // bowls will always accept exactly BOWL_CAPACITY
         if (maxAmount < BOWL_CAPACITY) {
             return 0;
         }
 
-        //exchange item
         ItemStack newStack = new ItemStack(Items.BOWL);
         if (context.exchange(ItemVariant.of(newStack), 1, transaction) == 1) {
             return BOWL_CAPACITY;
