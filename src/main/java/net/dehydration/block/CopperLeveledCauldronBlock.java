@@ -52,19 +52,10 @@ public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
         if (!world.isClient() && entity.isOnFire() && this.isEntityTouchingFluid(state, pos, entity)) {
             entity.extinguish();
             if (entity.canModifyAt(world, pos)) {
-                this.onFireCollision(state, world, pos);
+                decrementFluidLevel(state, world, pos);
             }
         }
 
-    }
-
-    protected void onFireCollision(BlockState state, World world, BlockPos pos) {
-        decrementFluidLevel(state, world, pos);
-    }
-
-    public static void decrementFluidLevel(BlockState state, World world, BlockPos pos) {
-        int i = state.get(LEVEL) - 1;
-        world.setBlockState(pos, i <= 0 ? BlockInit.COPPER_CAULDRON_BLOCK.getDefaultState() : state.with(LEVEL, i));
     }
 
     @Override
@@ -90,6 +81,14 @@ public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
             world.setBlockState(pos, state.with(LEVEL, state.get(LEVEL) + 1));
             world.syncWorldEvent(WorldEvents.POINTED_DRIPSTONE_DRIPS_WATER_INTO_CAULDRON, pos, 0);
         }
+    }
+
+    public static void decrementFluidLevel(BlockState state, World world, BlockPos pos) {
+        setFluidLevel(state, world, pos, state.get(LEVEL) - 1);
+    }
+
+    public static void setFluidLevel(BlockState state, World world, BlockPos pos, int level) {
+        world.setBlockState(pos, level <= 0 ? BlockInit.COPPER_CAULDRON_BLOCK.getDefaultState() : state.with(LEVEL, level));
     }
 
     static {

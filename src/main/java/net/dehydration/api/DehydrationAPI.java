@@ -45,4 +45,10 @@ public interface DehydrationAPI {
      * @return Calculated thirst
      */
     int calculateDrinkThirst(ItemStack stack, PlayerEntity playerEntity);
+
+    /**
+     * Override this to register custom fluid behaviors for cauldrons,
+     * copper cauldrons, rainwater collectors and dispensers.
+     */
+    default void registerFluidBehaviors() {}
 }

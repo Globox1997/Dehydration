@@ -44,6 +44,7 @@ public class DehydrationMain implements ModInitializer {
             try {
                 DehydrationAPI api = entrypoint.getEntrypoint();
                 api.registerDrinkEvent();
+                api.registerFluidBehaviors();
             } catch (Throwable exception) {
                 LOGGER.log(Level.ERROR, "Mod {} is providing a broken DehydrationAPI implementation", id, exception);
             }
