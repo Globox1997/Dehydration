@@ -1,16 +1,8 @@
 package net.dehydration.data;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import net.dehydration.DehydrationMain;
 import net.dehydration.api.HydrationTemplate;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -20,6 +12,13 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 public class DataLoader implements SimpleSynchronousResourceReloadListener {
 
     // Map to store replacing bools
@@ -27,7 +26,7 @@ public class DataLoader implements SimpleSynchronousResourceReloadListener {
 
     @Override
     public Identifier getFabricId() {
-        return Identifier.of("dehydration", "loader");
+        return DehydrationMain.identifierOf("loader");
     }
 
     @Override

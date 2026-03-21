@@ -1,5 +1,6 @@
 package net.dehydration.init;
 
+import net.dehydration.DehydrationMain;
 import net.dehydration.block.CampfireCauldronBlock;
 import net.dehydration.block.entity.CampfireCauldronEntity;
 import net.dehydration.block.render.BambooPumpRenderer;
@@ -23,7 +24,7 @@ import net.minecraft.world.BlockRenderView;
 @Environment(EnvType.CLIENT)
 public class RenderInit {
 
-    public static final Identifier THIRST_ICON = Identifier.of("dehydration:textures/gui/thirst.png");
+    public static final Identifier THIRST_ICON = DehydrationMain.identifierOf("textures/gui/thirst.png");
 
     public static void init() {
         ColorProviderRegistry.BLOCK.register(

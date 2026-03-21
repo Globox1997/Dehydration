@@ -1,5 +1,6 @@
 package net.dehydration.init;
 
+import net.dehydration.DehydrationMain;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
@@ -7,10 +8,10 @@ import net.minecraft.util.Identifier;
 
 public class SoundInit {
 
-    public static final Identifier FILL_FLASK = Identifier.of("dehydration:fill_flask");
-    public static final Identifier WATER_SIP = Identifier.of("dehydration:water_sip");
-    public static final Identifier EMPTY_FLASK = Identifier.of("dehydration:empty_flask");
-    public static final Identifier CAULDRON_BUBBLE = Identifier.of("dehydration:cauldron_bubble");
+    public static final Identifier FILL_FLASK = DehydrationMain.identifierOf("fill_flask");
+    public static final Identifier WATER_SIP = DehydrationMain.identifierOf("water_sip");
+    public static final Identifier EMPTY_FLASK = DehydrationMain.identifierOf("empty_flask");
+    public static final Identifier CAULDRON_BUBBLE = DehydrationMain.identifierOf("cauldron_bubble");
     public static SoundEvent CAULDRON_BUBBLE_EVENT = SoundEvent.of(CAULDRON_BUBBLE);
     public static SoundEvent EMPTY_FLASK_EVENT = SoundEvent.of(EMPTY_FLASK);
     public static SoundEvent WATER_SIP_EVENT = SoundEvent.of(WATER_SIP);

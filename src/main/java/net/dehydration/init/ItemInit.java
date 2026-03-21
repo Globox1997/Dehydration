@@ -1,5 +1,6 @@
 package net.dehydration.init;
 
+import net.dehydration.DehydrationMain;
 import net.dehydration.block.entity.BambooPumpEntity;
 import net.dehydration.item.HandbookItem;
 import net.dehydration.item.LeatherFlask;
@@ -11,11 +12,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.component.ComponentType;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.potion.Potion;
 import net.minecraft.registry.Registries;
@@ -61,7 +58,7 @@ public class ItemInit {
 
     private static Item register(String name, Item item) {
         ItemGroupEvents.modifyEntriesEvent(DEHYDRATION_ITEM_GROUP).register(entries -> entries.add(item));
-        ITEMS.put(Identifier.of("dehydration", name), item);
+        ITEMS.put(DehydrationMain.identifierOf(name), item);
         if (name.contains("flask")) {
             FLASK_ITEM_LIST.add(item);
         }

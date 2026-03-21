@@ -1,5 +1,6 @@
 package net.dehydration.init;
 
+import net.dehydration.DehydrationMain;
 import net.dehydration.block.*;
 import net.dehydration.block.entity.BambooPumpEntity;
 import net.dehydration.block.entity.CampfireCauldronEntity;
@@ -45,7 +46,7 @@ public class BlockInit {
     public static final BlockEntityType<BambooPumpEntity> BAMBOO_PUMP_ENTITY = BlockEntityType.Builder.create(BambooPumpEntity::new, BAMBOO_PUMP_BLOCK).build(null);
 
     private static Block register(String id, boolean addItemGroup, Block block) {
-        return register(Identifier.of("dehydration", id), addItemGroup, block);
+        return register(DehydrationMain.identifierOf(id), addItemGroup, block);
     }
 
     private static Block register(Identifier id, boolean addItemGroup, Block block) {
@@ -57,8 +58,8 @@ public class BlockInit {
     }
 
     public static void init() {
-        Registry.register(Registries.BLOCK_ENTITY_TYPE, "dehydration:campfire_cauldron_entity", CAMPFIRE_CAULDRON_ENTITY);
-        Registry.register(Registries.BLOCK_ENTITY_TYPE, "dehydration:bamboo_pump_entity", BAMBOO_PUMP_ENTITY);
+        Registry.register(Registries.BLOCK_ENTITY_TYPE, DehydrationMain.identifierOf("campfire_cauldron_entity"), CAMPFIRE_CAULDRON_ENTITY);
+        Registry.register(Registries.BLOCK_ENTITY_TYPE, DehydrationMain.identifierOf("bamboo_pump_entity"), BAMBOO_PUMP_ENTITY);
     }
 
 }
