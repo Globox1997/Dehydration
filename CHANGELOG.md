@@ -1,6 +1,6 @@
 ### Added:
-- Fluid behavior api
+- Purified water bucket + bowl to village loot
 ### Fixed:
 - 
 ### Changed:
-- Bowl capacity
+- 

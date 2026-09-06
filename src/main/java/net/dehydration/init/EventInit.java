@@ -12,7 +12,10 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.block.Blocks;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
@@ -60,8 +63,15 @@ public class EventInit {
 
         LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
             if (key.equals(LootTables.SPAWN_BONUS_CHEST)) {
-                LootPool pool = LootPool.builder().with(ItemEntry.builder(Items.GLASS_BOTTLE).build()).rolls(BinomialLootNumberProvider.create(5, 0.9F)).build();
-                tableBuilder.pool(pool);
+                LootPool bottlePool = LootPool.builder().with(ItemEntry.builder(Items.GLASS_BOTTLE).build()).rolls(BinomialLootNumberProvider.create(5, 0.9F)).build();
+                tableBuilder.pool(bottlePool);
+                LootPool bowlPool = LootPool.builder().with(ItemEntry.builder(ItemInit.PURIFIED_WATER_BOWL).build()).rolls(BinomialLootNumberProvider.create(2, 0.6F)).build();
+                tableBuilder.pool(bowlPool);
+            } else if (key.equals(LootTables.VILLAGE_BUTCHER_CHEST) || key.equals(LootTables.VILLAGE_CARTOGRAPHER_CHEST) || key.equals(LootTables.VILLAGE_SHEPARD_CHEST)) {
+                LootPool bowlPool = LootPool.builder().with(ItemEntry.builder(ItemInit.PURIFIED_WATER_BOWL).build()).rolls(BinomialLootNumberProvider.create(4, 0.3F)).build();
+                tableBuilder.pool(bowlPool);
+                LootPool bucketPool = LootPool.builder().with(ItemEntry.builder(ItemInit.PURIFIED_BUCKET).build()).rolls(BinomialLootNumberProvider.create(1, 0.3F)).build();
+                tableBuilder.pool(bucketPool);
             }
         });
 
@@ -93,7 +103,7 @@ public class EventInit {
             }
             return TypedActionResult.pass(player.getStackInHand(hand));
         });
-        
+
         UseBlockCallback.EVENT.register((player, world, hand, result) -> {
             if (!player.isCreative() && !player.isSpectator() && player.isSneaking() && player.getMainHandStack().isEmpty()) {
                 HitResult hitResult = player.raycast(player.getBlockInteractionRange(), 0.0F, true);
