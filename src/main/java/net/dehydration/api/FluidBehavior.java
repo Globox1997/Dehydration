@@ -30,54 +30,42 @@ public class FluidBehavior {
 
     public static void registerWaterBucketForCopperCauldron(Item emptyBucket, Item filledBucket) {
         CopperCauldronBehavior.WATER_COPPER_CAULDRON_BEHAVIOR.put(
-                emptyBucket,
-                (state, world, pos, player, hand, stack) ->
+                emptyBucket, (state, world, pos, player, hand, stack) ->
                         CopperCauldronBehavior.emptyCauldron(
                                 state, world, pos, player, hand, stack,
                                 new ItemStack(filledBucket),
                                 s -> s.get(CopperLeveledCauldronBlock.LEVEL) == 3,
-                                SoundEvents.ITEM_BUCKET_FILL
-                        )
-        );
+                                SoundEvents.ITEM_BUCKET_FILL));
     }
 
     public static void registerWaterBucketForRainwaterCollector(Item emptyBucket, Item filledBucket) {
         RainwaterCollectorBehavior.WATER_RAINWATER_COLLECTOR_BEHAVIOR.put(
-                emptyBucket,
-                (state, world, pos, player, hand, stack) ->
+                emptyBucket, (state, world, pos, player, hand, stack) ->
                         RainwaterCollectorBehavior.emptyCollector(
                                 state, world, pos, player, hand, stack,
                                 new ItemStack(filledBucket),
                                 s -> s.get(RainwaterLeveledCollectorBlock.LEVEL) == 3,
-                                SoundEvents.ITEM_BUCKET_FILL
-                        )
-        );
+                                SoundEvents.ITEM_BUCKET_FILL));
     }
 
     public static void registerPurifiedWaterBucket(Item emptyBucket, Item filledBucket) {
         // Copper Cauldron
         CopperCauldronBehavior.PURIFIED_WATER_COPPER_CAULDRON_BEHAVIOR.put(
-                emptyBucket,
-                (state, world, pos, player, hand, stack) ->
+                emptyBucket, (state, world, pos, player, hand, stack) ->
                         CopperCauldronBehavior.emptyCauldron(
                                 state, world, pos, player, hand, stack,
                                 new ItemStack(filledBucket),
-                                s -> s.get(CopperLeveledCauldronBlock.LEVEL) == 3,
-                                SoundEvents.ITEM_BUCKET_FILL
-                        )
+                                s -> s.get(CopperLeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL)
         );
 
         // Rainwater Collector
         RainwaterCollectorBehavior.PURIFIED_WATER_RAINWATER_COLLECTOR_BEHAVIOR.put(
-                emptyBucket,
-                (state, world, pos, player, hand, stack) ->
+                emptyBucket, (state, world, pos, player, hand, stack) ->
                         RainwaterCollectorBehavior.emptyCollector(
                                 state, world, pos, player, hand, stack,
                                 new ItemStack(filledBucket),
                                 s -> s.get(RainwaterLeveledCollectorBlock.LEVEL) == 3,
-                                SoundEvents.ITEM_BUCKET_FILL
-                        )
-        );
+                                SoundEvents.ITEM_BUCKET_FILL));
 
         // Dispenser
         DispenserBehavior.registerPurifiedBucket(filledBucket, emptyBucket);
