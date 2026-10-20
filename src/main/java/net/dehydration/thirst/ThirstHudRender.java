@@ -59,9 +59,8 @@ public class ThirstHudRender {
                     // Render ui droplets
                     for (variable_one = 0; variable_one < 10; ++variable_one) {
                         variable_three = height;
-                        if (thirstManager.dehydration >= 4.0F && ticks % (thirst * 3 + 1) == 0) {
+                        if (playerEntity.hasStatusEffect(EffectInit.THIRST) && ticks % (thirst * 3 + 1) == 0) {
                             variable_three = height + (playerEntity.getWorld().getRandom().nextInt(3) - 1); // bouncy
-                            thirstManager.dehydration -= 4.0F;
                         } else if (ticks % (thirst * 8 + 3) == 0) {
                             variable_three = height + (playerEntity.getWorld().getRandom().nextInt(3) - 1); // bouncy
                         }
@@ -121,6 +120,11 @@ public class ThirstHudRender {
                 }
             }
         }
+    }
+
+    public static boolean shouldRenderThirstHud(@Nullable PlayerEntity playerEntity) {
+        return playerEntity != null && !playerEntity.isInvulnerable() && !playerEntity.isCreative() && !playerEntity.isSpectator()
+                && ((ThirstManagerAccess) playerEntity).getThirstManager().hasThirst() && getHeartCount(playerEntity.getVehicle()) == 0;
     }
 
     private static int getHeartCount(@Nullable Entity entity) {
