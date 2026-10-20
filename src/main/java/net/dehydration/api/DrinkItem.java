@@ -35,6 +35,7 @@ public class DrinkItem extends Item {
             Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity) playerEntity, stack);
         }
 
+        boolean consumed = false;
         if (playerEntity != null) {
             // Increment the use statistic
             playerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
@@ -46,20 +47,19 @@ public class DrinkItem extends Item {
                 if (foodComponent != null) {
                     DrinkEvent.EVENT.invoker().onDrink(stack, playerEntity);
                     user.eatFood(world, stack, foodComponent);
+                    consumed = true;
                 }
             }
         }
 
         // Create a glass bottle after the item is consumed
-        if (playerEntity == null || !playerEntity.getAbilities().creativeMode) {
+        if (consumed) {
             if (stack.isEmpty()) {
                 return new ItemStack(Items.GLASS_BOTTLE);
             }
 
-            if (playerEntity != null) {
-                // offerOrDrop is generally safer to use than insertStack
-                playerEntity.getInventory().offerOrDrop(new ItemStack(Items.GLASS_BOTTLE));
-            }
+            // offerOrDrop is generally safer to use than insertStack
+            playerEntity.getInventory().offerOrDrop(new ItemStack(Items.GLASS_BOTTLE));
         }
 
         return stack;
