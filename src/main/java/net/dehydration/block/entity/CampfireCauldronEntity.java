@@ -3,9 +3,11 @@ package net.dehydration.block.entity;
 import net.dehydration.block.CampfireCauldronBlock;
 import net.dehydration.init.BlockInit;
 import net.dehydration.init.ConfigInit;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -22,16 +24,17 @@ public class CampfireCauldronEntity extends BlockEntity {
     public void readNbt(NbtCompound tag, WrapperLookup registryLookup) {
         super.readNbt(tag, registryLookup);
         this.isBoiled = tag.getBoolean("Boiled");
+        this.ticker = tag.getInt("BoilingTicks");
+        if (this.world != null && this.world.isClient()) {
+            this.world.updateListeners(this.pos, this.getCachedState(), this.getCachedState(), Block.NOTIFY_LISTENERS);
+        }
     }
 
     @Override
     public void writeNbt(NbtCompound tag, WrapperLookup registryLookup) {
         super.writeNbt(tag, registryLookup);
         tag.putBoolean("Boiled", isBoiled);
-    }
-
-    public static void clientTick(World world, BlockPos pos, BlockState state, CampfireCauldronEntity blockEntity) {
-        blockEntity.update();
+        tag.putInt("BoilingTicks", ticker);
     }
 
     public static void serverTick(World world, BlockPos pos, BlockState state, CampfireCauldronEntity blockEntity) {
@@ -39,12 +42,24 @@ public class CampfireCauldronEntity extends BlockEntity {
     }
 
     public void update() {
+        if (this.world == null) {
+            return;
+        }
+        if (this.getCachedState().get(CampfireCauldronBlock.LEVEL) <= 0) {
+            if (this.isBoiled || this.ticker != 0) {
+                this.isBoiled = false;
+                this.ticker = 0;
+                this.markDirty();
+            }
+            return;
+        }
         CampfireCauldronBlock campfireCauldronBlock = (CampfireCauldronBlock) this.getCachedState().getBlock();
-        if (campfireCauldronBlock.isFireBurning(world, pos) && this.getCachedState().get(CampfireCauldronBlock.LEVEL) > 0 && !this.isBoiled) {
+        if (!this.isBoiled && campfireCauldronBlock.isFireBurning(world, pos)) {
             this.ticker++;
             if (this.ticker >= ConfigInit.CONFIG.water_boiling_time) {
                 this.isBoiled = true;
                 this.ticker = 0;
+                this.markDirty();
             }
         }
     }
@@ -62,10 +77,20 @@ public class CampfireCauldronEntity extends BlockEntity {
         }
     }
 
-    // Client sync issue since method gets only called on server and client looks for isBoiled
+    @Override
+    public BlockEntityUpdateS2CPacket toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
+
+    @Override
+    public NbtCompound toInitialChunkDataNbt(WrapperLookup registryLookup) {
+        return this.createNbt(registryLookup);
+    }
+
     public void onFillingCauldron() {
         this.isBoiled = false;
         this.ticker = 0;
+        this.markDirty();
     }
 
 }
