@@ -20,9 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-/**
- * Implementation of the storage for a purified water potion.
- */
 public class PurifiedWaterPotionStorage implements ExtractionOnlyStorage<FluidVariant>, SingleSlotStorage<FluidVariant> {
     private static final FluidVariant CONTAINED_FLUID = FluidVariant.of(FluidInit.PURIFIED_WATER);
     private static final long CONTAINED_AMOUNT = FluidConstants.BOTTLE;
@@ -34,9 +31,11 @@ public class PurifiedWaterPotionStorage implements ExtractionOnlyStorage<FluidVa
 
     private static boolean isPurifiedWaterPotion(ContainerItemContext context) {
         ItemVariant variant = context.getItemVariant();
-        Optional<? extends PotionContentsComponent> potionContents = variant.getComponents().get(DataComponentTypes.POTION_CONTENTS);
-        RegistryEntry<Potion> potion = potionContents.map(PotionContentsComponent::potion).orElse(null).orElse(null);
-        return variant.isOf(Items.POTION) && potion == ItemInit.PURIFIED_WATER;
+        if (!variant.isOf(Items.POTION)) {
+            return false;
+        }
+        Optional<RegistryEntry<Potion>> potion = variant.toStack().getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT).potion();
+        return potion.isPresent() && potion.get() == ItemInit.PURIFIED_WATER;
     }
 
     private final ContainerItemContext context;
