@@ -1,8 +1,8 @@
 package net.dehydration.api;
 
 import net.dehydration.access.ThirstManagerAccess;
-import net.dehydration.compat.CroptopiaCompat;
 import net.dehydration.thirst.ThirstManager;
+import net.dehydration.util.ThirstHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
@@ -27,6 +27,9 @@ public interface DehydrationAPI {
      * @param playerEntity The {@link PlayerEntity} consuming the {@link DrinkItem}
      */
     default void onDrink(ItemStack stack, PlayerEntity playerEntity) {
+        if (playerEntity.getWorld().isClient()) {
+            return;
+        }
         // Get the ThirstManager using a convenient utility called ThirstManagerAccess
         ThirstManager thirstManager = ((ThirstManagerAccess) playerEntity).getThirstManager();
 
@@ -37,7 +40,7 @@ public interface DehydrationAPI {
 
     /**
      * Calculates the thirst that you get from a specific {@link DrinkItem}. <br>
-     * The usual approach for implementing this method would be by using Minecraft tags, like in {@link CroptopiaCompat}. <br>
+     * The usual approach for implementing this method would be by using Minecraft tags, like in {@link ThirstHelper#getThirstQuench}. <br>
      * You are free to handle this however you want.
      *
      * @param stack        The consumed {@link DrinkItem}'s {@link ItemStack}
