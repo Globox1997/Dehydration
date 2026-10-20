@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class PlayerScreenHandlerMixin {
 
     @Inject(method = "quickMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;copy()Lnet/minecraft/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILSOFT)
-    public void onCraftedLeatherFlask(PlayerEntity player, int slot, CallbackInfoReturnable<ItemStack> cir, ItemStack itemStack, Slot slot2, ItemStack itemStack2) {
+    private void onCraftedLeatherFlask(PlayerEntity player, int slot, CallbackInfoReturnable<ItemStack> cir, ItemStack itemStack, Slot slot2, ItemStack itemStack2) {
         if (player instanceof ServerPlayerEntity && slot2 instanceof CraftingResultSlot) {
             if (itemStack2.getItem() instanceof LeatherFlask && itemStack2.get(ItemInit.FLASK_DATA) == null) {
                 itemStack2.set(ItemInit.FLASK_DATA, new FlaskComponent(0, 0));
