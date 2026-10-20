@@ -1,5 +1,6 @@
 package net.dehydration.data;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -12,17 +13,15 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DataLoader implements SimpleSynchronousResourceReloadListener {
-
-    // Map to store replacing bools
-    private HashMap<Integer, Boolean> replaceList = new HashMap<Integer, Boolean>();
 
     @Override
     public Identifier getFabricId() {
@@ -31,47 +30,41 @@ public class DataLoader implements SimpleSynchronousResourceReloadListener {
 
     @Override
     public void reload(ResourceManager manager) {
+        List<Set<Item>> additiveItems = new ArrayList<>();
+        List<Set<Item>> replacingItems = new ArrayList<>();
+        boolean[] replaced = new boolean[21];
+        for (int i = 0; i <= 20; i++) {
+            additiveItems.add(new LinkedHashSet<>());
+            replacingItems.add(new LinkedHashSet<>());
+        }
 
         manager.findResources("hydration_items", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
-            try {
-                InputStream stream = resourceRef.getInputStream();
-                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+            try (Reader reader = new InputStreamReader(resourceRef.getInputStream(), StandardCharsets.UTF_8)) {
+                JsonObject data = JsonParser.parseReader(reader).getAsJsonObject();
 
                 for (int i = 1; i <= 20; i++) {
-                    replaceList.put(i, false);
                     JsonElement jsonElement = data.get(String.valueOf(i));
-                    if (jsonElement != null && jsonElement instanceof JsonObject) {
-                        JsonObject jsonObject = (JsonObject) jsonElement;
-
-                        if (JsonHelper.getBoolean(jsonObject, "replace", false))
-                            replaceList.replace(i, true);
-
-                        if (jsonObject.getAsJsonArray("items") != null) {
-                            if (JsonHelper.getBoolean(jsonObject, "replace", false)) {
-                                Iterator<HydrationTemplate> iterator = DehydrationMain.HYDRATION_TEMPLATES.iterator();
-                                while (iterator.hasNext()) {
-                                    if (iterator.next().getHydration() == i) {
-                                        iterator.remove();
-                                    }
-                                }
-                            } else if (replaceList.get(i)) {
-                                continue;
-                            }
-
-                            List<Item> items = new ArrayList<Item>();
-                            for (int u = 0; u < jsonObject.getAsJsonArray("items").size(); u++) {
-                                if (!Registries.ITEM.containsId(Identifier.of(jsonObject.getAsJsonArray("items").get(u).getAsString()))) {
-                                    DehydrationMain.LOGGER.warn("{} is not a valid item identifier", jsonObject.getAsJsonArray("items").get(u).getAsString());
-                                    continue;
-                                }
-                                items.add(Registries.ITEM.get(Identifier.of(jsonObject.getAsJsonArray("items").get(u).getAsString())));
-                            }
-                            DehydrationMain.HYDRATION_TEMPLATES.add(new HydrationTemplate(i, items));
-
-                        }
-
-                    } else
+                    if (!(jsonElement instanceof JsonObject jsonObject)) {
                         continue;
+                    }
+                    boolean replace = JsonHelper.getBoolean(jsonObject, "replace", false);
+                    if (replace) {
+                        replaced[i] = true;
+                    }
+                    JsonArray itemArray = jsonObject.getAsJsonArray("items");
+                    if (itemArray == null) {
+                        continue;
+                    }
+                    Set<Item> target = replace ? replacingItems.get(i) : additiveItems.get(i);
+                    for (JsonElement itemElement : itemArray) {
+                        String itemId = itemElement.getAsString();
+                        Identifier identifier = Identifier.tryParse(itemId);
+                        if (identifier == null || !Registries.ITEM.containsId(identifier)) {
+                            DehydrationMain.LOGGER.warn("{} is not a valid item identifier", itemId);
+                            continue;
+                        }
+                        target.add(Registries.ITEM.get(identifier));
+                    }
                 }
 
             } catch (Exception e) {
@@ -79,6 +72,15 @@ public class DataLoader implements SimpleSynchronousResourceReloadListener {
             }
         });
 
+        List<HydrationTemplate> templates = new ArrayList<>();
+        for (int i = 1; i <= 20; i++) {
+            Set<Item> items = replaced[i] ? replacingItems.get(i) : additiveItems.get(i);
+            if (!items.isEmpty()) {
+                templates.add(new HydrationTemplate(i, new ArrayList<>(items)));
+            }
+        }
+        DehydrationMain.HYDRATION_TEMPLATES.clear();
+        DehydrationMain.HYDRATION_TEMPLATES.addAll(templates);
     }
 
 }
