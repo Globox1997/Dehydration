@@ -3,6 +3,7 @@ package net.dehydration.mixin;
 import com.mojang.authlib.GameProfile;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,38 +23,30 @@ import net.minecraft.world.World;
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements ServerPlayerAccess {
 
+    @Unique
     private ThirstManager thirstManager = ((ThirstManagerAccess) this).getThirstManager();
+    @Unique
     private int syncedThirstLevel = -99999999;
-    public int compatSync = 0;
+    @Unique
+    private int compatSyncTicks = 0;
 
     public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super(world, pos, yaw, gameProfile);
     }
 
     @Inject(method = "playerTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;tick()V", shift = Shift.AFTER))
-    public void playerTickMixin(CallbackInfo info) {
+    private void playerTickMixin(CallbackInfo info) {
         if (this.syncedThirstLevel != this.thirstManager.getThirstLevel() && this.thirstManager.hasThirst()) {
             ThirstServerPacket.writeS2CThirstUpdatePacket((ServerPlayerEntity) (Object) this);
             this.syncedThirstLevel = thirstManager.getThirstLevel();
         }
-        if (compatSync > 0) {
-            compatSync--;
-            if (compatSync == 1) {
+        if (compatSyncTicks > 0) {
+            compatSyncTicks--;
+            if (compatSyncTicks == 1) {
                 ThirstServerPacket.writeS2CExcludedSyncPacket((ServerPlayerEntity) (Object) this, thirstManager.hasThirst());
             }
         }
     }
-
-    // @Inject(method = "Lnet/minecraft/server/network/ServerPlayerEntity;copyFrom(Lnet/minecraft/server/network/ServerPlayerEntity;Z)V", at = @At(value = "INVOKE", target =
-    // "Lnet/minecraft/server/network/ServerPlayerEntity;setHealth(F)V"))
-    // public void copyFromMixinOne(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo info) {
-    // this.thirstManager.setThirstLevel(((ThirstManagerAccess) oldPlayer).getThirstManager().getThirstLevel());
-    // }
-
-    // @Inject(method = "Lnet/minecraft/server/network/ServerPlayerEntity;copyFrom(Lnet/minecraft/server/network/ServerPlayerEntity;Z)V", at = @At(value = "TAIL"))
-    // public void copyFromMixinTwo(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo info) {
-    // this.syncedThirstLevel = -1;
-    // }
 
     @Inject(method = "Lnet/minecraft/server/network/ServerPlayerEntity;teleport(Lnet/minecraft/server/world/ServerWorld;DDDFF)V", at = @At("TAIL"))
     private void teleportMixin(ServerWorld targetWorld, double x, double y, double z, float yaw, float pitch, CallbackInfo info) {
@@ -62,7 +55,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Se
 
     @Override
     public void compatSync() {
-        this.compatSync = 5;
+        this.compatSyncTicks = 5;
     }
 
     @Override
