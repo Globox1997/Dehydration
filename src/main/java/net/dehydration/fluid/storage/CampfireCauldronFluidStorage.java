@@ -14,9 +14,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-/**
- * fluid storage for campfire cauldron
- */
 public class CampfireCauldronFluidStorage extends SingleVariantStorage<FluidVariant> {
 
     private static final long CAPACITY = FluidConstants.BOTTLE * 4L;
@@ -64,7 +61,6 @@ public class CampfireCauldronFluidStorage extends SingleVariantStorage<FluidVari
     @Override
     protected void readSnapshot(ResourceAmount<FluidVariant> snapshot) {
         super.readSnapshot(snapshot);
-        //update values if a snapshot is loaded
         this.fluidLevel = Math.min((int) (this.amount / FluidConstants.BOTTLE), 4);
         this.updateBoiling = !this.variant.isBlank() && this.variant.getFluid() != FluidInit.PURIFIED_WATER;
     }
@@ -76,12 +72,10 @@ public class CampfireCauldronFluidStorage extends SingleVariantStorage<FluidVari
             return 0;
         }
         updateSnapshots(transaction);
-        // minimal amount to insert is the bottle amount to increase the fluid level
         int levelIncrease = Math.min((int) (maxAmount / FluidConstants.BOTTLE), 4 - this.fluidLevel);
         if (levelIncrease <= 0) {
             return 0;
         }
-        //update fluid storage
         this.fluidLevel += levelIncrease;
         long insertedAmount = levelIncrease * FluidConstants.BOTTLE;
         this.amount += insertedAmount;
@@ -91,7 +85,7 @@ public class CampfireCauldronFluidStorage extends SingleVariantStorage<FluidVari
         if (this.variant.isBlank()) {
             this.variant = insertedVariant;
         } else if (this.variant.getFluid() != insertedVariant.getFluid()) {
-            this.variant = this.variant.getFluid() != FluidInit.PURIFIED_WATER ? insertedVariant : this.variant;
+            this.variant = FluidVariant.of(Fluids.WATER);
         }
         return insertedAmount;
     }
@@ -103,12 +97,10 @@ public class CampfireCauldronFluidStorage extends SingleVariantStorage<FluidVari
             return 0;
         }
         updateSnapshots(transaction);
-        // minimal amount to extract is the bottle amount to decrease the fluid level
         int levelDecrease = Math.min((int) (maxAmount / FluidConstants.BOTTLE), this.fluidLevel);
         if (levelDecrease <= 0) {
             return 0;
         }
-        //update fluid storage
         this.fluidLevel -= levelDecrease;
         long extractedAmount = levelDecrease * FluidConstants.BOTTLE;
         this.amount -= extractedAmount;
@@ -122,7 +114,6 @@ public class CampfireCauldronFluidStorage extends SingleVariantStorage<FluidVari
 
     @Override
     protected void onFinalCommit() {
-        //update block & block entity
         if (this.state.getBlock() instanceof CampfireCauldronBlock campfireCauldronBlock) {
             campfireCauldronBlock.setLevel(this.world, this.pos, this.state, this.fluidLevel);
             if (this.updateBoiling) {
