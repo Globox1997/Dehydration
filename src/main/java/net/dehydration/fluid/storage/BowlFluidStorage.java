@@ -15,7 +15,7 @@ import net.minecraft.item.Items;
 
 public class BowlFluidStorage extends SingleVariantStorage<FluidVariant> {
 
-    private final static long BOWL_CAPACITY = FluidConstants.BOTTLE;
+    private final static long BOWL_CAPACITY = FluidConstants.BOTTLE * 2;
 
     private final ItemStack stack;
     private final ContainerItemContext context;
