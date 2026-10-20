@@ -33,7 +33,7 @@ public abstract class DispenserBlockMixin extends BlockWithEntity {
     }
 
     @Inject(method = "dispense", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/block/entity/DispenserBlockEntity;getStack(I)Lnet/minecraft/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    protected void dispenseMixin(ServerWorld world, BlockState state, BlockPos pos, CallbackInfo info, DispenserBlockEntity dispenserBlockEntity, BlockPointer blockPointer, int i,
+    private void dispenseMixin(ServerWorld world, BlockState state, BlockPos pos, CallbackInfo info, DispenserBlockEntity dispenserBlockEntity, BlockPointer blockPointer, int i,
                                  ItemStack itemStack) {
         BlockPos newPos = pos.offset(state.get(DispenserBlock.FACING));
         BlockState blockState = world.getBlockState(newPos);
