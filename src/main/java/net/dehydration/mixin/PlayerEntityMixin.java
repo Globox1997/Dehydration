@@ -31,7 +31,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
     }
 
     @Shadow
-    protected HungerManager hungerManager = new HungerManager();
+    protected HungerManager hungerManager;
     @Shadow
     private int sleepTimer;
     @Unique
@@ -41,18 +41,22 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
         super(entityType, world);
     }
 
+    @Shadow
+    public abstract boolean isCreative();
+
     @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;update(Lnet/minecraft/entity/player/PlayerEntity;)V", shift = Shift.AFTER))
     private void tickMixin(CallbackInfo info) {
-        if (this.thirstManager.hasThirst()) {
+        if (!this.getWorld().isClient() && this.thirstManager.hasThirst()) {
             this.thirstManager.update((PlayerEntity) (Object) this);
+            if (this.isSprinting() && !this.isCreative() && !this.isSpectator() && this.thirstManager.getThirstLevel() < 6) {
+                this.setSprinting(false);
+            }
         }
     }
 
     @Inject(method = "Lnet/minecraft/entity/player/PlayerEntity;tickMovement()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;updateItems()V", shift = Shift.BEFORE))
     private void tickMovementMixin(CallbackInfo info) {
-        if (this.getWorld().getDifficulty() == Difficulty.PEACEFUL && this.getWorld().getGameRules().getBoolean(GameRules.NATURAL_REGENERATION) && this.thirstManager.hasThirst()) {
-            PlayerEntity player = (PlayerEntity) (Object) this;
-            this.thirstManager.update(player);
+        if (!this.getWorld().isClient() && this.getWorld().getDifficulty() == Difficulty.PEACEFUL && this.getWorld().getGameRules().getBoolean(GameRules.NATURAL_REGENERATION) && this.thirstManager.hasThirst()) {
             if (this.thirstManager.isNotFull() && this.age % 10 == 0) {
                 this.thirstManager.setThirstLevel(this.thirstManager.getThirstLevel() + 1);
             }
