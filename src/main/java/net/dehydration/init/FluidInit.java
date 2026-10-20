@@ -11,7 +11,6 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
@@ -37,7 +36,7 @@ public class FluidInit {
         // Register bowl storage
         FluidStorage.ITEM.registerForItems(BowlFluidStorage::new, Items.BOWL, ItemInit.WATER_BOWL, ItemInit.PURIFIED_WATER_BOWL);
         // Register campfire cauldron storage
-        FluidStorage.SIDED.registerForBlocks((world, pos, state, blockEntity, context) -> new CampfireCauldronFluidStorage(world, pos, state, (CampfireCauldronEntity) blockEntity), BlockInit.CAMPFIRE_CAULDRON_BLOCK);
+        FluidStorage.SIDED.registerForBlocks((world, pos, state, blockEntity, context) -> blockEntity instanceof CampfireCauldronEntity campfireCauldronEntity ? new CampfireCauldronFluidStorage(world, pos, state, campfireCauldronEntity) : null, BlockInit.CAMPFIRE_CAULDRON_BLOCK);
         //register copper cauldron fluid storage
         FluidStorage.SIDED.registerForBlocks((world, pos, state, be, context) -> new CopperCauldronFluidStorage(world, pos), BlockInit.COPPER_CAULDRON_BLOCK, BlockInit.COPPER_WATER_CAULDRON_BLOCK, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK);
         //register rainwater collector fluid storage
@@ -46,13 +45,5 @@ public class FluidInit {
 
     private static <T extends Fluid> T register(String id, T value) {
         return (T) Registry.register(Registries.FLUID, id, value);
-    }
-
-    static {
-        for (Fluid fluid : Registries.FLUID) {
-            for (FluidState fluidState : fluid.getStateManager().getStates()) {
-                Fluid.STATE_IDS.add(fluidState);
-            }
-        }
     }
 }
