@@ -15,6 +15,7 @@
     "HoneyBottleItemMixin",
     "CauldronBehaviorMixin",
     "WaterFluidMixin",
+    "FlowableFluidMixin",
     "GlassBottleItemMixin",
     "PlayerScreenHandlerMixin",
     "PointedDripstoneBlockMixin",
