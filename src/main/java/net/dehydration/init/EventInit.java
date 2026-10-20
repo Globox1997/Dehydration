@@ -5,6 +5,7 @@ import net.dehydration.access.ServerPlayerAccess;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.network.ThirstServerPacket;
 import net.dehydration.thirst.ThirstManager;
+import net.dehydration.util.ThirstHelper;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -12,10 +13,6 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.block.Blocks;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
@@ -30,8 +27,8 @@ import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -87,13 +84,9 @@ public class EventInit {
                             if (world.getFluidState(blockPos).isIn(TagInit.PURIFIED_WATER)) {
                                 itemStack = new ItemStack(ItemInit.PURIFIED_WATER_BOWL);
                             }
+                            player.incrementStat(Stats.USED.getOrCreateStat(Items.BOWL));
                             player.setStackInHand(hand, ItemUsage.exchangeStack(player.getStackInHand(hand), player, itemStack));
-                            player.incrementStat(Stats.USED.getOrCreateStat(player.getStackInHand(hand).getItem()));
-                            if (world.getBlockState(blockPos).contains(Properties.WATERLOGGED)) {
-                                world.setBlockState(blockPos, world.getBlockState(blockPos).with(Properties.WATERLOGGED, false));
-                            } else {
-                                world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
-                            }
+                            ThirstHelper.drainWaterSource(player, world, blockPos);
                         }
                         return TypedActionResult.success(player.getStackInHand(hand), true);
                     } else {
@@ -105,7 +98,7 @@ public class EventInit {
         });
 
         UseBlockCallback.EVENT.register((player, world, hand, result) -> {
-            if (!player.isCreative() && !player.isSpectator() && player.isSneaking() && player.getMainHandStack().isEmpty()) {
+            if (hand == Hand.MAIN_HAND && !player.isCreative() && !player.isSpectator() && player.isSneaking() && player.getMainHandStack().isEmpty()) {
                 HitResult hitResult = player.raycast(player.getBlockInteractionRange(), 0.0F, true);
                 BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
                 if (world.canPlayerModifyAt(player, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
@@ -129,11 +122,7 @@ public class EventInit {
                                         }
                                     }
                                     if (!ConfigInit.CONFIG.allow_non_flowing_water_sip && world.getFluidState(blockPos).isStill()) {
-                                        if (world.getBlockState(blockPos).contains(Properties.WATERLOGGED)) {
-                                            world.setBlockState(blockPos, world.getBlockState(blockPos).with(Properties.WATERLOGGED, false));
-                                        } else {
-                                            world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
-                                        }
+                                        ThirstHelper.drainWaterSource(player, world, blockPos);
                                     }
                                 } else {
                                     world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundInit.WATER_SIP_EVENT, SoundCategory.PLAYERS, 1.0F,

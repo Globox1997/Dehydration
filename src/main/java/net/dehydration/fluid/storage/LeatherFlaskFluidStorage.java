@@ -15,7 +15,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,7 +26,7 @@ public class LeatherFlaskFluidStorage extends SingleVariantStorage<FluidVariant>
 
     private final ContainerItemContext context;
     private final LeatherFlask flaskItem;
-    private final Map<ResourceAmount<FluidVariant>, Integer> qualitySnapshots = new HashMap<>();
+    private final Map<ResourceAmount<FluidVariant>, Integer> qualitySnapshots = new IdentityHashMap<>();
 
     private int fillLevel = 0;
     private int qualityLevel = 0;
@@ -65,7 +65,6 @@ public class LeatherFlaskFluidStorage extends SingleVariantStorage<FluidVariant>
     @Override
     protected boolean canExtract(FluidVariant variant) {
         return this.variant.getFluid() == variant.getFluid() && this.fillLevel > 0;
-        //return false; //cannot be extracted from
     }
 
     @Override
@@ -80,12 +79,10 @@ public class LeatherFlaskFluidStorage extends SingleVariantStorage<FluidVariant>
             return 0;
         }
         updateSnapshots(transaction);
-        // minimal amount to insert is the bottle amount to increase the fill level
         int levelIncrease = Math.min((int) (maxAmount / FluidConstants.BOTTLE), getMaxLevel() - this.fillLevel);
         if (levelIncrease <= 0) {
             return 0;
         }
-        //update fluid storage
         if (insertedVariant.getFluid() != FluidInit.PURIFIED_WATER) {
             int dirtyAddition = (levelIncrease > this.fillLevel) ? 2 : 1;
             this.qualityLevel = Math.min(this.qualityLevel + dirtyAddition, 2);
@@ -94,7 +91,6 @@ public class LeatherFlaskFluidStorage extends SingleVariantStorage<FluidVariant>
         long insertedAmount = levelIncrease * FluidConstants.BOTTLE;
         this.amount += insertedAmount;
         this.variant = (this.qualityLevel) > 0 ? DIRTY_WATER : PURIFIED_WATER;
-        //exchange item
         ItemStack stack = context.getItemVariant().toStack();
         stack.set(ItemInit.FLASK_DATA, new FlaskComponent(this.fillLevel, this.qualityLevel));
         if (context.exchange(ItemVariant.of(stack), 1, transaction) == 1) {
@@ -110,12 +106,10 @@ public class LeatherFlaskFluidStorage extends SingleVariantStorage<FluidVariant>
             return 0;
         }
         updateSnapshots(transaction);
-        // minimal amount to extract is the bottle amount to decrease the fill level
         int levelDecrease = Math.min((int) (maxAmount / FluidConstants.BOTTLE), this.fillLevel);
         if (levelDecrease <= 0) {
             return 0;
         }
-        //update fluid storage
         this.fillLevel -= levelDecrease;
         long extractedAmount = levelDecrease * FluidConstants.BOTTLE;
         this.amount -= extractedAmount;
@@ -125,7 +119,6 @@ public class LeatherFlaskFluidStorage extends SingleVariantStorage<FluidVariant>
             this.amount = 0;
             this.variant = this.getBlankVariant();
         }
-        //exchange item
         ItemStack stack = context.getItemVariant().toStack();
         stack.set(ItemInit.FLASK_DATA, new FlaskComponent(this.fillLevel, this.qualityLevel));
         if (context.exchange(ItemVariant.of(stack), 1, transaction) == 1) {
@@ -150,7 +143,6 @@ public class LeatherFlaskFluidStorage extends SingleVariantStorage<FluidVariant>
     @Override
     protected void readSnapshot(ResourceAmount<FluidVariant> snapshot) {
         super.readSnapshot(snapshot);
-        //update values if a snapshot is loaded
         this.fillLevel = Math.min((int) (this.amount / FluidConstants.BOTTLE), getMaxLevel());
         this.qualityLevel = this.qualitySnapshots.get(snapshot);
     }

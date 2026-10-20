@@ -1,8 +1,8 @@
 package net.dehydration.mixin;
 
-import net.dehydration.DehydrationMain;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.misc.ThirstTooltipData;
+import net.dehydration.util.ThirstHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MilkBucketItem;
@@ -21,16 +21,7 @@ public abstract class MilkBucketItemMixin extends Item {
     @Override
     public Optional<TooltipData> getTooltipData(ItemStack stack) {
         if (ConfigInit.CONFIG.thirst_preview) {
-            int thirstQuench = 0;
-            for (int i = 0; i < DehydrationMain.HYDRATION_TEMPLATES.size(); i++) {
-                if (DehydrationMain.HYDRATION_TEMPLATES.get(i).containsItem(stack.getItem())) {
-                    thirstQuench = DehydrationMain.HYDRATION_TEMPLATES.get(i).getHydration();
-                    break;
-                }
-            }
-            if (thirstQuench == 0) {
-                thirstQuench = ConfigInit.CONFIG.milk_thirst_quench;
-            }
+            int thirstQuench = ThirstHelper.getThirstQuench(stack, true);
             return Optional.of(new ThirstTooltipData(1, thirstQuench));
         } else {
             return super.getTooltipData(stack);

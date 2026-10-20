@@ -54,8 +54,8 @@ public class ThirstClientPacket {
                 hydrationTemplates.add(new HydrationTemplate(templateList.get(i), items));
             }
             context.client().execute(() -> {
-                DehydrationMain.HYDRATION_TEMPLATES.clear();
-                DehydrationMain.HYDRATION_TEMPLATES.addAll(hydrationTemplates);
+                DehydrationMain.CLIENT_HYDRATION_TEMPLATES.clear();
+                DehydrationMain.CLIENT_HYDRATION_TEMPLATES.addAll(hydrationTemplates);
             });
         });
     }

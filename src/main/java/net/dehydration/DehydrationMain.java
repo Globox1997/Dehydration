@@ -22,6 +22,7 @@ public class DehydrationMain implements ModInitializer {
 
     // map for storing attributes before logging into a server
     public static final List<HydrationTemplate> HYDRATION_TEMPLATES = new ArrayList<HydrationTemplate>();
+    public static final List<HydrationTemplate> CLIENT_HYDRATION_TEMPLATES = new ArrayList<HydrationTemplate>();
 
     @Override
     public void onInitialize() {

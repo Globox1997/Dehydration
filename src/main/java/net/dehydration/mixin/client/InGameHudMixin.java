@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 
-import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -24,13 +23,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class InGameHudMixin {
 
     @Shadow
-    @Mutable
     @Final
     private MinecraftClient client;
 
+    @Shadow
+    private PlayerEntity getCameraPlayer() {
+        return null;
+    }
+
     @ModifyReturnValue(method = "getHeartRows", at = @At("RETURN"))
     private int getHeartRowsMixin(int original) {
-        return original + 1;
+        return ThirstHudRender.shouldRenderThirstHud(this.getCameraPlayer()) ? original + 1 : original;
     }
 
     @Inject(method = "renderFood", at = @At("TAIL"))

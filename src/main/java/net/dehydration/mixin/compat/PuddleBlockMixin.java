@@ -24,13 +24,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class PuddleBlockMixin {
 
     @Inject(method = "onUseWithItem", at = @At("HEAD"), cancellable = true)
-    public void onUseWithItemMixin(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ItemActionResult> info) {
+    private void onUseWithItemMixin(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ItemActionResult> info) {
         if (stack.getItem() instanceof LeatherFlask leatherFlask) {
             FlaskComponent flaskComponent = stack.getOrDefault(ItemInit.FLASK_DATA, FlaskComponent.DEFAULT);
             if (flaskComponent.fillLevel() < 2 + leatherFlask.getExtraFillLevel()) {
                 if (!world.isClient()) {
                     world.setBlockState(pos, Blocks.AIR.getDefaultState());
-                    LeatherFlask.fillFlask(stack, 2);
+                    int qualityLevel = flaskComponent.fillLevel() == 0 || flaskComponent.qualityLevel() == 2 ? 2 : 1;
+                    LeatherFlask.fillFlask(stack, 2, qualityLevel);
                 }
                 world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundInit.FILL_FLASK_EVENT, SoundCategory.NEUTRAL, 1.0F, 1.0F);
                 info.setReturnValue(ItemActionResult.success(world.isClient()));

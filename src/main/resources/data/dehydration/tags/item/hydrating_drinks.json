@@ -1,4 +1,9 @@
 {
     "replace": false,
-    "values": []
+    "values": [
+        {
+            "id": "#croptopia:advancements_drinks",
+            "required": false
+        }
+    ]
 }

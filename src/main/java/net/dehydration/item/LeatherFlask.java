@@ -1,10 +1,9 @@
 package net.dehydration.item;
 
 import net.dehydration.access.ThirstManagerAccess;
-import net.dehydration.block.AbstractCopperCauldronBlock;
 import net.dehydration.block.CampfireCauldronBlock;
-import net.dehydration.block.CopperCauldronBlock;
 import net.dehydration.block.CopperLeveledCauldronBlock;
+import net.dehydration.block.entity.CampfireCauldronEntity;
 import net.dehydration.init.*;
 import net.dehydration.item.component.FlaskComponent;
 import net.dehydration.misc.ThirstTooltipData;
@@ -55,15 +54,20 @@ public class LeatherFlask extends Item {
         BlockState state = context.getWorld().getBlockState(pos);
         FlaskComponent flaskComponent = itemStack.getOrDefault(ItemInit.FLASK_DATA, FlaskComponent.DEFAULT);
 
-        if (state.getBlock() instanceof LeveledCauldronBlock || state.getBlock() instanceof CauldronBlock || state.getBlock() instanceof CopperCauldronBlock
-                || state.getBlock() instanceof CopperLeveledCauldronBlock || state.getBlock() instanceof CampfireCauldronBlock) {
+        boolean isEmptyCauldron = state.isOf(Blocks.CAULDRON);
+        boolean isWaterCauldron = state.isOf(Blocks.WATER_CAULDRON);
+        boolean isEmptyCopperCauldron = state.isOf(BlockInit.COPPER_CAULDRON_BLOCK);
+        boolean isWaterCopperCauldron = state.isOf(BlockInit.COPPER_WATER_CAULDRON_BLOCK) || state.isOf(BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK);
+        boolean isCampfireCauldron = state.getBlock() instanceof CampfireCauldronBlock;
+
+        if (isEmptyCauldron || isWaterCauldron || isEmptyCopperCauldron || isWaterCopperCauldron || isCampfireCauldron) {
 
             // Empty flask
             if (player.isSneaking()) {
                 if (flaskComponent.fillLevel() > 0) {
                     if (!player.getWorld().isClient()) {
-                        if (state.getBlock() instanceof AbstractCauldronBlock) {
-                            if (state.getBlock() instanceof LeveledCauldronBlock) {
+                        if (isEmptyCauldron || isWaterCauldron) {
+                            if (isWaterCauldron) {
                                 if (((LeveledCauldronBlock) state.getBlock()).isFull(state)) {
                                     return super.useOnBlock(context);
                                 }
@@ -72,8 +76,8 @@ public class LeatherFlask extends Item {
                                 player.getWorld().setBlockState(pos, Blocks.WATER_CAULDRON.getDefaultState());
                                 player.getWorld().emitGameEvent(null, GameEvent.BLOCK_CHANGE, pos);
                             }
-                        } else if (state.getBlock() instanceof AbstractCopperCauldronBlock) {
-                            if (state.getBlock() instanceof CopperLeveledCauldronBlock) {
+                        } else if (isEmptyCopperCauldron || isWaterCopperCauldron) {
+                            if (isWaterCopperCauldron) {
                                 if (((CopperLeveledCauldronBlock) state.getBlock()).isFull(state)) {
                                     return super.useOnBlock(context);
                                 }
@@ -92,8 +96,13 @@ public class LeatherFlask extends Item {
                                 player.getWorld().emitGameEvent(null, GameEvent.BLOCK_CHANGE, pos);
                             }
                         } else {
-                            if (((CampfireCauldronBlock) state.getBlock()).isFull(state)) {
+                            CampfireCauldronBlock campfireCauldronBlock = (CampfireCauldronBlock) state.getBlock();
+                            if (campfireCauldronBlock.isFull(state)) {
                                 return super.useOnBlock(context);
+                            }
+                            if ((flaskComponent.qualityLevel() != 0 || !campfireCauldronBlock.isPurifiedWater(player.getWorld(), pos))
+                                    && player.getWorld().getBlockEntity(pos) instanceof CampfireCauldronEntity campfireCauldronEntity) {
+                                campfireCauldronEntity.onFillingCauldron();
                             }
                             player.getWorld().setBlockState(pos, state.cycle(CampfireCauldronBlock.LEVEL));
                         }
@@ -106,7 +115,7 @@ public class LeatherFlask extends Item {
                     }
                     return ActionResult.success(player.getWorld().isClient());
                 }
-            } else if (state.getBlock() instanceof LeveledCauldronBlock && state.get(LeveledCauldronBlock.LEVEL) > 0 && flaskComponent.fillLevel() < 2 + this.addition) {
+            } else if (isWaterCauldron && state.get(LeveledCauldronBlock.LEVEL) > 0 && flaskComponent.fillLevel() < 2 + this.addition) {
                 // Fill up flask
                 if (!player.getWorld().isClient()) {
                     player.getWorld().playSound(null, pos, SoundInit.FILL_FLASK_EVENT, SoundCategory.BLOCKS, 1.0F, 1.0F);
@@ -171,9 +180,9 @@ public class LeatherFlask extends Item {
             playerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
             if (!playerEntity.isCreative()) {
                 stack.set(ItemInit.FLASK_DATA, new FlaskComponent(flaskComponent.fillLevel() - 1, flaskComponent.qualityLevel()));
-                ThirstManager thirstManager = ((ThirstManagerAccess) user).getThirstManager();
-                thirstManager.add(ConfigInit.CONFIG.flask_thirst_quench);
                 if (!world.isClient()) {
+                    ThirstManager thirstManager = ((ThirstManagerAccess) user).getThirstManager();
+                    thirstManager.add(ConfigInit.CONFIG.flask_thirst_quench);
                     if (flaskComponent.qualityLevel() == 2 && world.random.nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance) {
                         user.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.flask_dirty_thirst_duration, 1, false, false, true));
                     } else if (flaskComponent.qualityLevel() == 1 && world.random.nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance * 0.5F) {
@@ -239,9 +248,14 @@ public class LeatherFlask extends Item {
 
     public static void fillFlask(ItemStack itemStack, int quench) {
         FlaskComponent flaskComponent = itemStack.getOrDefault(ItemInit.FLASK_DATA, FlaskComponent.DEFAULT);
+        fillFlask(itemStack, quench, flaskComponent.qualityLevel());
+    }
+
+    public static void fillFlask(ItemStack itemStack, int quench, int qualityLevel) {
+        FlaskComponent flaskComponent = itemStack.getOrDefault(ItemInit.FLASK_DATA, FlaskComponent.DEFAULT);
         int fillQuench = flaskComponent.fillLevel() + quench;
         int addition = ((LeatherFlask) itemStack.getItem()).addition;
-        itemStack.set(ItemInit.FLASK_DATA, new FlaskComponent(fillQuench > 2 + addition ? 2 + addition : fillQuench, flaskComponent.qualityLevel()));
+        itemStack.set(ItemInit.FLASK_DATA, new FlaskComponent(fillQuench > 2 + addition ? 2 + addition : fillQuench, qualityLevel));
     }
 
     public static boolean isFlaskEmpty(ItemStack stack) {
