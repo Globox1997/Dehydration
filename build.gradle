@@ -40,11 +40,6 @@ dependencies {
 	modCompileOnly ('maven.modrinth:puddles:2.0.0'){
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	// Croptopia
-	modCompileOnly 'curse.maven:croptopia-fabric-415438:4512803',{
-		exclude(group: "net.fabricmc.fabric-api")
-		exclude(group: "com.terraformersmc")
-	}
 	// Patchouli
 	modCompileOnly ("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
