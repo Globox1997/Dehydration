@@ -30,12 +30,10 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
         this.pos = pos;
     }
 
-    // Retrieve the current CauldronFluidContent.
     private CopperCauldronFluidContent getCurrentContent() {
         return new CopperCauldronFluidContent(createSnapshot().getBlock());
     }
 
-    // Called by insert and extract to update the block state.
     private void updateLevel(CopperCauldronFluidContent newContent, int level, TransactionContext transaction) {
         updateSnapshots(transaction);
         BlockState newState = newContent.block.getDefaultState();
@@ -44,7 +42,6 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
             newState = newState.with(newContent.levelProperty, level);
         }
 
-        // Set block state without updates.
         world.setBlockState(pos, newState, 0);
     }
 
@@ -52,15 +49,15 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
     public long insert(FluidVariant fluidVariant, long maxAmount, TransactionContext transaction) {
         StoragePreconditions.notBlankNotNegative(fluidVariant, maxAmount);
 
+        if (!fluidVariant.isOf(Fluids.WATER) && !fluidVariant.isOf(FluidInit.PURIFIED_WATER)) {
+            return 0;
+        }
+
         CopperCauldronFluidContent insertContent = new CopperCauldronFluidContent(fluidVariant.getFluid());
 
         int maxLevelsInserted = Ints.saturatedCast(maxAmount / insertContent.amountPerLevel);
 
         if (getAmount() == 0) {
-            if(fluidVariant.isOf(Fluids.LAVA)){
-                return -1;
-            }
-            // Currently empty, so we can accept any fluid.
             int levelsInserted = Math.min(maxLevelsInserted, insertContent.maxLevel);
 
             if (levelsInserted > 0) {
@@ -104,11 +101,9 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
 
             if (levelsExtracted > 0) {
                 if (levelsExtracted == currentLevel) {
-                    // Fully extract -> back to empty copper cauldron
                     updateSnapshots(transaction);
                     world.setBlockState(pos, BlockInit.COPPER_CAULDRON_BLOCK.getDefaultState(), 0);
                 } else {
-                    // Otherwise just decrease levels
                     updateLevel(currentContent, currentLevel - levelsExtracted, transaction);
                 }
             }
@@ -162,9 +157,7 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
         BlockState originalState = lastReleasedSnapshot;
 
         if (originalState != state) {
-            // Revert change
             world.setBlockState(pos, originalState, 0);
-            // Then do the actual change with normal block updates
             world.setBlockState(pos, state);
         }
     }
