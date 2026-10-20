@@ -40,12 +40,16 @@ public class BambooPumpEntity extends BlockEntity implements Inventory {
         super.readNbt(nbt, registryLookup);
         this.inventory.clear();
         Inventories.readNbt(nbt, inventory, registryLookup);
+        this.pumpCount = nbt.getInt("PumpCount");
+        this.cooldown = nbt.getInt("Cooldown");
     }
 
     @Override
     public void writeNbt(NbtCompound nbt, WrapperLookup registryLookup) {
         super.writeNbt(nbt, registryLookup);
         Inventories.writeNbt(nbt, inventory, registryLookup);
+        nbt.putInt("PumpCount", this.pumpCount);
+        nbt.putInt("Cooldown", this.cooldown);
     }
 
     @Override
@@ -63,8 +67,12 @@ public class BambooPumpEntity extends BlockEntity implements Inventory {
     }
 
     private void update() {
-        if (this.cooldown > 0)
+        if (this.cooldown > 0) {
             this.cooldown--;
+            if (this.cooldown == 0 && this.world != null && !this.world.isClient()) {
+                this.markDirty();
+            }
+        }
     }
 
     private void sendUpdate() {
@@ -89,6 +97,7 @@ public class BambooPumpEntity extends BlockEntity implements Inventory {
                         transaction.commit();
                         pumpCount = 0;
                         cooldown = ConfigInit.CONFIG.pump_cooldown;
+                        this.markDirty();
                     }
                 } catch (Exception ignored) {
                 }
@@ -158,6 +167,7 @@ public class BambooPumpEntity extends BlockEntity implements Inventory {
     public void increasePumpCount(int count) {
         this.pumpCount += count;
         updateInventory();
+        super.markDirty();
     }
 
     public int getCooldown() {
@@ -166,6 +176,7 @@ public class BambooPumpEntity extends BlockEntity implements Inventory {
 
     public void setCooldown(int ticks) {
         this.cooldown = ticks;
+        this.markDirty();
     }
 
 }
