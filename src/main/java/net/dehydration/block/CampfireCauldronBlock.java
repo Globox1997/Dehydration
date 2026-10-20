@@ -38,6 +38,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.event.GameEvent;
@@ -63,7 +64,7 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, BlockInit.CAMPFIRE_CAULDRON_ENTITY, world.isClient ? CampfireCauldronEntity::clientTick : CampfireCauldronEntity::serverTick);
+        return world.isClient() ? null : checkType(type, BlockInit.CAMPFIRE_CAULDRON_ENTITY, CampfireCauldronEntity::serverTick);
     }
 
     @Override
@@ -85,6 +86,14 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         return world.getBlockState(pos.down()).isIn(BlockTags.CAMPFIRES);
+    }
+
+    @Override
+    protected BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        if (direction == Direction.DOWN && !state.canPlaceAt(world, pos)) {
+            return Blocks.AIR.getDefaultState();
+        }
+        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
     }
 
     @Override
@@ -152,8 +161,8 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
     }
 
     public boolean isPurifiedWater(World world, BlockPos pos) {
-        if (world.getBlockEntity(pos) != null) {
-            return ((CampfireCauldronEntity) world.getBlockEntity(pos)).isBoiled;
+        if (world.getBlockEntity(pos) instanceof CampfireCauldronEntity campfireCauldronEntity) {
+            return campfireCauldronEntity.isBoiled;
         } else {
             return false;
         }
