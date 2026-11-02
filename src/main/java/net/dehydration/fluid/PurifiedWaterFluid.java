@@ -6,6 +6,7 @@ import net.dehydration.init.BlockInit;
 import net.dehydration.init.FluidInit;
 import net.dehydration.init.ItemInit;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -136,7 +137,7 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
         }
 
         @Override
-        protected boolean canConvertToSource(Level var1) {
+        protected boolean canConvertToSource(ServerLevel var1) {
             return false;
         }
     }
@@ -153,7 +154,7 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
         }
 
         @Override
-        protected boolean canConvertToSource(Level var1) {
+        protected boolean canConvertToSource(ServerLevel var1) {
             return false;
         }
     }

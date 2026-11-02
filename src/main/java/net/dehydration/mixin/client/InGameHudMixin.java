@@ -11,15 +11,15 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.Hud;
 import net.minecraft.world.entity.player.Player;
 import net.fabricmc.api.EnvType;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
-@Mixin(Gui.class)
+@Mixin(Hud.class)
 public abstract class InGameHudMixin {
 
     @Shadow
@@ -36,9 +36,12 @@ public abstract class InGameHudMixin {
         return ThirstHudRender.shouldRenderThirstHud(this.getCameraPlayer()) ? original + 1 : original;
     }
 
-    @Inject(method = "renderFood", at = @At("TAIL"))
-    private void renderFoodMixin(GuiGraphics context, Player player, int top, int right, CallbackInfo info) {
-        ThirstHudRender.renderThirstHud(context, this.minecraft, player, context.guiWidth(), context.guiHeight(), this.minecraft.gui.getGuiTicks());
+    @Shadow
+    public abstract int getGuiTicks();
+
+    @Inject(method = "extractFood", at = @At("TAIL"))
+    private void renderFoodMixin(GuiGraphicsExtractor context, Player player, int top, int right, CallbackInfo info) {
+        ThirstHudRender.renderThirstHud(context, this.minecraft, player, context.guiWidth(), context.guiHeight(), this.getGuiTicks());
     }
 
 }

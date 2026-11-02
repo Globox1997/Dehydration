@@ -6,6 +6,7 @@ import net.dehydration.util.ThirstHelper;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,7 +21,9 @@ public class ItemMixin {
     private void getTooltipDataMixin(ItemStack stack, CallbackInfoReturnable<Optional<TooltipComponent>> info) {
         if (ConfigInit.CONFIG.thirst_preview) {
             int thirstQuench = ThirstHelper.getThirstQuench(stack, true);
-            if (thirstQuench > 0) {
+            if (stack.is(Items.MILK_BUCKET)) {
+                info.setReturnValue(Optional.of(new ThirstTooltipData(1, thirstQuench)));
+            } else if (thirstQuench > 0 || stack.is(Items.HONEY_BOTTLE)) {
                 info.setReturnValue(Optional.of(new ThirstTooltipData(0, thirstQuench)));
             }
         }

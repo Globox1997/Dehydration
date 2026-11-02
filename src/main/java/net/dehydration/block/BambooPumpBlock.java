@@ -1,6 +1,6 @@
 package net.dehydration.block;
 
-import com.mojang.serialization.MapCodec;
+import net.minecraft.world.InteractionResult;
 import net.dehydration.block.entity.BambooPumpEntity;
 import net.dehydration.init.BlockInit;
 import net.dehydration.init.ConfigInit;
@@ -20,7 +20,6 @@ import net.minecraft.util.*;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -29,7 +28,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -45,7 +46,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -61,12 +62,11 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class BambooPumpBlock extends BaseEntityBlock {
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty EXTENDED = BlockStateProperties.EXTENDED;
     public static final BooleanProperty ATTACHED = BlockStateProperties.ATTACHED;
     private static final VoxelShape SHAPE = Block.box(4.0, 0.0, 4.0, 12.0, 16.0, 12.0);
-    public static final MapCodec<BambooPumpBlock> CODEC = BambooPumpBlock.simpleCodec(BambooPumpBlock::new);
 
     public BambooPumpBlock(Properties settings) {
         super(settings);
@@ -84,7 +84,7 @@ public class BambooPumpBlock extends BaseEntityBlock {
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         BambooPumpEntity bambooPumpEntity = (BambooPumpEntity) world.getBlockEntity(pos);
         if (bambooPumpEntity != null) {
             ItemStack itemStack = bambooPumpEntity.getItem(0);
@@ -102,7 +102,7 @@ public class BambooPumpBlock extends BaseEntityBlock {
                             world.setBlock(pos, state.setValue(ATTACHED, true), Block.UPDATE_CLIENTS);
                         }
                     }
-                    return ItemInteractionResult.sidedSuccess(world.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
                 // can get used to place a water source block infront of the pump
                 // else {
@@ -120,7 +120,7 @@ public class BambooPumpBlock extends BaseEntityBlock {
                         bambooPumpEntity.clearContent();
                         world.setBlock(pos, state.setValue(ATTACHED, false).setValue(EXTENDED, false), Block.UPDATE_CLIENTS);
                     }
-                    return ItemInteractionResult.sidedSuccess(world.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
                 Storage<FluidVariant> storage = ContainerItemContext.withConstant(itemStack).find(FluidStorage.ITEM);
                 if ((storage != null && storage.supportsInsertion()) || (itemStack.getItem() instanceof LeatherFlask && !LeatherFlask.isFlaskFull(itemStack))) {
@@ -151,9 +151,9 @@ public class BambooPumpBlock extends BaseEntityBlock {
                                     world.playSound(player, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
                                 }
                             } else {
-                                player.displayClientMessage(Component.translatable("block.dehydration.bamboo_pump.no_water"), true);
+                                player.sendOverlayMessage(Component.translatable("block.dehydration.bamboo_pump.no_water"));
                             }
-                            return ItemInteractionResult.FAIL;
+                            return InteractionResult.FAIL;
                         }
                     }
                     if (ConfigInit.CONFIG.pump_cooldown != 0 && bambooPumpEntity.getCooldown() > 0) {
@@ -162,9 +162,9 @@ public class BambooPumpBlock extends BaseEntityBlock {
                                 world.playSound(player, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
                             }
                         } else {
-                            player.displayClientMessage(Component.translatable("block.dehydration.bamboo_pump.cooldown", bambooPumpEntity.getCooldown() / 20), true);
+                            player.sendOverlayMessage(Component.translatable("block.dehydration.bamboo_pump.cooldown", bambooPumpEntity.getCooldown() / 20));
                         }
-                        return ItemInteractionResult.FAIL;
+                        return InteractionResult.FAIL;
                     }
 
                     if (state.getValue(EXTENDED)) {
@@ -177,13 +177,13 @@ public class BambooPumpBlock extends BaseEntityBlock {
                     } else {
                         world.setBlock(pos, state.setValue(EXTENDED, !state.getValue(EXTENDED)), Block.UPDATE_CLIENTS);
                     }
-                    return ItemInteractionResult.sidedSuccess(world.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
             }
 
         }
 
-        return ItemInteractionResult.FAIL;
+        return InteractionResult.FAIL;
 
     }
 
@@ -216,13 +216,13 @@ public class BambooPumpBlock extends BaseEntityBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+    protected BlockState updateShape(BlockState state, LevelReader world, ScheduledTickAccess tickView, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
         if (direction == Direction.DOWN && !state.canSurvive(world, pos)) {
             return Blocks.AIR.defaultBlockState();
         } else if (state.getValue(WATERLOGGED)) {
-            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+            tickView.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
-        return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
+        return super.updateShape(state, world, tickView, pos, direction, neighborPos, neighborState, random);
     }
 
     @Override
@@ -242,16 +242,8 @@ public class BambooPumpBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
-        if (!state.is(newState.getBlock())) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof Container) {
-                Containers.dropContents(world, pos, (Container) blockEntity);
-                world.updateNeighbourForOutputSignal(pos, this);
-            }
-
-            super.onRemove(state, world, pos, newState, moved);
-        }
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel world, BlockPos pos, boolean moved) {
+        Containers.updateNeighboursAfterDestroy(state, world, pos);
     }
 
     @Override
@@ -297,8 +289,4 @@ public class BambooPumpBlock extends BaseEntityBlock {
         }
     }
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 }

@@ -1,25 +1,17 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        " d ",
-        " de",
-        "fof"
-    ],
-    "key": {
-        "d": {
-            "item": "minecraft:bamboo"
-        },
-        "e": {
-            "item": "minecraft:lever"
-        },
-        "f": {
-            "item": "minecraft:smooth_stone_slab"
-        },
-        "o": {
-            "item": "minecraft:bucket"
-        }
-    },
-    "result": {
-        "id": "dehydration:bamboo_pump"
-    }
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " d ",
+    " de",
+    "fof"
+  ],
+  "key": {
+    "d": "minecraft:bamboo",
+    "e": "minecraft:lever",
+    "f": "minecraft:smooth_stone_slab",
+    "o": "minecraft:bucket"
+  },
+  "result": {
+    "id": "dehydration:bamboo_pump"
+  }
 }

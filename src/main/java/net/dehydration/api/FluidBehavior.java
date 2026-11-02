@@ -6,6 +6,7 @@ import net.dehydration.block.entity.CauldronBehaviorAccess;
 import net.dehydration.block.entity.CopperCauldronBehavior;
 import net.dehydration.block.entity.RainwaterCollectorBehavior;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.cauldron.CauldronInteractions;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class FluidBehavior {
 
     public static void registerWaterBucketForCauldron(Item emptyBucket, Item filledBucket) {
-        Map<Item, CauldronInteraction> waterMap = CauldronInteraction.WATER.map();
+        CauldronInteraction.Dispatcher waterMap = CauldronInteractions.WATER;
 
         waterMap.put(emptyBucket, (state, world, pos, player, hand, stack) ->
                 CauldronBehaviorAccess.fillFromCauldron(

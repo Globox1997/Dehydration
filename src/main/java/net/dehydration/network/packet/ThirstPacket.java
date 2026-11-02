@@ -3,11 +3,11 @@ package net.dehydration.network.packet;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public record ThirstPacket(int playerId, int thirstLevel) implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<ThirstPacket> PACKET_ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath("dehydration", "thirst_packet"));
+    public static final CustomPacketPayload.Type<ThirstPacket> PACKET_ID = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath("dehydration", "thirst_packet"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ThirstPacket> PACKET_CODEC = StreamCodec.ofMember((value, buf) -> {
         buf.writeInt(value.playerId);

@@ -15,10 +15,9 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.HoneyBottleItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.MilkBucketItem;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -42,7 +41,7 @@ public class ThirstHelper {
             if (ThirstHelper.isBadPotion(potionContentsComponent.potion().orElse(Potions.WATER)) && serverPlayerEntity.getRandom().nextFloat() < ConfigInit.CONFIG.potion_bad_thirst_chance) {
                 serverPlayerEntity.addEffect(new MobEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.potion_bad_thirst_duration, 0, false, false, true));
             }
-        } else if (item instanceof MilkBucketItem) {
+        } else if (stack.is(Items.MILK_BUCKET)) {
             if (serverPlayerEntity.getRandom().nextFloat() < ConfigInit.CONFIG.milk_thirst_chance) {
                 serverPlayerEntity.addEffect(new MobEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.potion_bad_thirst_duration / 2, 0, false, false, true));
             }
@@ -81,9 +80,9 @@ public class ThirstHelper {
             Item item = stack.getItem();
             if (item instanceof PotionItem) {
                 thirstQuench = ConfigInit.CONFIG.potion_thirst_quench;
-            } else if (item instanceof MilkBucketItem) {
+            } else if (stack.is(Items.MILK_BUCKET)) {
                 thirstQuench = ConfigInit.CONFIG.milk_thirst_quench;
-            } else if (item instanceof HoneyBottleItem) {
+            } else if (stack.is(Items.HONEY_BOTTLE)) {
                 thirstQuench = ConfigInit.CONFIG.honey_quench;
             } else if (item instanceof WaterBowlItem) {
                 thirstQuench = ConfigInit.CONFIG.water_bowl_quench;

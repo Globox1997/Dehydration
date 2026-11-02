@@ -1,7 +1,6 @@
 package net.dehydration.thirst;
 
 import org.jetbrains.annotations.Nullable;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
@@ -12,7 +11,9 @@ import net.dehydration.misc.ThirstTooltipData;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,8 +27,8 @@ public class ThirstHudRender {
     private static float otherFlashAlpha = 0f;
 
     // Could implement HudRenderCallback
-    public static void renderThirstHud(GuiGraphics context, Minecraft client, Player playerEntity, int scaledWidth, int scaledHeight, int ticks) {
-        if (playerEntity != null && !playerEntity.isInvulnerable() && !playerEntity.isCreative() && !playerEntity.isSpectator() && !client.options.hideGui) {
+    public static void renderThirstHud(GuiGraphicsExtractor context, Minecraft client, Player playerEntity, int scaledWidth, int scaledHeight, int ticks) {
+        if (playerEntity != null && !playerEntity.isInvulnerable() && !playerEntity.isCreative() && !playerEntity.isSpectator() && !client.gui.hud.isHidden()) {
             ThirstManager thirstManager = ((ThirstManagerAccess) playerEntity).getThirstManager();
             if (thirstManager.hasThirst()) {
                 int thirst = thirstManager.getThirstLevel();
@@ -78,43 +79,37 @@ public class ThirstHudRender {
                         variable_two = variable_two + ConfigInit.CONFIG.hud_x;
                         variable_three = variable_three + ConfigInit.CONFIG.hud_y;
 
-                        context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, 0, 0, 9, 9, 256, 256); // Background
+                        context.blit(RenderPipelines.GUI_TEXTURED, RenderInit.THIRST_ICON, variable_two, variable_three, 0, 0, 9, 9, 256, 256); // Background
                         if (variable_one * 2 + 1 < thirst) {
-                            context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, beneathCoord, uppderCoord, 9, 9, 256, 256); // Big icon
+                            context.blit(RenderPipelines.GUI_TEXTURED, RenderInit.THIRST_ICON, variable_two, variable_three, beneathCoord, uppderCoord, 9, 9, 256, 256); // Big icon
                         }
                         if (variable_one * 2 + 1 == thirst) {
-                            context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, beneathCoord + 9, uppderCoord, 9, 9, 256, 256); // Small icon
+                            context.blit(RenderPipelines.GUI_TEXTURED, RenderInit.THIRST_ICON, variable_two, variable_three, beneathCoord + 9, uppderCoord, 9, 9, 256, 256); // Small icon
                         }
                         // Show item thirst quench
                         if (variable_one >= thirst / 2) {
                             if (itemStack != null) {
-                                RenderSystem.enableBlend();
-                                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, flashAlpha);
+                                int flashColor = ARGB.white(flashAlpha);
                                 int thirstQuench = ((ThirstTooltipData) itemStack.getTooltipImage().get()).getThirstQuench();
                                 if (itemStack.getItem() instanceof LeatherFlask)
                                     thirstQuench = ConfigInit.CONFIG.flask_thirst_quench;
                                 int quality = ((ThirstTooltipData) itemStack.getTooltipImage().get()).getDrinkQuality();
                                 if (variable_one < (thirst + thirstQuench) / 2) {
-                                    context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, quality * 18, 9, 9, 9, 256, 256);
+                                    context.blit(RenderPipelines.GUI_TEXTURED, RenderInit.THIRST_ICON, variable_two, variable_three, quality * 18, 9, 9, 9, 256, 256, flashColor);
                                 } else if ((thirst + thirstQuench) % 2 != 0 && variable_one < (thirst + thirstQuench) / 2 + 1) {
-                                    context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, quality * 18 + 9, 9, 9, 9, 256, 256);
+                                    context.blit(RenderPipelines.GUI_TEXTURED, RenderInit.THIRST_ICON, variable_two, variable_three, quality * 18 + 9, 9, 9, 9, 256, 256, flashColor);
                                 }
-                                RenderSystem.disableBlend();
-                                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
                             }
                         }
                         // Freezing
                         if (playerEntity.getTicksFrozen() > 0) {
-                            RenderSystem.enableBlend();
-                            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, playerEntity.getPercentFrozen());
+                            int frozenColor = ARGB.white(playerEntity.getPercentFrozen());
                             if (variable_one * 2 + 1 < thirst) {
-                                context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, 54, uppderCoord, 9, 9, 256, 256);
+                                context.blit(RenderPipelines.GUI_TEXTURED, RenderInit.THIRST_ICON, variable_two, variable_three, 54, uppderCoord, 9, 9, 256, 256, frozenColor);
                             }
                             if (variable_one * 2 + 1 == thirst) {
-                                context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, 54 + 9, uppderCoord, 9, 9, 256, 256);
+                                context.blit(RenderPipelines.GUI_TEXTURED, RenderInit.THIRST_ICON, variable_two, variable_three, 54 + 9, uppderCoord, 9, 9, 256, 256, frozenColor);
                             }
-                            RenderSystem.disableBlend();
-                            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
                         }
                     }
                 }

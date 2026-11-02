@@ -7,7 +7,7 @@ import net.dehydration.network.ThirstServerPacket;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.Level;
@@ -51,8 +51,8 @@ public class DehydrationMain implements ModInitializer {
         });
     }
 
-    public static ResourceLocation identifierOf(String name) {
-        return ResourceLocation.fromNamespaceAndPath("dehydration", name);
+    public static Identifier identifierOf(String name) {
+        return Identifier.fromNamespaceAndPath("dehydration", name);
     }
 
 }

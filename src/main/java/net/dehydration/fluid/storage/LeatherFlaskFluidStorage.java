@@ -34,7 +34,7 @@ public class LeatherFlaskFluidStorage extends SingleVariantStorage<FluidVariant>
         this.context = context;
         ItemVariant itemVariant = context.getItemVariant();
         this.flaskItem = (LeatherFlask) itemVariant.getItem();
-        Optional<? extends FlaskComponent> optional = itemVariant.getComponents().get(ItemInit.FLASK_DATA);
+        Optional<FlaskComponent> optional = Optional.ofNullable(itemVariant.getComponents().get(ItemInit.FLASK_DATA));
         if (optional != null) {
             optional.ifPresent(data -> {
                 if (data.fillLevel() > 0) {

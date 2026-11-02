@@ -3,6 +3,9 @@ package net.dehydration.block;
 import net.dehydration.block.entity.RainwaterCollectorBehavior;
 import net.dehydration.init.BlockInit;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -47,10 +50,10 @@ public class RainwaterLeveledCollectorBlock extends AbstractRainwaterCollectorBl
     }
 
     @Override
-    public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-        if (!world.isClientSide() && entity.isOnFire() && this.isEntityTouchingFluid(state, pos, entity)) {
+    protected void entityInside(BlockState state, Level world, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
+        if (world instanceof ServerLevel serverWorld && entity.isOnFire() && this.isEntityTouchingFluid(state, pos, entity)) {
             entity.clearFire();
-            if (entity.mayInteract(world, pos)) {
+            if (entity.mayInteract(serverWorld, pos)) {
                 this.onFireCollision(state, world, pos);
             }
         }
@@ -74,7 +77,7 @@ public class RainwaterLeveledCollectorBlock extends AbstractRainwaterCollectorBl
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+    protected int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos, Direction direction) {
         return state.getValue(LEVEL);
     }
 

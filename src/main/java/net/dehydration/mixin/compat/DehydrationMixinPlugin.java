@@ -25,8 +25,6 @@ public class DehydrationMixinPlugin implements IMixinConfigPlugin {
         if (!FabricLoader.getInstance().isModLoaded("origins")
                 && (mixinClassName.equals("net.dehydration.mixin.compat.OriginCommandMixin") || mixinClassName.equals("net.dehydration.mixin.compat.PlayerOriginComponentMixin")))
             return false;
-        if (!FabricLoader.getInstance().isModLoaded("puddles") && mixinClassName.contains("PuddleBlockMixin"))
-            return false;
 
         return true;
     }

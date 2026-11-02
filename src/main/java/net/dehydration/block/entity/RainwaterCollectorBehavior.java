@@ -1,16 +1,16 @@
 package net.dehydration.block.entity;
 
+import net.minecraft.world.InteractionResult;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.dehydration.block.RainwaterLeveledCollectorBlock;
 import net.dehydration.init.BlockInit;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -32,10 +32,10 @@ public interface RainwaterCollectorBehavior {
             SoundEvents.BUCKET_EMPTY_POWDER_SNOW);
 
     static Object2ObjectOpenHashMap<Item, RainwaterCollectorBehavior> createMap() {
-        return Util.make(new Object2ObjectOpenHashMap<>(), (map) -> map.defaultReturnValue((state, world, pos, player, hand, stack) -> ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION));
+        return Util.make(new Object2ObjectOpenHashMap<>(), (map) -> map.defaultReturnValue((state, world, pos, player, hand, stack) -> InteractionResult.TRY_WITH_EMPTY_HAND));
     }
 
-    ItemInteractionResult interact(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, ItemStack stack);
+    InteractionResult interact(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, ItemStack stack);
 
     static void registerBehavior() {
         registerBucketBehavior(EMPTY_RAINWATER_COLLECTOR_BEHAVIOR);
@@ -49,9 +49,9 @@ public interface RainwaterCollectorBehavior {
         behavior.put(Items.POWDER_SNOW_BUCKET, FILL_WITH_POWDER_SNOW);
     }
 
-    static ItemInteractionResult emptyCollector(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, ItemStack stack, ItemStack output, Predicate<BlockState> predicate, SoundEvent soundEvent) {
+    static InteractionResult emptyCollector(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, ItemStack stack, ItemStack output, Predicate<BlockState> predicate, SoundEvent soundEvent) {
         if (!predicate.test(state)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         } else {
             if (!world.isClientSide()) {
                 Item item = stack.getItem();
@@ -63,11 +63,11 @@ public interface RainwaterCollectorBehavior {
                 world.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
             }
 
-            return ItemInteractionResult.sidedSuccess(world.isClientSide());
+            return InteractionResult.SUCCESS;
         }
     }
 
-    static ItemInteractionResult fillCollector(Level world, BlockPos pos, Player player, InteractionHand hand, ItemStack stack, BlockState state, SoundEvent soundEvent) {
+    static InteractionResult fillCollector(Level world, BlockPos pos, Player player, InteractionHand hand, ItemStack stack, BlockState state, SoundEvent soundEvent) {
         if (!world.isClientSide()) {
             Item item = stack.getItem();
             player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, new ItemStack(Items.BUCKET)));
@@ -78,6 +78,6 @@ public interface RainwaterCollectorBehavior {
             world.gameEvent(null, GameEvent.FLUID_PLACE, pos);
         }
 
-        return ItemInteractionResult.sidedSuccess(world.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 }

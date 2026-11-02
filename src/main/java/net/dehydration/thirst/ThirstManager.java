@@ -2,9 +2,10 @@ package net.dehydration.thirst;
 
 import net.dehydration.init.ConfigInit;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
@@ -16,7 +17,7 @@ import net.minecraft.world.entity.player.Player;
 public class ThirstManager {
 
     // Damage Type
-    public static final ResourceKey<DamageType> THIRST = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath("dehydration", "thirst"));
+    public static final ResourceKey<DamageType> THIRST = ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath("dehydration", "thirst"));
 
     public float dehydration;
     private boolean hasThirst = true;
@@ -47,26 +48,26 @@ public class ThirstManager {
             this.dehydrationTimer = 0;
         }
         if (!player.isCreative() && ConfigInit.CONFIG.special_effects) {
-            if (thirstLevel == 2 && !player.hasEffect(MobEffects.DIG_SPEED)) {
-                player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 409, 0, false, false, false));
+            if (thirstLevel == 2 && !player.hasEffect(MobEffects.HASTE)) {
+                player.addEffect(new MobEffectInstance(MobEffects.HASTE, 409, 0, false, false, false));
             }
-            if (thirstLevel == 0 && player.getFoodData().getFoodLevel() == 0 && !player.hasEffect(MobEffects.DIG_SLOWDOWN)) {
-                player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 409, 2, false, false, false));
+            if (thirstLevel == 0 && player.getFoodData().getFoodLevel() == 0 && !player.hasEffect(MobEffects.MINING_FATIGUE)) {
+                player.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 409, 2, false, false, false));
             }
         }
 
     }
 
-    public void readNbt(CompoundTag tag) {
-        if (tag.contains("ThirstLevel", 99)) {
-            this.thirstLevel = tag.getInt("ThirstLevel");
-            this.dehydrationTimer = tag.getInt("ThirstTickTimer");
-            this.dehydration = tag.getFloat("ThirstExhaustionLevel");
-            this.hasThirst = tag.getBoolean("HasThirst");
+    public void readNbt(ValueInput tag) {
+        if (tag.getInt("ThirstLevel").isPresent()) {
+            this.thirstLevel = tag.getIntOr("ThirstLevel", 0);
+            this.dehydrationTimer = tag.getIntOr("ThirstTickTimer", 0);
+            this.dehydration = tag.getFloatOr("ThirstExhaustionLevel", 0.0F);
+            this.hasThirst = tag.getBooleanOr("HasThirst", false);
         }
     }
 
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(ValueOutput tag) {
         tag.putInt("ThirstLevel", this.thirstLevel);
         tag.putInt("ThirstTickTimer", this.dehydrationTimer);
         tag.putFloat("ThirstExhaustionLevel", this.dehydration);

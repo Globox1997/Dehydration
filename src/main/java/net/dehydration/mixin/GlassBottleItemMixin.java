@@ -12,7 +12,7 @@ import net.dehydration.init.ConfigInit;
 import net.dehydration.util.ThirstHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BottleItem;
@@ -23,8 +23,8 @@ import net.minecraft.world.phys.BlockHitResult;
 @Mixin(BottleItem.class)
 public class GlassBottleItemMixin {
 
-    @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;playSound(Lnet/minecraft/world/entity/player/Player;DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void useMixin(Level world, Player user, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> info, List<AreaEffectCloud> list, ItemStack itemStack,
+    @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;playSound(Lnet/minecraft/world/entity/Entity;DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V", ordinal = 1), locals = LocalCapture.CAPTURE_FAILSOFT)
+    private void useMixin(Level world, Player user, InteractionHand hand, CallbackInfoReturnable<InteractionResult> info, List<AreaEffectCloud> list, ItemStack itemStack,
                           BlockHitResult blockHitResult, BlockPos blockPos) {
         if (!world.isClientSide() && ConfigInit.CONFIG.bottle_consumes_source_block) {
             ThirstHelper.drainWaterSource(user, world, blockPos);

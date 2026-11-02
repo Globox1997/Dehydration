@@ -11,15 +11,15 @@ import net.dehydration.network.packet.ThirstPacket;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ThirstServerPacket {
 
     public static void init() {
-        PayloadTypeRegistry.playS2C().register(ThirstPacket.PACKET_ID, ThirstPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(ExcludedThirstPacket.PACKET_ID, ExcludedThirstPacket.PACKET_CODEC);
-        PayloadTypeRegistry.playS2C().register(HydrationTemplatePacket.PACKET_ID, HydrationTemplatePacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ThirstPacket.PACKET_ID, ThirstPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ExcludedThirstPacket.PACKET_ID, ExcludedThirstPacket.PACKET_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(HydrationTemplatePacket.PACKET_ID, HydrationTemplatePacket.PACKET_CODEC);
     }
 
     public static void writeS2CExcludedSyncPacket(ServerPlayer serverPlayerEntity, boolean setThirst) {
@@ -36,7 +36,7 @@ public class ThirstServerPacket {
             templateList.add(template.getHydration());
             templateList.add(template.getItems().size());
         });
-        List<ResourceLocation> templateIdentifiers = new ArrayList<ResourceLocation>();
+        List<Identifier> templateIdentifiers = new ArrayList<Identifier>();
         DehydrationMain.HYDRATION_TEMPLATES.forEach((template) -> {
             template.getItems().forEach((item) -> {
                 templateIdentifiers.add(BuiltInRegistries.ITEM.getKey(item));

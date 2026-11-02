@@ -11,6 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class CampfireCauldronEntity extends BlockEntity {
     public boolean isBoiled;
@@ -21,18 +23,18 @@ public class CampfireCauldronEntity extends BlockEntity {
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, Provider registryLookup) {
-        super.loadAdditional(tag, registryLookup);
-        this.isBoiled = tag.getBoolean("Boiled");
-        this.ticker = tag.getInt("BoilingTicks");
+    public void loadAdditional(ValueInput tag) {
+        super.loadAdditional(tag);
+        this.isBoiled = tag.getBooleanOr("Boiled", false);
+        this.ticker = tag.getIntOr("BoilingTicks", 0);
         if (this.level != null && this.level.isClientSide()) {
             this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
         }
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag, Provider registryLookup) {
-        super.saveAdditional(tag, registryLookup);
+    public void saveAdditional(ValueOutput tag) {
+        super.saveAdditional(tag);
         tag.putBoolean("Boiled", isBoiled);
         tag.putInt("BoilingTicks", ticker);
     }

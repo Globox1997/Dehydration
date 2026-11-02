@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.14-SNAPSHOT'
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 	id 'maven-publish'
 }
 
@@ -8,6 +8,10 @@ group = project.maven_group
 
 base {
 	archivesName = project.archives_base_name
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/dehydration.classtweaker")
 }
 
  repositories {
@@ -24,32 +28,28 @@ base {
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	// Config
-	modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+	implementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
     	exclude(group: "net.fabricmc.fabric-api")
   	}
 	// Modmenu
-	modCompileOnly modRuntimeOnly("com.terraformersmc:modmenu:${project.mod_menu_version}"),{
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-	// Puddles
-	modCompileOnly ('maven.modrinth:puddles:2.0.0'){
+	compileOnly runtimeOnly("com.terraformersmc:modmenu:${project.mod_menu_version}"),{
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	// Patchouli
-	modCompileOnly ("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
+	compileOnly ("maven.modrinth:patchouli:${project.patchouli_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	// EMI
-	modCompileOnly ("dev.emi:emi-fabric:${emi_version}:api") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
-	modRuntimeOnly ("dev.emi:emi-fabric:${emi_version}") {
-		exclude(group: "net.fabricmc.fabric-api")
+}
+
+sourceSets {
+	main {
+		java {
+			exclude "net/dehydration/compat/DehydrationEmiPlugin.java"
+		}
 	}
 }
 
@@ -66,14 +66,14 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+	it.options.release = 25
 }
 
 java {
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {

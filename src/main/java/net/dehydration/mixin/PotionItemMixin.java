@@ -1,5 +1,6 @@
 package net.dehydration.mixin;
 
+import net.minecraft.world.InteractionResult;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.misc.ThirstTooltipData;
 import net.dehydration.util.ThirstHelper;
@@ -9,7 +10,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
@@ -24,9 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
 
@@ -37,19 +34,20 @@ public abstract class PotionItemMixin extends Item {
         super(settings);
     }
 
-    @Inject(method = "use", at = @At("HEAD"), cancellable = true)
-    private void useMixin(Level world, Player user, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> info) {
+    @Override
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
         if (!user.isShiftKeyDown()) {
-            return;
+            return super.use(world, user, hand);
         }
         BlockHitResult hitResult = Item.getPlayerPOVHitResult(world, user, ClipContext.Fluid.SOURCE_ONLY);
         if (((HitResult) hitResult).getType() == HitResult.Type.BLOCK) {
             BlockPos blockPos = hitResult.getBlockPos();
             if (world.mayInteract(user, blockPos) && world.getFluidState(blockPos).is(FluidTags.WATER)) {
                 world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundEvents.BOTTLE_EMPTY, SoundSource.NEUTRAL, 1.0f, 1.0f);
-                info.setReturnValue(InteractionResultHolder.sidedSuccess(new ItemStack(Items.GLASS_BOTTLE), world.isClientSide()));
+                return InteractionResult.SUCCESS.heldItemTransformedTo(new ItemStack(Items.GLASS_BOTTLE));
             }
         }
+        return super.use(world, user, hand);
     }
 
 

@@ -1,16 +1,14 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "d d",
-        "d d",
-        "ddd"
-    ],
-    "key": {
-        "d": {
-            "item": "minecraft:copper_ingot"
-        }
-    },
-    "result": {
-        "id": "dehydration:copper_cauldron"
-    }
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "d d",
+    "d d",
+    "ddd"
+  ],
+  "key": {
+    "d": "minecraft:copper_ingot"
+  },
+  "result": {
+    "id": "dehydration:copper_cauldron"
+  }
 }

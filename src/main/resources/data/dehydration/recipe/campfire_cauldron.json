@@ -1,22 +1,16 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        " d ",
-        " e ",
-        "dfd"
-    ],
-    "key": {
-        "d": {
-            "item": "minecraft:stick"
-        },
-        "e": {
-            "item": "minecraft:chain"
-        },
-        "f": {
-            "item": "dehydration:copper_cauldron"
-        }
-    },
-    "result": {
-        "id": "dehydration:campfire_cauldron"
-    }
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " d ",
+    " e ",
+    "dfd"
+  ],
+  "key": {
+    "d": "minecraft:stick",
+    "e": "minecraft:iron_chain",
+    "f": "dehydration:copper_cauldron"
+  },
+  "result": {
+    "id": "dehydration:campfire_cauldron"
+  }
 }

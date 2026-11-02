@@ -4,13 +4,16 @@ import net.dehydration.access.PlayerAccess;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.thirst.ThirstManager;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.attribute.EnvironmentAttributes;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,19 +47,9 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
     @Shadow
     public abstract boolean isCreative();
 
-    @Inject(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;tick(Lnet/minecraft/world/entity/player/Player;)V", shift = Shift.AFTER))
-    private void tickMixin(CallbackInfo info) {
-        if (!this.level().isClientSide() && this.thirstManager.hasThirst()) {
-            this.thirstManager.update((Player) (Object) this);
-            if (this.isSprinting() && !this.isCreative() && !this.isSpectator() && this.thirstManager.getThirstLevel() < 6) {
-                this.setSprinting(false);
-            }
-        }
-    }
-
     @Inject(method = "aiStep()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Inventory;tick()V", shift = Shift.BEFORE))
     private void tickMovementMixin(CallbackInfo info) {
-        if (!this.level().isClientSide() && this.level().getDifficulty() == Difficulty.PEACEFUL && this.level().getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION) && this.thirstManager.hasThirst()) {
+        if (this.level() instanceof ServerLevel serverWorld && serverWorld.getDifficulty() == Difficulty.PEACEFUL && serverWorld.getGameRules().get(GameRules.NATURAL_HEALTH_REGENERATION) && this.thirstManager.hasThirst()) {
             if (this.thirstManager.isNotFull() && this.tickCount % 10 == 0) {
                 this.thirstManager.setThirstLevel(this.thirstManager.getThirstLevel() + 1);
             }
@@ -64,19 +57,19 @@ public abstract class PlayerEntityMixin extends LivingEntity implements ThirstMa
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At(value = "TAIL"))
-    private void readCustomDataFromTagMixin(CompoundTag tag, CallbackInfo info) {
+    private void readCustomDataFromTagMixin(ValueInput tag, CallbackInfo info) {
         this.thirstManager.readNbt(tag);
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At(value = "TAIL"))
-    private void writeCustomDataToTagMixin(CompoundTag tag, CallbackInfo info) {
+    private void writeCustomDataToTagMixin(ValueOutput tag, CallbackInfo info) {
         this.thirstManager.writeNbt(tag);
     }
 
     @Inject(method = "causeFoodExhaustion(F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;addExhaustion(F)V", shift = Shift.AFTER))
     private void addExhaustionMixin(float exhaustion, CallbackInfo info) {
         if (this.thirstManager.hasThirst()) {
-            if (ConfigInit.CONFIG.harder_nether && this.level().dimensionType().ultraWarm()) {
+            if (ConfigInit.CONFIG.harder_nether && this.level().environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, this.blockPosition())) {
                 exhaustion *= ConfigInit.CONFIG.nether_factor;
             }
             this.thirstManager.addDehydration(exhaustion / ConfigInit.CONFIG.hydrating_factor);

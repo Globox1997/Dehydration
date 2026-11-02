@@ -1,5 +1,6 @@
 package net.dehydration.item;
 
+import net.minecraft.world.InteractionResult;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.block.CampfireCauldronBlock;
 import net.dehydration.block.CopperLeveledCauldronBlock;
@@ -9,7 +10,7 @@ import net.dehydration.item.component.FlaskComponent;
 import net.dehydration.misc.ThirstTooltipData;
 import net.dehydration.thirst.ThirstManager;
 import net.minecraft.ChatFormatting;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,8 +20,6 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +28,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -119,7 +120,7 @@ public class LeatherFlask extends Item {
                             itemStack.set(ItemInit.FLASK_DATA, new FlaskComponent(flaskComponent.fillLevel() - 1, flaskComponent.qualityLevel()));
                         }
                     }
-                    return InteractionResult.sidedSuccess(player.level().isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
             } else if (isWaterCauldron && state.getValue(LayeredCauldronBlock.LEVEL) > 0 && flaskComponent.fillLevel() < 2 + this.addition) {
                 // Fill up flask
@@ -129,14 +130,14 @@ public class LeatherFlask extends Item {
                     LayeredCauldronBlock.lowerFillLevel(state, player.level(), pos);
                     itemStack.set(ItemInit.FLASK_DATA, new FlaskComponent(flaskComponent.fillLevel() + 1, 2));
                 }
-                return InteractionResult.sidedSuccess(player.level().isClientSide());
+                return InteractionResult.SUCCESS;
             }
         }
         return super.useOn(context);
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
         ItemStack itemStack = user.getItemInHand(hand);
         FlaskComponent flaskComponent = itemStack.getOrDefault(ItemInit.FLASK_DATA, FlaskComponent.DEFAULT);
         BlockHitResult hitResult = getPlayerPOVHitResult(world, user, ClipContext.Fluid.SOURCE_ONLY);
@@ -147,7 +148,7 @@ public class LeatherFlask extends Item {
             if (user.isShiftKeyDown() && flaskComponent.fillLevel() != 0) {
                 itemStack.set(ItemInit.FLASK_DATA, new FlaskComponent(0, flaskComponent.qualityLevel()));
                 world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.EMPTY_FLASK_EVENT, SoundSource.NEUTRAL, 1.0F, 1.0F);
-                return InteractionResultHolder.consume(itemStack);
+                return InteractionResult.CONSUME;
             }
             if (flaskComponent.fillLevel() < 2 + addition) {
                 int fillLevel = 2 + addition;
@@ -166,11 +167,11 @@ public class LeatherFlask extends Item {
 
                 world.playSound(user, user.getX(), user.getY(), user.getZ(), SoundInit.FILL_FLASK_EVENT, SoundSource.NEUTRAL, 1.0F, 1.0F);
                 itemStack.set(ItemInit.FLASK_DATA, new FlaskComponent(fillLevel, waterPurity));
-                return InteractionResultHolder.consume(itemStack);
+                return InteractionResult.CONSUME;
             }
         }
         if (flaskComponent.fillLevel() == 0) {
-            return InteractionResultHolder.pass(itemStack);
+            return InteractionResult.PASS;
         } else {
             return ItemUtils.startUsingInstantly(world, user, hand);
         }
@@ -189,9 +190,9 @@ public class LeatherFlask extends Item {
                 if (!world.isClientSide()) {
                     ThirstManager thirstManager = ((ThirstManagerAccess) user).getThirstManager();
                     thirstManager.add(ConfigInit.CONFIG.flask_thirst_quench);
-                    if (flaskComponent.qualityLevel() == 2 && world.random.nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance) {
+                    if (flaskComponent.qualityLevel() == 2 && world.getRandom().nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance) {
                         user.addEffect(new MobEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.flask_dirty_thirst_duration, 1, false, false, true));
-                    } else if (flaskComponent.qualityLevel() == 1 && world.random.nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance * 0.5F) {
+                    } else if (flaskComponent.qualityLevel() == 1 && world.getRandom().nextFloat() <= ConfigInit.CONFIG.flask_dirty_thirst_chance * 0.5F) {
                         user.addEffect(new MobEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.flask_dirty_thirst_duration, 0, false, false, true));
                     }
                 }
@@ -207,20 +208,20 @@ public class LeatherFlask extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
         FlaskComponent flaskComponent = stack.getOrDefault(ItemInit.FLASK_DATA, FlaskComponent.DEFAULT);
         if (flaskComponent.fillLevel() > 0) {
-            return UseAnim.DRINK;
+            return ItemUseAnimation.DRINK;
         } else {
-            return UseAnim.NONE;
+            return ItemUseAnimation.NONE;
         }
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag type) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> tooltip, TooltipFlag type) {
         FlaskComponent flaskComponent = stack.getOrDefault(ItemInit.FLASK_DATA, FlaskComponent.DEFAULT);
         if (stack.get(ItemInit.FLASK_DATA) != null) {
-            tooltip.add(Component.translatable("item.dehydration.leather_flask.tooltip", flaskComponent.fillLevel(), addition + 2).withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.translatable("item.dehydration.leather_flask.tooltip", flaskComponent.fillLevel(), addition + 2).withStyle(ChatFormatting.GRAY));
             if (flaskComponent.fillLevel() > 0) {
                 String string = "dirty";
                 if (flaskComponent.qualityLevel() == 1) {
@@ -228,12 +229,12 @@ public class LeatherFlask extends Item {
                 } else if (flaskComponent.qualityLevel() == 0) {
                     string = "purified";
                 }
-                tooltip.add(Component.translatable("item.dehydration.leather_flask.tooltip3." + string));
+                tooltip.accept(Component.translatable("item.dehydration.leather_flask.tooltip3." + string));
             }
         } else {
-            tooltip.add(Component.translatable("item.dehydration.leather_flask.tooltip2", addition + 2).withStyle(ChatFormatting.GRAY));
+            tooltip.accept(Component.translatable("item.dehydration.leather_flask.tooltip2", addition + 2).withStyle(ChatFormatting.GRAY));
         }
-        super.appendHoverText(stack, context, tooltip, type);
+        super.appendHoverText(stack, context, displayComponent, tooltip, type);
     }
 
     @Override

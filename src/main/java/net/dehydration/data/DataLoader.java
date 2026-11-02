@@ -8,7 +8,7 @@ import net.dehydration.DehydrationMain;
 import net.dehydration.api.HydrationTemplate;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
@@ -23,7 +23,7 @@ import java.util.Set;
 public class DataLoader implements SimpleSynchronousResourceReloadListener {
 
     @Override
-    public ResourceLocation getFabricId() {
+    public Identifier getFabricId() {
         return DehydrationMain.identifierOf("loader");
     }
 
@@ -57,12 +57,12 @@ public class DataLoader implements SimpleSynchronousResourceReloadListener {
                     Set<Item> target = replace ? replacingItems.get(i) : additiveItems.get(i);
                     for (JsonElement itemElement : itemArray) {
                         String itemId = itemElement.getAsString();
-                        ResourceLocation identifier = ResourceLocation.tryParse(itemId);
+                        Identifier identifier = Identifier.tryParse(itemId);
                         if (identifier == null || !BuiltInRegistries.ITEM.containsKey(identifier)) {
                             DehydrationMain.LOGGER.warn("{} is not a valid item identifier", itemId);
                             continue;
                         }
-                        target.add(BuiltInRegistries.ITEM.get(identifier));
+                        target.add(BuiltInRegistries.ITEM.getValue(identifier));
                     }
                 }
 

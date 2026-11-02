@@ -1,5 +1,6 @@
 package net.dehydration.block;
 
+import net.minecraft.world.InteractionResult;
 import net.dehydration.block.entity.CopperCauldronBehavior;
 import net.dehydration.init.BlockInit;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -10,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -51,10 +51,10 @@ public abstract class AbstractCopperCauldronBlock extends Block {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         Storage<FluidVariant> storage = FluidStorage.SIDED.find(world, pos, hit.getDirection().getOpposite());
         if (storage != null && FluidStorageUtil.interactWithFluidStorage(storage, player, hand)) {
-            return ItemInteractionResult.sidedSuccess(world.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         ItemStack itemStack = player.getItemInHand(hand);
         CopperCauldronBehavior cauldronBehavior = this.behaviorMap.get(itemStack.getItem());
@@ -102,7 +102,7 @@ public abstract class AbstractCopperCauldronBlock extends Block {
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state) {
+    protected ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData) {
         return new ItemStack(BlockInit.COPPER_CAULDRON_BLOCK);
     }
 

@@ -6,12 +6,8 @@
     "ddd"
   ],
   "key": {
-    "d": {
-      "tag": "minecraft:planks"
-    },
-    "e": {
-      "item": "minecraft:string"
-    }
+    "d": "#minecraft:planks",
+    "e": "minecraft:string"
   },
   "result": {
     "id": "dehydration:rainwater_collector"

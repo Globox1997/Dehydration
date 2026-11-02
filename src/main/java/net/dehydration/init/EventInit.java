@@ -1,18 +1,18 @@
 package net.dehydration.init;
 
+import net.minecraft.world.InteractionResult;
 import net.dehydration.access.PlayerAccess;
 import net.dehydration.access.ServerPlayerAccess;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.network.ThirstServerPacket;
 import net.dehydration.thirst.ThirstManager;
 import net.dehydration.util.ThirstHelper;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -20,17 +20,14 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -42,7 +39,7 @@ public class EventInit {
             ThirstServerPacket.writeS2CHydrationTemplateSyncPacket(handler.player);
         });
 
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
+        ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, origin, destination) -> {
             ((ServerPlayerAccess) player).compatSync();
         });
 
@@ -60,14 +57,14 @@ public class EventInit {
 
         LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
             if (key.equals(BuiltInLootTables.SPAWN_BONUS_CHEST)) {
-                LootPool bottlePool = LootPool.lootPool().with(LootItem.lootTableItem(Items.GLASS_BOTTLE).build()).setRolls(BinomialDistributionGenerator.binomial(5, 0.9F)).build();
+                LootPool bottlePool = LootPool.lootPool().add(LootItem.lootTableItem(Items.GLASS_BOTTLE)).setRolls(ContextIntProviders.binomial(5, 0.9F)).build();
                 tableBuilder.pool(bottlePool);
-                LootPool bowlPool = LootPool.lootPool().with(LootItem.lootTableItem(ItemInit.PURIFIED_WATER_BOWL).build()).setRolls(BinomialDistributionGenerator.binomial(2, 0.6F)).build();
+                LootPool bowlPool = LootPool.lootPool().add(LootItem.lootTableItem(ItemInit.PURIFIED_WATER_BOWL)).setRolls(ContextIntProviders.binomial(2, 0.6F)).build();
                 tableBuilder.pool(bowlPool);
             } else if (key.equals(BuiltInLootTables.VILLAGE_BUTCHER) || key.equals(BuiltInLootTables.VILLAGE_CARTOGRAPHER) || key.equals(BuiltInLootTables.VILLAGE_SHEPHERD)) {
-                LootPool bowlPool = LootPool.lootPool().with(LootItem.lootTableItem(ItemInit.PURIFIED_WATER_BOWL).build()).setRolls(BinomialDistributionGenerator.binomial(4, 0.3F)).build();
+                LootPool bowlPool = LootPool.lootPool().add(LootItem.lootTableItem(ItemInit.PURIFIED_WATER_BOWL)).setRolls(ContextIntProviders.binomial(4, 0.3F)).build();
                 tableBuilder.pool(bowlPool);
-                LootPool bucketPool = LootPool.lootPool().with(LootItem.lootTableItem(ItemInit.PURIFIED_BUCKET).build()).setRolls(BinomialDistributionGenerator.binomial(1, 0.3F)).build();
+                LootPool bucketPool = LootPool.lootPool().add(LootItem.lootTableItem(ItemInit.PURIFIED_BUCKET)).setRolls(ContextIntProviders.binomial(1, 0.3F)).build();
                 tableBuilder.pool(bucketPool);
             }
         });
@@ -88,13 +85,13 @@ public class EventInit {
                             player.setItemInHand(hand, ItemUtils.createFilledResult(player.getItemInHand(hand), player, itemStack));
                             ThirstHelper.drainWaterSource(player, world, blockPos);
                         }
-                        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), true);
+                        return InteractionResult.SUCCESS;
                     } else {
-                        return InteractionResultHolder.pass(player.getItemInHand(hand));
+                        return InteractionResult.PASS;
                     }
                 }
             }
-            return InteractionResultHolder.pass(player.getItemInHand(hand));
+            return InteractionResult.PASS;
         });
 
         UseBlockCallback.EVENT.register((player, world, hand, result) -> {
@@ -107,7 +104,7 @@ public class EventInit {
                         if (thirstManager.isNotFull()) {
                             int drinkTime = ((PlayerAccess) player).getDrinkTime();
                             if (world.isClientSide() && drinkTime % 3 == 0)
-                                player.playSound(SoundEvents.GENERIC_DRINK, 0.5f, world.getRandom().nextFloat() * 0.1f + 0.9f);
+                                player.playSound(SoundEvents.GENERIC_DRINK.value(), 0.5f, world.getRandom().nextFloat() * 0.1f + 0.9f);
 
                             if (drinkTime > 20) {
                                 if (!world.isClientSide()) {
@@ -138,12 +135,6 @@ public class EventInit {
                 }
             }
             return InteractionResult.PASS;
-        });
-
-        FabricBrewingRecipeRegistryBuilder.BUILD.register((builder) -> {
-            builder.addMix(Potions.WATER, Items.CHARCOAL, ItemInit.PURIFIED_WATER);
-            builder.addMix(Potions.WATER, Items.KELP, ItemInit.PURIFIED_WATER);
-            builder.addMix(ItemInit.PURIFIED_WATER, Items.GHAST_TEAR, ItemInit.HYDRATION);
         });
     }
 }

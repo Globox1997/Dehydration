@@ -3,7 +3,7 @@
 	"parent": "block/block",
 	"texture_size": [64, 32],
 	"textures": {
-		"3": "block/chain",
+		"3": "block/iron_chain",
 		"4": "dehydration:block/campfire_cauldron",
 		"5": "block/water_still",
         "particle": "block/campfire_log"

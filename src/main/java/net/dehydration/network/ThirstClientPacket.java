@@ -48,7 +48,7 @@ public class ThirstClientPacket {
             for (int i = 0; i < templateList.size(); i += 2) {
                 List<Item> items = new ArrayList<Item>();
                 for (int u = 0; u < templateList.get(i + 1); u++) {
-                    items.add(BuiltInRegistries.ITEM.get(payload.templateIdentifiers().get(count)));
+                    items.add(BuiltInRegistries.ITEM.getValue(payload.templateIdentifiers().get(count)));
                     count++;
                 }
                 hydrationTemplates.add(new HydrationTemplate(templateList.get(i), items));

@@ -1,6 +1,7 @@
 package net.dehydration.effect;
 
 import net.dehydration.access.ThirstManagerAccess;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,11 +14,11 @@ public class HydrationEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel world, LivingEntity entity, int amplifier) {
         if (!entity.level().isClientSide() && entity instanceof Player player) {
             ((ThirstManagerAccess) player).getThirstManager().add(amplifier + 1);
         }
-        return super.applyEffectTick(entity, amplifier);
+        return super.applyEffectTick(world, entity, amplifier);
     }
 
     @Override

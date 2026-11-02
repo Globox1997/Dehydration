@@ -24,6 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class BambooPumpEntity extends BlockEntity implements Container {
 
@@ -36,18 +38,18 @@ public class BambooPumpEntity extends BlockEntity implements Container {
     }
 
     @Override
-    public void loadAdditional(CompoundTag nbt, Provider registryLookup) {
-        super.loadAdditional(nbt, registryLookup);
+    public void loadAdditional(ValueInput nbt) {
+        super.loadAdditional(nbt);
         this.inventory.clear();
-        ContainerHelper.loadAllItems(nbt, inventory, registryLookup);
-        this.pumpCount = nbt.getInt("PumpCount");
-        this.cooldown = nbt.getInt("Cooldown");
+        ContainerHelper.loadAllItems(nbt, inventory);
+        this.pumpCount = nbt.getIntOr("PumpCount", 0);
+        this.cooldown = nbt.getIntOr("Cooldown", 0);
     }
 
     @Override
-    public void saveAdditional(CompoundTag nbt, Provider registryLookup) {
-        super.saveAdditional(nbt, registryLookup);
-        ContainerHelper.saveAllItems(nbt, inventory, registryLookup);
+    public void saveAdditional(ValueOutput nbt) {
+        super.saveAdditional(nbt);
+        ContainerHelper.saveAllItems(nbt, inventory);
         nbt.putInt("PumpCount", this.pumpCount);
         nbt.putInt("Cooldown", this.cooldown);
     }

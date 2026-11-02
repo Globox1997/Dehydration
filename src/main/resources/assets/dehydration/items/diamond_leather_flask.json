@@ -1,0 +1,14 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "property": "dehydration:empty",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "dehydration:item/diamond_leather_flask"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "dehydration:item/diamond_empty_leather_flask"
+    }
+  }
+}

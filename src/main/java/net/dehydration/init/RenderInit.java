@@ -8,51 +8,50 @@ import net.dehydration.misc.ThirstTooltipComponent;
 import net.dehydration.misc.ThirstTooltipData;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderingRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback;
+import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.color.block.BlockTintSources;
 import net.minecraft.client.renderer.BiomeColors;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.util.ARGB;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class RenderInit {
 
-    public static final ResourceLocation THIRST_ICON = DehydrationMain.identifierOf("textures/gui/thirst.png");
+    public static final Identifier THIRST_ICON = DehydrationMain.identifierOf("textures/gui/thirst.png");
+    private static final int PURIFIED_WATER_COLOR = ARGB.opaque(3708358);
 
     public static void init() {
-        ColorProviderRegistry.BLOCK.register(
-                (state, world, pos, tintIndex) -> world != null && world.getBlockEntity(pos) != null ? isPurifiedWater(world, pos, state) ? 3708358 : BiomeColors.getAverageWaterColor(world, pos) : 3708358,
-                BlockInit.CAMPFIRE_CAULDRON_BLOCK);
-        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> BiomeColors.getAverageWaterColor(world, pos), BlockInit.COPPER_WATER_CAULDRON_BLOCK);
-        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> 3708358, BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK);
-        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> BiomeColors.getAverageWaterColor(world, pos), BlockInit.RAINWATER_WATER_COLLECTOR_BLOCK);
-        ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> 3708358, BlockInit.RAINWATER_PURIFIED_WATER_COLLECTOR_BLOCK);
+        BlockColorRegistry.register(List.of(new BlockTintSource() {
+            @Override
+            public int color(BlockState state) {
+                return PURIFIED_WATER_COLOR;
+            }
 
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.CAMPFIRE_CAULDRON_BLOCK, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.COPPER_CAULDRON_BLOCK, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.COPPER_WATER_CAULDRON_BLOCK, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.COPPER_POWDERED_CAULDRON_BLOCK, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.BAMBOO_PUMP_BLOCK, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.RAINWATER_COLLECTOR_BLOCK, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.RAINWATER_WATER_COLLECTOR_BLOCK, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.RAINWATER_POWDERED_COLLECTOR_BLOCK, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(BlockInit.RAINWATER_PURIFIED_WATER_COLLECTOR_BLOCK, RenderType.cutout());
-
-        BlockRenderLayerMap.INSTANCE.putFluids(RenderType.translucent(), FluidInit.PURIFIED_WATER, FluidInit.PURIFIED_FLOWING_WATER);
+            @Override
+            public int colorInWorld(BlockState state, BlockAndTintGetter world, BlockPos pos) {
+                return world.getBlockEntity(pos) != null ? isPurifiedWater(world, pos, state) ? PURIFIED_WATER_COLOR : BiomeColors.getAverageWaterColor(world, pos) : PURIFIED_WATER_COLOR;
+            }
+        }), BlockInit.CAMPFIRE_CAULDRON_BLOCK);
+        BlockColorRegistry.register(List.of(BlockTintSources.water()), BlockInit.COPPER_WATER_CAULDRON_BLOCK);
+        BlockColorRegistry.register(List.of(BlockTintSources.constant(PURIFIED_WATER_COLOR)), BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK);
+        BlockColorRegistry.register(List.of(BlockTintSources.water()), BlockInit.RAINWATER_WATER_COLLECTOR_BLOCK);
+        BlockColorRegistry.register(List.of(BlockTintSources.constant(PURIFIED_WATER_COLOR)), BlockInit.RAINWATER_PURIFIED_WATER_COLLECTOR_BLOCK);
 
         BlockEntityRenderers.register(BlockInit.BAMBOO_PUMP_ENTITY, BambooPumpRenderer::new);
 
-        FluidRenderHandlerRegistry.INSTANCE.register(FluidInit.PURIFIED_WATER, SimpleFluidRenderHandler.coloredWater(3708358));
-        FluidRenderHandlerRegistry.INSTANCE.register(FluidInit.PURIFIED_FLOWING_WATER, SimpleFluidRenderHandler.coloredWater(3708358));
-        FluidRenderHandlerRegistry.INSTANCE.setBlockTransparency(BlockInit.PURIFIED_WATER, true);
+        FluidRenderingRegistry.register(FluidInit.PURIFIED_WATER, FluidInit.PURIFIED_FLOWING_WATER, new FluidModel.Unbaked(new Material(Identifier.withDefaultNamespace("block/water_still")),
+                new Material(Identifier.withDefaultNamespace("block/water_flow")), new Material(Identifier.withDefaultNamespace("block/water_overlay")), BlockTintSources.constant(PURIFIED_WATER_COLOR)));
+        FluidRenderingRegistry.setBlockTransparency(BlockInit.PURIFIED_WATER, true);
 
         // Can not be used cause injection point is not working properly with chat rendering
         // HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
@@ -60,7 +59,7 @@ public class RenderInit {
         //     ThirstHudRender.renderThirstHud(drawContext, client, client.player, drawContext.getScaledWindowWidth(), drawContext.getScaledWindowHeight(), client.inGameHud.getTicks());
         // });
 
-        TooltipComponentCallback.EVENT.register((data) -> {
+        ClientTooltipComponentCallback.EVENT.register((data) -> {
             if (data instanceof ThirstTooltipData) {
                 return new ThirstTooltipComponent((ThirstTooltipData) data);
             }
