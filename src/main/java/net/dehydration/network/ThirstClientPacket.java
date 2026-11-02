@@ -13,9 +13,9 @@ import net.dehydration.thirst.ThirstManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 
 @Environment(EnvType.CLIENT)
 public class ThirstClientPacket {
@@ -25,7 +25,7 @@ public class ThirstClientPacket {
             int playerId = payload.playerId();
             int thirstLevel = payload.thirstLevel();
             context.client().execute(() -> {
-                if (context.player().getWorld().getEntityById(playerId) instanceof PlayerEntity playerEntity) {
+                if (context.player().level().getEntity(playerId) instanceof Player playerEntity) {
                     ThirstManager thirstManager = ((ThirstManagerAccess) playerEntity).getThirstManager();
                     thirstManager.setThirstLevel(thirstLevel);
                 }
@@ -35,7 +35,7 @@ public class ThirstClientPacket {
             int playerId = payload.playerId();
             boolean excludedThirst = payload.excludingThirst();
             context.client().execute(() -> {
-                if (context.player().getWorld().getEntityById(playerId) instanceof PlayerEntity playerEntity) {
+                if (context.player().level().getEntity(playerId) instanceof Player playerEntity) {
                     ((ThirstManagerAccess) playerEntity).getThirstManager().setThirst(excludedThirst);
                 }
             });
@@ -48,7 +48,7 @@ public class ThirstClientPacket {
             for (int i = 0; i < templateList.size(); i += 2) {
                 List<Item> items = new ArrayList<Item>();
                 for (int u = 0; u < templateList.get(i + 1); u++) {
-                    items.add(Registries.ITEM.get(payload.templateIdentifiers().get(count)));
+                    items.add(BuiltInRegistries.ITEM.get(payload.templateIdentifiers().get(count)));
                     count++;
                 }
                 hydrationTemplates.add(new HydrationTemplate(templateList.get(i), items));

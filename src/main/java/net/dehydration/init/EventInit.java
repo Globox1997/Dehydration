@@ -13,26 +13,26 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsage;
-import net.minecraft.item.Items;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTables;
-import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.loot.provider.number.BinomialLootNumberProvider;
-import net.minecraft.potion.Potions;
-import net.minecraft.registry.tag.BiomeTags;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.stat.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 public class EventInit {
 
@@ -59,77 +59,77 @@ public class EventInit {
         });
 
         LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
-            if (key.equals(LootTables.SPAWN_BONUS_CHEST)) {
-                LootPool bottlePool = LootPool.builder().with(ItemEntry.builder(Items.GLASS_BOTTLE).build()).rolls(BinomialLootNumberProvider.create(5, 0.9F)).build();
+            if (key.equals(BuiltInLootTables.SPAWN_BONUS_CHEST)) {
+                LootPool bottlePool = LootPool.lootPool().with(LootItem.lootTableItem(Items.GLASS_BOTTLE).build()).setRolls(BinomialDistributionGenerator.binomial(5, 0.9F)).build();
                 tableBuilder.pool(bottlePool);
-                LootPool bowlPool = LootPool.builder().with(ItemEntry.builder(ItemInit.PURIFIED_WATER_BOWL).build()).rolls(BinomialLootNumberProvider.create(2, 0.6F)).build();
+                LootPool bowlPool = LootPool.lootPool().with(LootItem.lootTableItem(ItemInit.PURIFIED_WATER_BOWL).build()).setRolls(BinomialDistributionGenerator.binomial(2, 0.6F)).build();
                 tableBuilder.pool(bowlPool);
-            } else if (key.equals(LootTables.VILLAGE_BUTCHER_CHEST) || key.equals(LootTables.VILLAGE_CARTOGRAPHER_CHEST) || key.equals(LootTables.VILLAGE_SHEPARD_CHEST)) {
-                LootPool bowlPool = LootPool.builder().with(ItemEntry.builder(ItemInit.PURIFIED_WATER_BOWL).build()).rolls(BinomialLootNumberProvider.create(4, 0.3F)).build();
+            } else if (key.equals(BuiltInLootTables.VILLAGE_BUTCHER) || key.equals(BuiltInLootTables.VILLAGE_CARTOGRAPHER) || key.equals(BuiltInLootTables.VILLAGE_SHEPHERD)) {
+                LootPool bowlPool = LootPool.lootPool().with(LootItem.lootTableItem(ItemInit.PURIFIED_WATER_BOWL).build()).setRolls(BinomialDistributionGenerator.binomial(4, 0.3F)).build();
                 tableBuilder.pool(bowlPool);
-                LootPool bucketPool = LootPool.builder().with(ItemEntry.builder(ItemInit.PURIFIED_BUCKET).build()).rolls(BinomialLootNumberProvider.create(1, 0.3F)).build();
+                LootPool bucketPool = LootPool.lootPool().with(LootItem.lootTableItem(ItemInit.PURIFIED_BUCKET).build()).setRolls(BinomialDistributionGenerator.binomial(1, 0.3F)).build();
                 tableBuilder.pool(bucketPool);
             }
         });
 
         UseItemCallback.EVENT.register((player, world, hand) -> {
-            if (!player.isCreative() && !player.isSpectator() && player.isSneaking() && player.getStackInHand(hand).isOf(Items.BOWL)) {
-                HitResult hitResult = player.raycast(player.getBlockInteractionRange(), 0.0F, true);
+            if (!player.isCreative() && !player.isSpectator() && player.isShiftKeyDown() && player.getItemInHand(hand).is(Items.BOWL)) {
+                HitResult hitResult = player.pick(player.blockInteractionRange(), 0.0F, true);
                 BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
-                if (world.canPlayerModifyAt(player, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
-                    if (world.getFluidState(blockPos).isStill()) {
-                        world.playSound(null, blockPos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0f, 1.0f);
-                        if (!world.isClient()) {
+                if (world.mayInteract(player, blockPos) && world.getFluidState(blockPos).is(FluidTags.WATER)) {
+                    if (world.getFluidState(blockPos).isSource()) {
+                        world.playSound(null, blockPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0f, 1.0f);
+                        if (!world.isClientSide()) {
                             ItemStack itemStack = new ItemStack(ItemInit.WATER_BOWL);
-                            if (world.getFluidState(blockPos).isIn(TagInit.PURIFIED_WATER)) {
+                            if (world.getFluidState(blockPos).is(TagInit.PURIFIED_WATER)) {
                                 itemStack = new ItemStack(ItemInit.PURIFIED_WATER_BOWL);
                             }
-                            player.incrementStat(Stats.USED.getOrCreateStat(Items.BOWL));
-                            player.setStackInHand(hand, ItemUsage.exchangeStack(player.getStackInHand(hand), player, itemStack));
+                            player.awardStat(Stats.ITEM_USED.get(Items.BOWL));
+                            player.setItemInHand(hand, ItemUtils.createFilledResult(player.getItemInHand(hand), player, itemStack));
                             ThirstHelper.drainWaterSource(player, world, blockPos);
                         }
-                        return TypedActionResult.success(player.getStackInHand(hand), true);
+                        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), true);
                     } else {
-                        return TypedActionResult.pass(player.getStackInHand(hand));
+                        return InteractionResultHolder.pass(player.getItemInHand(hand));
                     }
                 }
             }
-            return TypedActionResult.pass(player.getStackInHand(hand));
+            return InteractionResultHolder.pass(player.getItemInHand(hand));
         });
 
         UseBlockCallback.EVENT.register((player, world, hand, result) -> {
-            if (hand == Hand.MAIN_HAND && !player.isCreative() && !player.isSpectator() && player.isSneaking() && player.getMainHandStack().isEmpty()) {
-                HitResult hitResult = player.raycast(player.getBlockInteractionRange(), 0.0F, true);
+            if (hand == InteractionHand.MAIN_HAND && !player.isCreative() && !player.isSpectator() && player.isShiftKeyDown() && player.getMainHandItem().isEmpty()) {
+                HitResult hitResult = player.pick(player.blockInteractionRange(), 0.0F, true);
                 BlockPos blockPos = ((BlockHitResult) hitResult).getBlockPos();
-                if (world.canPlayerModifyAt(player, blockPos) && world.getFluidState(blockPos).isIn(FluidTags.WATER)) {
-                    if (world.getFluidState(blockPos).isStill() || ConfigInit.CONFIG.allow_non_flowing_water_sip) {
+                if (world.mayInteract(player, blockPos) && world.getFluidState(blockPos).is(FluidTags.WATER)) {
+                    if (world.getFluidState(blockPos).isSource() || ConfigInit.CONFIG.allow_non_flowing_water_sip) {
                         ThirstManager thirstManager = ((ThirstManagerAccess) player).getThirstManager();
                         if (thirstManager.isNotFull()) {
                             int drinkTime = ((PlayerAccess) player).getDrinkTime();
-                            if (world.isClient() && drinkTime % 3 == 0)
-                                player.playSound(SoundEvents.ENTITY_GENERIC_DRINK, 0.5f, world.getRandom().nextFloat() * 0.1f + 0.9f);
+                            if (world.isClientSide() && drinkTime % 3 == 0)
+                                player.playSound(SoundEvents.GENERIC_DRINK, 0.5f, world.getRandom().nextFloat() * 0.1f + 0.9f);
 
                             if (drinkTime > 20) {
-                                if (!world.isClient()) {
+                                if (!world.isClientSide()) {
                                     thirstManager.add(ConfigInit.CONFIG.water_souce_quench);
-                                    if (!world.getFluidState(blockPos).isIn(TagInit.PURIFIED_WATER)) {
+                                    if (!world.getFluidState(blockPos).is(TagInit.PURIFIED_WATER)) {
                                         float sipThirstChance = ConfigInit.CONFIG.water_sip_thirst_chance;
-                                        if (world.getBiome(blockPos).isIn(BiomeTags.IS_RIVER)) {
+                                        if (world.getBiome(blockPos).is(BiomeTags.IS_RIVER)) {
                                             sipThirstChance = sipThirstChance / 2f;
                                         }
                                         if (world.getRandom().nextFloat() <= sipThirstChance) {
-                                            player.addStatusEffect(new StatusEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.water_sip_thirst_duration, 1, false, false, true));
+                                            player.addEffect(new MobEffectInstance(EffectInit.THIRST, ConfigInit.CONFIG.water_sip_thirst_duration, 1, false, false, true));
                                         }
                                     }
-                                    if (!ConfigInit.CONFIG.allow_non_flowing_water_sip && world.getFluidState(blockPos).isStill()) {
+                                    if (!ConfigInit.CONFIG.allow_non_flowing_water_sip && world.getFluidState(blockPos).isSource()) {
                                         ThirstHelper.drainWaterSource(player, world, blockPos);
                                     }
                                 } else {
-                                    world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundInit.WATER_SIP_EVENT, SoundCategory.PLAYERS, 1.0F,
+                                    world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundInit.WATER_SIP_EVENT, SoundSource.PLAYERS, 1.0F,
                                             0.9F + (world.getRandom().nextFloat() / 5F));
                                 }
                                 ((PlayerAccess) player).setDrinkTime(0);
-                                return ActionResult.SUCCESS;
+                                return InteractionResult.SUCCESS;
                             }
 
                             ((PlayerAccess) player).setDrinkTime(drinkTime + 1);
@@ -137,13 +137,13 @@ public class EventInit {
                     }
                 }
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         FabricBrewingRecipeRegistryBuilder.BUILD.register((builder) -> {
-            builder.registerPotionRecipe(Potions.WATER, Items.CHARCOAL, ItemInit.PURIFIED_WATER);
-            builder.registerPotionRecipe(Potions.WATER, Items.KELP, ItemInit.PURIFIED_WATER);
-            builder.registerPotionRecipe(ItemInit.PURIFIED_WATER, Items.GHAST_TEAR, ItemInit.HYDRATION);
+            builder.addMix(Potions.WATER, Items.CHARCOAL, ItemInit.PURIFIED_WATER);
+            builder.addMix(Potions.WATER, Items.KELP, ItemInit.PURIFIED_WATER);
+            builder.addMix(ItemInit.PURIFIED_WATER, Items.GHAST_TEAR, ItemInit.HYDRATION);
         });
     }
 }

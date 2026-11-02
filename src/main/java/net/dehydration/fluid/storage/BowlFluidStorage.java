@@ -9,9 +9,9 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluids;
 
 public class BowlFluidStorage extends SingleVariantStorage<FluidVariant> {
 
@@ -32,14 +32,14 @@ public class BowlFluidStorage extends SingleVariantStorage<FluidVariant> {
 
     @Override
     public boolean isResourceBlank() {
-        return stack.isOf(Items.BOWL);
+        return stack.is(Items.BOWL);
     }
 
     @Override
     public FluidVariant getResource() {
-        if (stack.isOf(ItemInit.WATER_BOWL)) {
+        if (stack.is(ItemInit.WATER_BOWL)) {
             return FluidVariant.of(Fluids.WATER);
-        } else if (stack.isOf(ItemInit.PURIFIED_WATER_BOWL)) {
+        } else if (stack.is(ItemInit.PURIFIED_WATER_BOWL)) {
             return FluidVariant.of(FluidInit.PURIFIED_WATER);
         }
         return getBlankVariant();
@@ -47,7 +47,7 @@ public class BowlFluidStorage extends SingleVariantStorage<FluidVariant> {
 
     @Override
     public long getAmount() {
-        return (stack.isOf(ItemInit.WATER_BOWL) || stack.isOf(ItemInit.PURIFIED_WATER_BOWL)) ? BOWL_CAPACITY : 0;
+        return (stack.is(ItemInit.WATER_BOWL) || stack.is(ItemInit.PURIFIED_WATER_BOWL)) ? BOWL_CAPACITY : 0;
     }
 
     @Override
@@ -58,16 +58,16 @@ public class BowlFluidStorage extends SingleVariantStorage<FluidVariant> {
     @Override
     protected boolean canExtract(FluidVariant variant) {
         if (variant.isOf(Fluids.WATER)) {
-            return stack.isOf(ItemInit.WATER_BOWL) || stack.isOf(ItemInit.PURIFIED_WATER_BOWL);
+            return stack.is(ItemInit.WATER_BOWL) || stack.is(ItemInit.PURIFIED_WATER_BOWL);
         } else if (variant.isOf(FluidInit.PURIFIED_WATER)) {
-            return stack.isOf(ItemInit.PURIFIED_WATER_BOWL);
+            return stack.is(ItemInit.PURIFIED_WATER_BOWL);
         }
         return false;
     }
 
     @Override
     protected boolean canInsert(FluidVariant variant) {
-        return stack.isOf(Items.BOWL) && (variant.getFluid() == Fluids.WATER || variant.getFluid() == FluidInit.PURIFIED_WATER);
+        return stack.is(Items.BOWL) && (variant.getFluid() == Fluids.WATER || variant.getFluid() == FluidInit.PURIFIED_WATER);
     }
 
     @Override

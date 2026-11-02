@@ -1,8 +1,8 @@
 package net.dehydration.misc;
 
-import net.minecraft.item.tooltip.TooltipData;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
-public class ThirstTooltipData implements TooltipData {
+public class ThirstTooltipData implements TooltipComponent {
 
     private final int thirstQuench;
     private final int quality;

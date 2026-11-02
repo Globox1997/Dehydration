@@ -9,16 +9,16 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 
 public class CampfireCauldronFluidStorage extends SingleVariantStorage<FluidVariant> {
 
     private static final long CAPACITY = FluidConstants.BOTTLE * 4L;
 
-    private final World world;
+    private final Level world;
     private final BlockPos pos;
     private final BlockState state;
     private final CampfireCauldronEntity campfireCauldronEntity;
@@ -26,12 +26,12 @@ public class CampfireCauldronFluidStorage extends SingleVariantStorage<FluidVari
     private int fluidLevel;
     private boolean updateBoiling = false;
 
-    public CampfireCauldronFluidStorage(World world, BlockPos pos, BlockState state, CampfireCauldronEntity campfireCauldronEntity) {
+    public CampfireCauldronFluidStorage(Level world, BlockPos pos, BlockState state, CampfireCauldronEntity campfireCauldronEntity) {
         this.world = world;
         this.pos = pos;
         this.state = state;
         this.campfireCauldronEntity = campfireCauldronEntity;
-        this.fluidLevel = state.get(CampfireCauldronBlock.LEVEL);
+        this.fluidLevel = state.getValue(CampfireCauldronBlock.LEVEL);
         if (this.fluidLevel > 0) {
             this.variant = campfireCauldronEntity.isBoiled ? FluidVariant.of(FluidInit.PURIFIED_WATER) : FluidVariant.of(Fluids.WATER);
             this.amount = this.fluidLevel * FluidConstants.BOTTLE;

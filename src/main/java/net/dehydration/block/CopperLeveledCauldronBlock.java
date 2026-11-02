@@ -2,39 +2,38 @@ package net.dehydration.block;
 
 import net.dehydration.block.entity.CopperCauldronBehavior;
 import net.dehydration.init.BlockInit;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.Item;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldEvents;
-import net.minecraft.world.biome.Biome;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import java.util.Map;
 import java.util.function.Predicate;
 
 public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
-    public static final IntProperty LEVEL;
+    public static final IntegerProperty LEVEL;
     public static final Predicate<Biome.Precipitation> RAIN_PREDICATE;
     public static final Predicate<Biome.Precipitation> SNOW_PREDICATE;
     private final Predicate<Biome.Precipitation> precipitationPredicate;
 
-    public CopperLeveledCauldronBlock(AbstractBlock.Settings settings, Predicate<Biome.Precipitation> precipitationPredicate, Map<Item, CopperCauldronBehavior> behaviorMap) {
+    public CopperLeveledCauldronBlock(BlockBehaviour.Properties settings, Predicate<Biome.Precipitation> precipitationPredicate, Map<Item, CopperCauldronBehavior> behaviorMap) {
         super(settings, behaviorMap);
         this.precipitationPredicate = precipitationPredicate;
-        this.setDefaultState(this.stateManager.getDefaultState().with(LEVEL, 1));
+        this.registerDefaultState(this.stateDefinition.any().setValue(LEVEL, 1));
     }
 
     @Override
     public boolean isFull(BlockState state) {
-        return state.get(LEVEL) == 3;
+        return state.getValue(LEVEL) == 3;
     }
 
     @Override
@@ -44,14 +43,14 @@ public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
 
     @Override
     protected double getFluidHeight(BlockState state) {
-        return (6.0D + (double) state.get(LEVEL) * 3.0D) / 16.0D;
+        return (6.0D + (double) state.getValue(LEVEL) * 3.0D) / 16.0D;
     }
 
     @Override
-    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        if (!world.isClient() && entity.isOnFire() && this.isEntityTouchingFluid(state, pos, entity)) {
-            entity.extinguish();
-            if (entity.canModifyAt(world, pos)) {
+    public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+        if (!world.isClientSide() && entity.isOnFire() && this.isEntityTouchingFluid(state, pos, entity)) {
+            entity.clearFire();
+            if (entity.mayInteract(world, pos)) {
                 decrementFluidLevel(state, world, pos);
             }
         }
@@ -59,40 +58,40 @@ public class CopperLeveledCauldronBlock extends AbstractCopperCauldronBlock {
     }
 
     @Override
-    public void precipitationTick(BlockState state, World world, BlockPos pos, Biome.Precipitation precipitation) {
-        if (CopperCauldronBlock.canFillWithPrecipitation(world, precipitation) && state.get(LEVEL) != 3 && this.precipitationPredicate.test(precipitation)) {
-            world.setBlockState(pos, state.cycle(LEVEL));
+    public void handlePrecipitation(BlockState state, Level world, BlockPos pos, Biome.Precipitation precipitation) {
+        if (CopperCauldronBlock.canFillWithPrecipitation(world, precipitation) && state.getValue(LEVEL) != 3 && this.precipitationPredicate.test(precipitation)) {
+            world.setBlockAndUpdate(pos, state.cycle(LEVEL));
         }
     }
 
     @Override
-    public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return state.get(LEVEL);
+    public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+        return state.getValue(LEVEL);
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(LEVEL);
     }
 
     @Override
-    protected void fillFromDripstone(BlockState state, World world, BlockPos pos, Fluid fluid) {
+    protected void fillFromDripstone(BlockState state, Level world, BlockPos pos, Fluid fluid) {
         if (!this.isFull(state)) {
-            world.setBlockState(pos, state.with(LEVEL, state.get(LEVEL) + 1));
-            world.syncWorldEvent(WorldEvents.POINTED_DRIPSTONE_DRIPS_WATER_INTO_CAULDRON, pos, 0);
+            world.setBlockAndUpdate(pos, state.setValue(LEVEL, state.getValue(LEVEL) + 1));
+            world.levelEvent(LevelEvent.SOUND_DRIP_WATER_INTO_CAULDRON, pos, 0);
         }
     }
 
-    public static void decrementFluidLevel(BlockState state, World world, BlockPos pos) {
-        setFluidLevel(state, world, pos, state.get(LEVEL) - 1);
+    public static void decrementFluidLevel(BlockState state, Level world, BlockPos pos) {
+        setFluidLevel(state, world, pos, state.getValue(LEVEL) - 1);
     }
 
-    public static void setFluidLevel(BlockState state, World world, BlockPos pos, int level) {
-        world.setBlockState(pos, level <= 0 ? BlockInit.COPPER_CAULDRON_BLOCK.getDefaultState() : state.with(LEVEL, level));
+    public static void setFluidLevel(BlockState state, Level world, BlockPos pos, int level) {
+        world.setBlockAndUpdate(pos, level <= 0 ? BlockInit.COPPER_CAULDRON_BLOCK.defaultBlockState() : state.setValue(LEVEL, level));
     }
 
     static {
-        LEVEL = Properties.LEVEL_3;
+        LEVEL = BlockStateProperties.LEVEL_CAULDRON;
         RAIN_PREDICATE = (precipitation) -> precipitation == Biome.Precipitation.RAIN;
         SNOW_PREDICATE = (precipitation) -> precipitation == Biome.Precipitation.SNOW;
     }

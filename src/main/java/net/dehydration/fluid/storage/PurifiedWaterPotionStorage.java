@@ -10,12 +10,12 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.PotionContentsComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Potion;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -34,7 +34,7 @@ public class PurifiedWaterPotionStorage implements ExtractionOnlyStorage<FluidVa
         if (!variant.isOf(Items.POTION)) {
             return false;
         }
-        Optional<RegistryEntry<Potion>> potion = variant.toStack().getOrDefault(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT).potion();
+        Optional<Holder<Potion>> potion = variant.toStack().getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).potion();
         return potion.isPresent() && potion.get() == ItemInit.PURIFIED_WATER;
     }
 
@@ -50,8 +50,8 @@ public class PurifiedWaterPotionStorage implements ExtractionOnlyStorage<FluidVa
 
     private ItemVariant mapToGlassBottle() {
         ItemStack newStack = context.getItemVariant().toStack();
-        newStack.set(DataComponentTypes.POTION_CONTENTS, PotionContentsComponent.DEFAULT);
-        return ItemVariant.of(Items.GLASS_BOTTLE, newStack.getComponentChanges());
+        newStack.set(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+        return ItemVariant.of(Items.GLASS_BOTTLE, newStack.getComponentsPatch());
     }
 
     @Override

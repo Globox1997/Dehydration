@@ -12,9 +12,8 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluids;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Optional;

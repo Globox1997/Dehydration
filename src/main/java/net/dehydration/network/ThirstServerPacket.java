@@ -10,9 +10,9 @@ import net.dehydration.network.packet.HydrationTemplatePacket;
 import net.dehydration.network.packet.ThirstPacket;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 
 public class ThirstServerPacket {
 
@@ -22,24 +22,24 @@ public class ThirstServerPacket {
         PayloadTypeRegistry.playS2C().register(HydrationTemplatePacket.PACKET_ID, HydrationTemplatePacket.PACKET_CODEC);
     }
 
-    public static void writeS2CExcludedSyncPacket(ServerPlayerEntity serverPlayerEntity, boolean setThirst) {
+    public static void writeS2CExcludedSyncPacket(ServerPlayer serverPlayerEntity, boolean setThirst) {
         ServerPlayNetworking.send(serverPlayerEntity, new ExcludedThirstPacket(serverPlayerEntity.getId(), setThirst));
     }
 
-    public static void writeS2CThirstUpdatePacket(ServerPlayerEntity serverPlayerEntity) {
+    public static void writeS2CThirstUpdatePacket(ServerPlayer serverPlayerEntity) {
         ServerPlayNetworking.send(serverPlayerEntity, new ThirstPacket(serverPlayerEntity.getId(), ((ThirstManagerAccess) serverPlayerEntity).getThirstManager().getThirstLevel()));
     }
 
-    public static void writeS2CHydrationTemplateSyncPacket(ServerPlayerEntity serverPlayerEntity) {
+    public static void writeS2CHydrationTemplateSyncPacket(ServerPlayer serverPlayerEntity) {
         List<Integer> templateList = new ArrayList<Integer>();
         DehydrationMain.HYDRATION_TEMPLATES.forEach((template) -> {
             templateList.add(template.getHydration());
             templateList.add(template.getItems().size());
         });
-        List<Identifier> templateIdentifiers = new ArrayList<Identifier>();
+        List<ResourceLocation> templateIdentifiers = new ArrayList<ResourceLocation>();
         DehydrationMain.HYDRATION_TEMPLATES.forEach((template) -> {
             template.getItems().forEach((item) -> {
-                templateIdentifiers.add(Registries.ITEM.getId(item));
+                templateIdentifiers.add(BuiltInRegistries.ITEM.getKey(item));
             });
         });
         ServerPlayNetworking.send(serverPlayerEntity, new HydrationTemplatePacket(templateList, templateIdentifiers));

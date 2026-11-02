@@ -1,52 +1,52 @@
 package net.dehydration.api;
 
-import net.minecraft.advancement.criterion.Criteria;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.FoodComponent;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.stat.Stats;
-import net.minecraft.util.UseAction;
-import net.minecraft.world.World;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
 
 /**
  * The {@link DrinkItem} represents any drinkable item
  */
 public class DrinkItem extends Item {
-    public DrinkItem(Settings settings) {
+    public DrinkItem(Properties settings) {
         super(settings);
     }
 
     @Override
-    public UseAction getUseAction(ItemStack stack) {
-        return UseAction.DRINK;
+    public UseAnim getUseAnimation(ItemStack stack) {
+        return UseAnim.DRINK;
     }
 
     @Override
-    public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
-        PlayerEntity playerEntity = user instanceof PlayerEntity ? (PlayerEntity) user : null;
+    public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity user) {
+        Player playerEntity = user instanceof Player ? (Player) user : null;
 
         // Trigger consumption of an item if it's the server
-        if (playerEntity instanceof ServerPlayerEntity) {
-            Criteria.CONSUME_ITEM.trigger((ServerPlayerEntity) playerEntity, stack);
+        if (playerEntity instanceof ServerPlayer) {
+            CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer) playerEntity, stack);
         }
 
         boolean consumed = false;
         if (playerEntity != null) {
             // Increment the use statistic
-            playerEntity.incrementStat(Stats.USED.getOrCreateStat(this));
+            playerEntity.awardStat(Stats.ITEM_USED.get(this));
 
             // Drinks are not available in creative mode
-            if (!playerEntity.getAbilities().creativeMode) {
+            if (!playerEntity.getAbilities().instabuild) {
                 // The drink also has to have a FoodComponent
-                FoodComponent foodComponent = stack.get(DataComponentTypes.FOOD);
+                FoodProperties foodComponent = stack.get(DataComponents.FOOD);
                 if (foodComponent != null) {
                     DrinkEvent.EVENT.invoker().onDrink(stack, playerEntity);
-                    user.eatFood(world, stack, foodComponent);
+                    user.eat(world, stack, foodComponent);
                     consumed = true;
                 }
             }
@@ -59,7 +59,7 @@ public class DrinkItem extends Item {
             }
 
             // offerOrDrop is generally safer to use than insertStack
-            playerEntity.getInventory().offerOrDrop(new ItemStack(Items.GLASS_BOTTLE));
+            playerEntity.getInventory().placeItemBackInInventory(new ItemStack(Items.GLASS_BOTTLE));
         }
 
         return stack;

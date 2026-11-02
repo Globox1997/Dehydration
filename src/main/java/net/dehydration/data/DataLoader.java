@@ -7,12 +7,11 @@ import com.google.gson.JsonParser;
 import net.dehydration.DehydrationMain;
 import net.dehydration.api.HydrationTemplate;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -24,12 +23,12 @@ import java.util.Set;
 public class DataLoader implements SimpleSynchronousResourceReloadListener {
 
     @Override
-    public Identifier getFabricId() {
+    public ResourceLocation getFabricId() {
         return DehydrationMain.identifierOf("loader");
     }
 
     @Override
-    public void reload(ResourceManager manager) {
+    public void onResourceManagerReload(ResourceManager manager) {
         List<Set<Item>> additiveItems = new ArrayList<>();
         List<Set<Item>> replacingItems = new ArrayList<>();
         boolean[] replaced = new boolean[21];
@@ -38,8 +37,8 @@ public class DataLoader implements SimpleSynchronousResourceReloadListener {
             replacingItems.add(new LinkedHashSet<>());
         }
 
-        manager.findResources("hydration_items", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
-            try (Reader reader = new InputStreamReader(resourceRef.getInputStream(), StandardCharsets.UTF_8)) {
+        manager.listResources("hydration_items", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
+            try (Reader reader = new InputStreamReader(resourceRef.open(), StandardCharsets.UTF_8)) {
                 JsonObject data = JsonParser.parseReader(reader).getAsJsonObject();
 
                 for (int i = 1; i <= 20; i++) {
@@ -47,7 +46,7 @@ public class DataLoader implements SimpleSynchronousResourceReloadListener {
                     if (!(jsonElement instanceof JsonObject jsonObject)) {
                         continue;
                     }
-                    boolean replace = JsonHelper.getBoolean(jsonObject, "replace", false);
+                    boolean replace = GsonHelper.getAsBoolean(jsonObject, "replace", false);
                     if (replace) {
                         replaced[i] = true;
                     }
@@ -58,12 +57,12 @@ public class DataLoader implements SimpleSynchronousResourceReloadListener {
                     Set<Item> target = replace ? replacingItems.get(i) : additiveItems.get(i);
                     for (JsonElement itemElement : itemArray) {
                         String itemId = itemElement.getAsString();
-                        Identifier identifier = Identifier.tryParse(itemId);
-                        if (identifier == null || !Registries.ITEM.containsId(identifier)) {
+                        ResourceLocation identifier = ResourceLocation.tryParse(itemId);
+                        if (identifier == null || !BuiltInRegistries.ITEM.containsKey(identifier)) {
                             DehydrationMain.LOGGER.warn("{} is not a valid item identifier", itemId);
                             continue;
                         }
-                        target.add(Registries.ITEM.get(identifier));
+                        target.add(BuiltInRegistries.ITEM.get(identifier));
                     }
                 }
 

@@ -5,52 +5,52 @@ import java.util.Optional;
 import net.dehydration.init.BlockInit;
 import net.dehydration.init.FluidInit;
 import net.dehydration.init.ItemInit;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.fluid.FlowableFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.Item;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.StateManager;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
-public abstract class PurifiedWaterFluid extends FlowableFluid {
+public abstract class PurifiedWaterFluid extends FlowingFluid {
     @Override
     public Fluid getFlowing() {
         return FluidInit.PURIFIED_FLOWING_WATER;
     }
 
     @Override
-    public Fluid getStill() {
+    public Fluid getSource() {
         return FluidInit.PURIFIED_WATER;
     }
 
     @Override
-    public Item getBucketItem() {
+    public Item getBucket() {
         return ItemInit.PURIFIED_BUCKET;
     }
 
     @Override
-    public void randomDisplayTick(World world, BlockPos pos, FluidState state, Random random) {
-        if (!state.isStill() && !state.get(FALLING).booleanValue()) {
+    public void animateTick(Level world, BlockPos pos, FluidState state, RandomSource random) {
+        if (!state.isSource() && !state.getValue(FALLING).booleanValue()) {
             if (random.nextInt(64) == 0) {
-                world.playSound((double) pos.getX() + 0.5, (double) pos.getY() + 0.5, (double) pos.getZ() + 0.5, SoundEvents.BLOCK_WATER_AMBIENT, SoundCategory.BLOCKS,
+                world.playLocalSound((double) pos.getX() + 0.5, (double) pos.getY() + 0.5, (double) pos.getZ() + 0.5, SoundEvents.WATER_AMBIENT, SoundSource.BLOCKS,
                         random.nextFloat() * 0.25f + 0.75f, random.nextFloat() + 0.5f, false);
             }
         } else if (random.nextInt(10) == 0) {
@@ -61,99 +61,99 @@ public abstract class PurifiedWaterFluid extends FlowableFluid {
 
     @Override
     @Nullable
-    public ParticleEffect getParticle() {
+    public ParticleOptions getDripParticle() {
         return ParticleTypes.DRIPPING_WATER;
     }
 
     @Override
-    protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state) {
+    protected void beforeDestroyingBlock(LevelAccessor world, BlockPos pos, BlockState state) {
         BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
-        Block.dropStacks(state, world, pos, blockEntity);
+        Block.dropResources(state, world, pos, blockEntity);
     }
 
     @Override
-    protected int getMaxFlowDistance(WorldView world) {
+    protected int getSlopeFindDistance(LevelReader world) {
         return 4;
     }
 
     @Override
-    public BlockState toBlockState(FluidState state) {
-        return BlockInit.PURIFIED_WATER.getDefaultState().with(FluidBlock.LEVEL, PurifiedWaterFluid.getBlockStateLevel(state));
+    public BlockState createLegacyBlock(FluidState state) {
+        return BlockInit.PURIFIED_WATER.defaultBlockState().setValue(LiquidBlock.LEVEL, PurifiedWaterFluid.getLegacyLevel(state));
     }
 
     @Override
-    public boolean matchesType(Fluid fluid) {
+    public boolean isSame(Fluid fluid) {
         return fluid == FluidInit.PURIFIED_WATER || fluid == FluidInit.PURIFIED_FLOWING_WATER;
     }
 
     @Override
-    public int getLevelDecreasePerBlock(WorldView world) {
+    public int getDropOff(LevelReader world) {
         return 1;
     }
 
     @Override
-    public int getTickRate(WorldView world) {
+    public int getTickDelay(LevelReader world) {
         return 5;
     }
 
     @Override
-    public boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid, Direction direction) {
-        return fluid.isIn(FluidTags.WATER);
+    public boolean canBeReplacedWith(FluidState state, BlockGetter world, BlockPos pos, Fluid fluid, Direction direction) {
+        return fluid.is(FluidTags.WATER);
     }
 
     @Override
-    protected float getBlastResistance() {
+    protected float getExplosionResistance() {
         return 100.0f;
     }
 
     @Override
-    public Optional<SoundEvent> getBucketFillSound() {
-        return Optional.of(SoundEvents.ITEM_BUCKET_FILL);
+    public Optional<SoundEvent> getPickupSound() {
+        return Optional.of(SoundEvents.BUCKET_FILL);
     }
 
     @Override
-    protected void flow(WorldAccess world, BlockPos pos, BlockState state, Direction direction, FluidState fluidState) {
-        if (!state.getFluidState().isIn(FluidTags.WATER)) {
-            super.flow(world, pos, state, direction, fluidState);
+    protected void spreadTo(LevelAccessor world, BlockPos pos, BlockState state, Direction direction, FluidState fluidState) {
+        if (!state.getFluidState().is(FluidTags.WATER)) {
+            super.spreadTo(world, pos, state, direction, fluidState);
         }
     }
 
     public static class Flowing extends PurifiedWaterFluid {
         @Override
-        protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
-            super.appendProperties(builder);
+        protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
+            super.createFluidStateDefinition(builder);
             builder.add(LEVEL);
         }
 
         @Override
-        public int getLevel(FluidState state) {
-            return state.get(LEVEL);
+        public int getAmount(FluidState state) {
+            return state.getValue(LEVEL);
         }
 
         @Override
-        public boolean isStill(FluidState state) {
+        public boolean isSource(FluidState state) {
             return false;
         }
 
         @Override
-        protected boolean isInfinite(World var1) {
+        protected boolean canConvertToSource(Level var1) {
             return false;
         }
     }
 
     public static class Still extends PurifiedWaterFluid {
         @Override
-        public int getLevel(FluidState state) {
+        public int getAmount(FluidState state) {
             return 8;
         }
 
         @Override
-        public boolean isStill(FluidState state) {
+        public boolean isSource(FluidState state) {
             return true;
         }
 
         @Override
-        protected boolean isInfinite(World var1) {
+        protected boolean canConvertToSource(Level var1) {
             return false;
         }
     }

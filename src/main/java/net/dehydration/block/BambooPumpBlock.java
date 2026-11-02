@@ -10,88 +10,99 @@ import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.pathing.NavigationType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.loot.context.LootContextParameterSet.Builder;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.text.Text;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.storage.loot.LootParams.Builder;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class BambooPumpBlock extends BlockWithEntity {
+public class BambooPumpBlock extends BaseEntityBlock {
 
-    public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
-    public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
-    public static final BooleanProperty EXTENDED = Properties.EXTENDED;
-    public static final BooleanProperty ATTACHED = Properties.ATTACHED;
-    private static final VoxelShape SHAPE = Block.createCuboidShape(4.0, 0.0, 4.0, 12.0, 16.0, 12.0);
-    public static final MapCodec<BambooPumpBlock> CODEC = BambooPumpBlock.createCodec(BambooPumpBlock::new);
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final BooleanProperty EXTENDED = BlockStateProperties.EXTENDED;
+    public static final BooleanProperty ATTACHED = BlockStateProperties.ATTACHED;
+    private static final VoxelShape SHAPE = Block.box(4.0, 0.0, 4.0, 12.0, 16.0, 12.0);
+    public static final MapCodec<BambooPumpBlock> CODEC = BambooPumpBlock.simpleCodec(BambooPumpBlock::new);
 
-    public BambooPumpBlock(Settings settings) {
+    public BambooPumpBlock(Properties settings) {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(ATTACHED, false).with(EXTENDED, false).with(FACING, Direction.NORTH).with(WATERLOGGED, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(ATTACHED, false).setValue(EXTENDED, false).setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new BambooPumpEntity(pos, state);
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
     }
 
     @Override
-    public ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         BambooPumpEntity bambooPumpEntity = (BambooPumpEntity) world.getBlockEntity(pos);
         if (bambooPumpEntity != null) {
-            ItemStack itemStack = bambooPumpEntity.getStack(0);
-            ItemStack itemStack2 = player.getStackInHand(hand);
+            ItemStack itemStack = bambooPumpEntity.getItem(0);
+            ItemStack itemStack2 = player.getItemInHand(hand);
             if (itemStack.isEmpty()) {
                 Storage<FluidVariant> storage = ContainerItemContext.withConstant(itemStack2).find(FluidStorage.ITEM);
                 if ((storage != null && storage.supportsInsertion()) || (itemStack2.getItem() instanceof LeatherFlask && !LeatherFlask.isFlaskFull(itemStack2))) {
-                    if (!world.isClient()) {
+                    if (!world.isClientSide()) {
                         if (player.isCreative()) {
-                            bambooPumpEntity.setStack(0, itemStack2.copy());
+                            bambooPumpEntity.setItem(0, itemStack2.copy());
                         } else {
-                            bambooPumpEntity.setStack(0, itemStack2.split(1));
+                            bambooPumpEntity.setItem(0, itemStack2.split(1));
                         }
-                        if (bambooPumpEntity.getStack(0).isOf(Items.BUCKET)) {
-                            world.setBlockState(pos, state.with(ATTACHED, true), Block.NOTIFY_LISTENERS);
+                        if (bambooPumpEntity.getItem(0).is(Items.BUCKET)) {
+                            world.setBlock(pos, state.setValue(ATTACHED, true), Block.UPDATE_CLIENTS);
                         }
                     }
-                    return ItemActionResult.success(world.isClient());
+                    return ItemInteractionResult.sidedSuccess(world.isClientSide());
                 }
                 // can get used to place a water source block infront of the pump
                 // else {
@@ -103,27 +114,27 @@ public class BambooPumpBlock extends BlockWithEntity {
                 // }
                 // return ActionResult.success(world.isClient());
             } else {
-                if (itemStack2.isEmpty() && player.isSneaking()) {
-                    if (!world.isClient()) {
-                        player.setStackInHand(hand, bambooPumpEntity.getStack(0));
-                        bambooPumpEntity.clear();
-                        world.setBlockState(pos, state.with(ATTACHED, false).with(EXTENDED, false), Block.NOTIFY_LISTENERS);
+                if (itemStack2.isEmpty() && player.isShiftKeyDown()) {
+                    if (!world.isClientSide()) {
+                        player.setItemInHand(hand, bambooPumpEntity.getItem(0));
+                        bambooPumpEntity.clearContent();
+                        world.setBlock(pos, state.setValue(ATTACHED, false).setValue(EXTENDED, false), Block.UPDATE_CLIENTS);
                     }
-                    return ItemActionResult.success(world.isClient());
+                    return ItemInteractionResult.sidedSuccess(world.isClientSide());
                 }
                 Storage<FluidVariant> storage = ContainerItemContext.withConstant(itemStack).find(FluidStorage.ITEM);
                 if ((storage != null && storage.supportsInsertion()) || (itemStack.getItem() instanceof LeatherFlask && !LeatherFlask.isFlaskFull(itemStack))) {
                     if (ConfigInit.CONFIG.pump_requires_water) {
                         boolean foundWater = false;
                         for (int i = 0; i < 50; i++) {
-                            BlockPos checkPos = pos.down(10 + i);
+                            BlockPos checkPos = pos.below(10 + i);
                             if (world.getBlockState(checkPos).isAir()) {
                                 break;
                             }
-                            if (world.getBlockState(checkPos).getFluidState().isIn(FluidTags.WATER)) {
+                            if (world.getBlockState(checkPos).getFluidState().is(FluidTags.WATER)) {
                                 boolean notEnoughWater = false;
                                 for (Direction direction : Direction.values()) {
-                                    if (!world.getBlockState(checkPos.offset(direction)).getFluidState().isIn(FluidTags.WATER)) {
+                                    if (!world.getBlockState(checkPos.relative(direction)).getFluidState().is(FluidTags.WATER)) {
                                         notEnoughWater = true;
                                         break;
                                     }
@@ -135,120 +146,120 @@ public class BambooPumpBlock extends BlockWithEntity {
                             }
                         }
                         if (!foundWater) {
-                            if (world.isClient()) {
-                                if (state.get(EXTENDED)) {
-                                    world.playSound(player, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                            if (world.isClientSide()) {
+                                if (state.getValue(EXTENDED)) {
+                                    world.playSound(player, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
                                 }
                             } else {
-                                player.sendMessage(Text.translatable("block.dehydration.bamboo_pump.no_water"), true);
+                                player.displayClientMessage(Component.translatable("block.dehydration.bamboo_pump.no_water"), true);
                             }
-                            return ItemActionResult.FAIL;
+                            return ItemInteractionResult.FAIL;
                         }
                     }
                     if (ConfigInit.CONFIG.pump_cooldown != 0 && bambooPumpEntity.getCooldown() > 0) {
-                        if (world.isClient()) {
-                            if (state.get(EXTENDED)) {
-                                world.playSound(player, pos, SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                        if (world.isClientSide()) {
+                            if (state.getValue(EXTENDED)) {
+                                world.playSound(player, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
                             }
                         } else {
-                            player.sendMessage(Text.translatable("block.dehydration.bamboo_pump.cooldown", bambooPumpEntity.getCooldown() / 20), true);
+                            player.displayClientMessage(Component.translatable("block.dehydration.bamboo_pump.cooldown", bambooPumpEntity.getCooldown() / 20), true);
                         }
-                        return ItemActionResult.FAIL;
+                        return ItemInteractionResult.FAIL;
                     }
 
-                    if (state.get(EXTENDED)) {
+                    if (state.getValue(EXTENDED)) {
                         bambooPumpEntity.increasePumpCount(1);
                     }
-                    if (world.isClient()) {
-                        if (state.get(EXTENDED)) {
-                            world.playSound(player, pos, SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0f, 1.0f);
+                    if (world.isClientSide()) {
+                        if (state.getValue(EXTENDED)) {
+                            world.playSound(player, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0f, 1.0f);
                         }
                     } else {
-                        world.setBlockState(pos, state.with(EXTENDED, !state.get(EXTENDED)), Block.NOTIFY_LISTENERS);
+                        world.setBlock(pos, state.setValue(EXTENDED, !state.getValue(EXTENDED)), Block.UPDATE_CLIENTS);
                     }
-                    return ItemActionResult.success(world.isClient());
+                    return ItemInteractionResult.sidedSuccess(world.isClientSide());
                 }
             }
 
         }
 
-        return ItemActionResult.FAIL;
+        return ItemInteractionResult.FAIL;
 
     }
 
     @Override
-    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        return world.getBlockState(pos.down()).isSolid();
+    public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+        return world.getBlockState(pos.below()).isSolid();
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(ATTACHED, EXTENDED, FACING, WATERLOGGED);
     }
 
     @Override
     public FluidState getFluidState(BlockState state) {
-        if (state.get(WATERLOGGED).booleanValue())
-            return Fluids.WATER.getStill(false);
+        if (state.getValue(WATERLOGGED).booleanValue())
+            return Fluids.WATER.getSource(false);
 
         return super.getFluidState(state);
     }
 
     @Override
-    protected boolean canPathfindThrough(BlockState state, NavigationType type) {
+    protected boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
     }
 
     @Override
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        if (direction == Direction.DOWN && !state.canPlaceAt(world, pos)) {
-            return Blocks.AIR.getDefaultState();
-        } else if (state.get(WATERLOGGED)) {
-            world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+        if (direction == Direction.DOWN && !state.canSurvive(world, pos)) {
+            return Blocks.AIR.defaultBlockState();
+        } else if (state.getValue(WATERLOGGED)) {
+            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
-        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
+        return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
     }
 
     @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
-        return this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite()).with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER).with(EXTENDED, false);
+    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
+        return this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER).setValue(EXTENDED, false);
     }
 
     @Override
-    public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return state.with(FACING, rotation.rotate(state.get(FACING)));
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public BlockState mirror(BlockState state, BlockMirror mirror) {
-        return state.rotate(mirror.getRotation(state.get(FACING)));
+    public BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (!state.isOf(newState.getBlock())) {
+    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
+        if (!state.is(newState.getBlock())) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof Inventory) {
-                ItemScatterer.spawn(world, pos, (Inventory) blockEntity);
-                world.updateComparators(pos, this);
+            if (blockEntity instanceof Container) {
+                Containers.dropContents(world, pos, (Container) blockEntity);
+                world.updateNeighbourForOutputSignal(pos, this);
             }
 
-            super.onStateReplaced(state, world, pos, newState, moved);
+            super.onRemove(state, world, pos, newState, moved);
         }
     }
 
     @Override
-    public List<ItemStack> getDroppedStacks(BlockState state, Builder builder) {
-        List<ItemStack> stacks = super.getDroppedStacks(state, builder);
+    public List<ItemStack> getDrops(BlockState state, Builder builder) {
+        List<ItemStack> stacks = super.getDrops(state, builder);
         for (ItemStack itemStack : stacks) {
             if (itemStack.getItem() instanceof BlockItem blockItem && blockItem.getBlock().equals(BlockInit.BAMBOO_PUMP_BLOCK)
-                    && builder.get(LootContextParameters.BLOCK_ENTITY) instanceof BambooPumpEntity bambooPumpEntity) {
+                    && builder.getParameter(LootContextParams.BLOCK_ENTITY) instanceof BambooPumpEntity bambooPumpEntity) {
                 itemStack.set(ItemInit.COOLDOWN, bambooPumpEntity.getCooldown());
                 break;
             }
@@ -257,8 +268,8 @@ public class BambooPumpBlock extends BlockWithEntity {
     }
 
     @Override
-    public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-        super.onPlaced(world, pos, state, placer, itemStack);
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
+        super.setPlacedBy(world, pos, state, placer, itemStack);
         if (itemStack.get(ItemInit.COOLDOWN) != null && world.getBlockEntity(pos) instanceof BambooPumpEntity bambooPumpEntity) {
             bambooPumpEntity.setCooldown(itemStack.get(ItemInit.COOLDOWN));
         }
@@ -266,28 +277,28 @@ public class BambooPumpBlock extends BlockWithEntity {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return validateTicker(type, BlockInit.BAMBOO_PUMP_ENTITY, world.isClient() ? BambooPumpEntity::clientTick : BambooPumpEntity::serverTick);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+        return createTickerHelper(type, BlockInit.BAMBOO_PUMP_ENTITY, world.isClientSide() ? BambooPumpEntity::clientTick : BambooPumpEntity::serverTick);
     }
 
     @Override
-    public void onBlockBreakStart(BlockState state, World world, BlockPos pos, PlayerEntity player) {
-        if (world.isClient())
+    public void attack(BlockState state, Level world, BlockPos pos, Player player) {
+        if (world.isClientSide())
             return;
         BambooPumpEntity bambooPumpEntity = (BambooPumpEntity) world.getBlockEntity(pos);
         if (bambooPumpEntity == null)
             return;
-        ItemStack itemStack = bambooPumpEntity.getStack(0);
+        ItemStack itemStack = bambooPumpEntity.getItem(0);
         if (itemStack.isEmpty())
             return;
-        if (player.giveItemStack(itemStack)) {
-            bambooPumpEntity.clear();
-            world.setBlockState(pos, state.with(ATTACHED, false).with(EXTENDED, false), Block.NOTIFY_LISTENERS);
+        if (player.addItem(itemStack)) {
+            bambooPumpEntity.clearContent();
+            world.setBlock(pos, state.setValue(ATTACHED, false).setValue(EXTENDED, false), Block.UPDATE_CLIENTS);
         }
     }
 
     @Override
-    protected MapCodec<? extends BlockWithEntity> getCodec() {
+    protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
 }

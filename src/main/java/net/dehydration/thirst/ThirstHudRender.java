@@ -11,13 +11,13 @@ import net.dehydration.item.LeatherFlask;
 import net.dehydration.misc.ThirstTooltipData;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
 public class ThirstHudRender {
@@ -26,8 +26,8 @@ public class ThirstHudRender {
     private static float otherFlashAlpha = 0f;
 
     // Could implement HudRenderCallback
-    public static void renderThirstHud(DrawContext context, MinecraftClient client, PlayerEntity playerEntity, int scaledWidth, int scaledHeight, int ticks) {
-        if (playerEntity != null && !playerEntity.isInvulnerable() && !playerEntity.isCreative() && !playerEntity.isSpectator() && !client.options.hudHidden) {
+    public static void renderThirstHud(GuiGraphics context, Minecraft client, Player playerEntity, int scaledWidth, int scaledHeight, int ticks) {
+        if (playerEntity != null && !playerEntity.isInvulnerable() && !playerEntity.isCreative() && !playerEntity.isSpectator() && !client.options.hideGui) {
             ThirstManager thirstManager = ((ThirstManagerAccess) playerEntity).getThirstManager();
             if (thirstManager.hasThirst()) {
                 int thirst = thirstManager.getThirstLevel();
@@ -40,17 +40,17 @@ public class ThirstHudRender {
 
                     ItemStack itemStack = null;
                     if (ConfigInit.CONFIG.thirst_preview && thirst < 20) {
-                        if (!playerEntity.getMainHandStack().isEmpty() && playerEntity.getMainHandStack().getTooltipData().isPresent()
-                                && playerEntity.getMainHandStack().getTooltipData().get() instanceof ThirstTooltipData) {
-                            itemStack = playerEntity.getMainHandStack();
-                        } else if (!playerEntity.getOffHandStack().isEmpty() && playerEntity.getOffHandStack().getTooltipData().isPresent()
-                                && playerEntity.getOffHandStack().getTooltipData().get() instanceof ThirstTooltipData) {
-                            itemStack = playerEntity.getOffHandStack();
+                        if (!playerEntity.getMainHandItem().isEmpty() && playerEntity.getMainHandItem().getTooltipImage().isPresent()
+                                && playerEntity.getMainHandItem().getTooltipImage().get() instanceof ThirstTooltipData) {
+                            itemStack = playerEntity.getMainHandItem();
+                        } else if (!playerEntity.getOffhandItem().isEmpty() && playerEntity.getOffhandItem().getTooltipImage().isPresent()
+                                && playerEntity.getOffhandItem().getTooltipImage().get() instanceof ThirstTooltipData) {
+                            itemStack = playerEntity.getOffhandItem();
                         }
                     }
                     if (itemStack != null) {
-                        otherFlashAlpha = otherFlashAlpha += MathHelper.PI / (48F);
-                        flashAlpha = (MathHelper.cos(otherFlashAlpha + MathHelper.PI) + 1f) / 2f;
+                        otherFlashAlpha = otherFlashAlpha += Mth.PI / (48F);
+                        flashAlpha = (Mth.cos(otherFlashAlpha + Mth.PI) + 1f) / 2f;
                     } else if (otherFlashAlpha > 0.01F) {
                         otherFlashAlpha = 0.0F;
                         flashAlpha = 0.0F;
@@ -59,10 +59,10 @@ public class ThirstHudRender {
                     // Render ui droplets
                     for (variable_one = 0; variable_one < 10; ++variable_one) {
                         variable_three = height;
-                        if (playerEntity.hasStatusEffect(EffectInit.THIRST) && ticks % (thirst * 3 + 1) == 0) {
-                            variable_three = height + (playerEntity.getWorld().getRandom().nextInt(3) - 1); // bouncy
+                        if (playerEntity.hasEffect(EffectInit.THIRST) && ticks % (thirst * 3 + 1) == 0) {
+                            variable_three = height + (playerEntity.level().getRandom().nextInt(3) - 1); // bouncy
                         } else if (ticks % (thirst * 8 + 3) == 0) {
-                            variable_three = height + (playerEntity.getWorld().getRandom().nextInt(3) - 1); // bouncy
+                            variable_three = height + (playerEntity.level().getRandom().nextInt(3) - 1); // bouncy
                         }
                         int uppderCoord = 9;
                         if (ConfigInit.CONFIG.other_droplet_texture) {
@@ -70,7 +70,7 @@ public class ThirstHudRender {
                         }
 
                         int beneathCoord = 0;
-                        if (playerEntity.hasStatusEffect(EffectInit.THIRST)) {
+                        if (playerEntity.hasEffect(EffectInit.THIRST)) {
                             beneathCoord = 36;
                         }
 
@@ -78,40 +78,40 @@ public class ThirstHudRender {
                         variable_two = variable_two + ConfigInit.CONFIG.hud_x;
                         variable_three = variable_three + ConfigInit.CONFIG.hud_y;
 
-                        context.drawTexture(RenderInit.THIRST_ICON, variable_two, variable_three, 0, 0, 9, 9, 256, 256); // Background
+                        context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, 0, 0, 9, 9, 256, 256); // Background
                         if (variable_one * 2 + 1 < thirst) {
-                            context.drawTexture(RenderInit.THIRST_ICON, variable_two, variable_three, beneathCoord, uppderCoord, 9, 9, 256, 256); // Big icon
+                            context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, beneathCoord, uppderCoord, 9, 9, 256, 256); // Big icon
                         }
                         if (variable_one * 2 + 1 == thirst) {
-                            context.drawTexture(RenderInit.THIRST_ICON, variable_two, variable_three, beneathCoord + 9, uppderCoord, 9, 9, 256, 256); // Small icon
+                            context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, beneathCoord + 9, uppderCoord, 9, 9, 256, 256); // Small icon
                         }
                         // Show item thirst quench
                         if (variable_one >= thirst / 2) {
                             if (itemStack != null) {
                                 RenderSystem.enableBlend();
                                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, flashAlpha);
-                                int thirstQuench = ((ThirstTooltipData) itemStack.getTooltipData().get()).getThirstQuench();
+                                int thirstQuench = ((ThirstTooltipData) itemStack.getTooltipImage().get()).getThirstQuench();
                                 if (itemStack.getItem() instanceof LeatherFlask)
                                     thirstQuench = ConfigInit.CONFIG.flask_thirst_quench;
-                                int quality = ((ThirstTooltipData) itemStack.getTooltipData().get()).getDrinkQuality();
+                                int quality = ((ThirstTooltipData) itemStack.getTooltipImage().get()).getDrinkQuality();
                                 if (variable_one < (thirst + thirstQuench) / 2) {
-                                    context.drawTexture(RenderInit.THIRST_ICON, variable_two, variable_three, quality * 18, 9, 9, 9, 256, 256);
+                                    context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, quality * 18, 9, 9, 9, 256, 256);
                                 } else if ((thirst + thirstQuench) % 2 != 0 && variable_one < (thirst + thirstQuench) / 2 + 1) {
-                                    context.drawTexture(RenderInit.THIRST_ICON, variable_two, variable_three, quality * 18 + 9, 9, 9, 9, 256, 256);
+                                    context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, quality * 18 + 9, 9, 9, 9, 256, 256);
                                 }
                                 RenderSystem.disableBlend();
                                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
                             }
                         }
                         // Freezing
-                        if (playerEntity.getFrozenTicks() > 0) {
+                        if (playerEntity.getTicksFrozen() > 0) {
                             RenderSystem.enableBlend();
-                            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, playerEntity.getFreezingScale());
+                            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, playerEntity.getPercentFrozen());
                             if (variable_one * 2 + 1 < thirst) {
-                                context.drawTexture(RenderInit.THIRST_ICON, variable_two, variable_three, 54, uppderCoord, 9, 9, 256, 256);
+                                context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, 54, uppderCoord, 9, 9, 256, 256);
                             }
                             if (variable_one * 2 + 1 == thirst) {
-                                context.drawTexture(RenderInit.THIRST_ICON, variable_two, variable_three, 54 + 9, uppderCoord, 9, 9, 256, 256);
+                                context.blit(RenderInit.THIRST_ICON, variable_two, variable_three, 54 + 9, uppderCoord, 9, 9, 256, 256);
                             }
                             RenderSystem.disableBlend();
                             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -122,13 +122,13 @@ public class ThirstHudRender {
         }
     }
 
-    public static boolean shouldRenderThirstHud(@Nullable PlayerEntity playerEntity) {
+    public static boolean shouldRenderThirstHud(@Nullable Player playerEntity) {
         return playerEntity != null && !playerEntity.isInvulnerable() && !playerEntity.isCreative() && !playerEntity.isSpectator()
                 && ((ThirstManagerAccess) playerEntity).getThirstManager().hasThirst() && getHeartCount(playerEntity.getVehicle()) == 0;
     }
 
     private static int getHeartCount(@Nullable Entity entity) {
-        if (entity == null || !entity.isLiving() || !(entity instanceof LivingEntity livingEntity)) {
+        if (entity == null || !entity.showVehicleHealth() || !(entity instanceof LivingEntity livingEntity)) {
             return 0;
         }
         float f = livingEntity.getMaxHealth();

@@ -5,25 +5,24 @@ import net.dehydration.block.RainwaterLeveledCollectorBlock;
 import net.dehydration.block.entity.CauldronBehaviorAccess;
 import net.dehydration.block.entity.CopperCauldronBehavior;
 import net.dehydration.block.entity.RainwaterCollectorBehavior;
-import net.minecraft.block.LeveledCauldronBlock;
-import net.minecraft.block.cauldron.CauldronBehavior;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvents;
-
+import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import java.util.Map;
 
 public class FluidBehavior {
 
     public static void registerWaterBucketForCauldron(Item emptyBucket, Item filledBucket) {
-        Map<Item, CauldronBehavior> waterMap = CauldronBehavior.WATER_CAULDRON_BEHAVIOR.map();
+        Map<Item, CauldronInteraction> waterMap = CauldronInteraction.WATER.map();
 
         waterMap.put(emptyBucket, (state, world, pos, player, hand, stack) ->
                 CauldronBehaviorAccess.fillFromCauldron(
                         state, world, pos, player, hand, stack,
                         new ItemStack(filledBucket),
-                        s -> s.get(LeveledCauldronBlock.LEVEL) == 3,
-                        SoundEvents.ITEM_BUCKET_FILL
+                        s -> s.getValue(LayeredCauldronBlock.LEVEL) == 3,
+                        SoundEvents.BUCKET_FILL
                 )
         );
     }
@@ -34,8 +33,8 @@ public class FluidBehavior {
                         CopperCauldronBehavior.emptyCauldron(
                                 state, world, pos, player, hand, stack,
                                 new ItemStack(filledBucket),
-                                s -> s.get(CopperLeveledCauldronBlock.LEVEL) == 3,
-                                SoundEvents.ITEM_BUCKET_FILL));
+                                s -> s.getValue(CopperLeveledCauldronBlock.LEVEL) == 3,
+                                SoundEvents.BUCKET_FILL));
     }
 
     public static void registerWaterBucketForRainwaterCollector(Item emptyBucket, Item filledBucket) {
@@ -44,8 +43,8 @@ public class FluidBehavior {
                         RainwaterCollectorBehavior.emptyCollector(
                                 state, world, pos, player, hand, stack,
                                 new ItemStack(filledBucket),
-                                s -> s.get(RainwaterLeveledCollectorBlock.LEVEL) == 3,
-                                SoundEvents.ITEM_BUCKET_FILL));
+                                s -> s.getValue(RainwaterLeveledCollectorBlock.LEVEL) == 3,
+                                SoundEvents.BUCKET_FILL));
     }
 
     public static void registerPurifiedWaterBucket(Item emptyBucket, Item filledBucket) {
@@ -55,7 +54,7 @@ public class FluidBehavior {
                         CopperCauldronBehavior.emptyCauldron(
                                 state, world, pos, player, hand, stack,
                                 new ItemStack(filledBucket),
-                                s -> s.get(CopperLeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL)
+                                s -> s.getValue(CopperLeveledCauldronBlock.LEVEL) == 3, SoundEvents.BUCKET_FILL)
         );
 
         // Rainwater Collector
@@ -64,8 +63,8 @@ public class FluidBehavior {
                         RainwaterCollectorBehavior.emptyCollector(
                                 state, world, pos, player, hand, stack,
                                 new ItemStack(filledBucket),
-                                s -> s.get(RainwaterLeveledCollectorBlock.LEVEL) == 3,
-                                SoundEvents.ITEM_BUCKET_FILL));
+                                s -> s.getValue(RainwaterLeveledCollectorBlock.LEVEL) == 3,
+                                SoundEvents.BUCKET_FILL));
 
         // Dispenser
         DispenserBehavior.registerPurifiedBucket(filledBucket, emptyBucket);

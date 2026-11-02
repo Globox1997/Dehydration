@@ -11,18 +11,18 @@ import com.llamalad7.mixinextras.sugar.Local;
 
 import net.dehydration.block.AbstractCopperCauldronBlock;
 import net.dehydration.block.CampfireCauldronBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.PointedDripstoneBlock;
-import net.minecraft.fluid.Fluid;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.PointedDripstoneBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 
 @Mixin(PointedDripstoneBlock.class)
 public abstract class PointedDripstoneBlockMixin extends Block {
-    public PointedDripstoneBlockMixin(Settings settings) {
+    public PointedDripstoneBlockMixin(Properties settings) {
         super(settings);
     }
 
-    @ModifyVariable(method = "getCauldronPos", at = @At("STORE"), ordinal = 0)
+    @ModifyVariable(method = "findFillableCauldronBelowStalactiteTip", at = @At("STORE"), ordinal = 0)
     private static Predicate<BlockState> canBeFilledByDripstoneMixin(Predicate<BlockState> predicate, @Local Fluid fluid) {
         return predicate.or(state -> state.getBlock() instanceof AbstractCopperCauldronBlock
                         && ((AbstractCopperCauldronBlock) state.getBlock()).canBeFilledByDripstone(fluid))

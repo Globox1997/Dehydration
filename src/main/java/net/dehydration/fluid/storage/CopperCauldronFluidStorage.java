@@ -9,23 +9,23 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LeveledCauldronBlock;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> implements SingleSlotStorage<FluidVariant> {
 
-    private final World world;
+    private final Level world;
     private final BlockPos pos;
 
     private BlockState lastReleasedSnapshot;
 
-    public CopperCauldronFluidStorage(World world, BlockPos pos) {
+    public CopperCauldronFluidStorage(Level world, BlockPos pos) {
         this.world = world;
         this.pos = pos;
     }
@@ -36,13 +36,13 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
 
     private void updateLevel(CopperCauldronFluidContent newContent, int level, TransactionContext transaction) {
         updateSnapshots(transaction);
-        BlockState newState = newContent.block.getDefaultState();
+        BlockState newState = newContent.block.defaultBlockState();
 
         if (newContent.levelProperty != null) {
-            newState = newState.with(newContent.levelProperty, level);
+            newState = newState.setValue(newContent.levelProperty, level);
         }
 
-        world.setBlockState(pos, newState, 0);
+        world.setBlock(pos, newState, 0);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
             if (levelsExtracted > 0) {
                 if (levelsExtracted == currentLevel) {
                     updateSnapshots(transaction);
-                    world.setBlockState(pos, BlockInit.COPPER_CAULDRON_BLOCK.getDefaultState(), 0);
+                    world.setBlock(pos, BlockInit.COPPER_CAULDRON_BLOCK.defaultBlockState(), 0);
                 } else {
                     updateLevel(currentContent, currentLevel - levelsExtracted, transaction);
                 }
@@ -143,7 +143,7 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
 
     @Override
     public void readSnapshot(BlockState savedState) {
-        world.setBlockState(pos, savedState, 0);
+        world.setBlock(pos, savedState, 0);
     }
 
     @Override
@@ -157,8 +157,8 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
         BlockState originalState = lastReleasedSnapshot;
 
         if (originalState != state) {
-            world.setBlockState(pos, originalState, 0);
-            world.setBlockState(pos, state);
+            world.setBlock(pos, originalState, 0);
+            world.setBlockAndUpdate(pos, state);
         }
     }
 
@@ -173,7 +173,7 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
         final Fluid fluid;
         final long amountPerLevel;
         final int maxLevel;
-        final IntProperty levelProperty;
+        final IntegerProperty levelProperty;
 
         private CopperCauldronFluidContent(Block block) {
             if (block == BlockInit.COPPER_WATER_CAULDRON_BLOCK) {
@@ -181,13 +181,13 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
                 fluid = Fluids.WATER;
                 amountPerLevel = FluidConstants.BOTTLE;
                 maxLevel = 3;
-                levelProperty = LeveledCauldronBlock.LEVEL;
+                levelProperty = LayeredCauldronBlock.LEVEL;
             } else if (block == BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK) {
                 this.block = block;
                 fluid = FluidInit.PURIFIED_WATER;
                 amountPerLevel = FluidConstants.BOTTLE;
                 maxLevel = 3;
-                levelProperty = LeveledCauldronBlock.LEVEL;
+                levelProperty = LayeredCauldronBlock.LEVEL;
             } else {
                 this.block = BlockInit.COPPER_CAULDRON_BLOCK;
                 fluid = Fluids.EMPTY;
@@ -203,13 +203,13 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
                 block = BlockInit.COPPER_WATER_CAULDRON_BLOCK;
                 amountPerLevel = FluidConstants.BOTTLE;
                 maxLevel = 3;
-                levelProperty = LeveledCauldronBlock.LEVEL;
+                levelProperty = LayeredCauldronBlock.LEVEL;
             } else if (fluid == FluidInit.PURIFIED_WATER) {
                 this.fluid = fluid;
                 block = BlockInit.COPPER_PURIFIED_WATER_CAULDRON_BLOCK;
                 amountPerLevel = FluidConstants.BOTTLE;
                 maxLevel = 3;
-                levelProperty = LeveledCauldronBlock.LEVEL;
+                levelProperty = LayeredCauldronBlock.LEVEL;
             } else {
                 this.fluid = Fluids.EMPTY;
                 block = BlockInit.COPPER_CAULDRON_BLOCK;
@@ -225,7 +225,7 @@ public class CopperCauldronFluidStorage extends SnapshotParticipant<BlockState> 
             } else if (levelProperty == null) {
                 return 1;
             } else {
-                return state.get(levelProperty);
+                return state.getValue(levelProperty);
             }
         }
 

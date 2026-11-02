@@ -9,158 +9,166 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.ai.pathing.NavigationType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ItemActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldEvents;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.event.GameEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.PointedDripstoneBlock;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class CampfireCauldronBlock extends Block implements BlockEntityProvider {
+public class CampfireCauldronBlock extends Block implements EntityBlock {
     public static final DirectionProperty FACING;
-    public static final IntProperty LEVEL;
+    public static final IntegerProperty LEVEL;
     private static final VoxelShape Z_BASE_SHAPE;
     private static final VoxelShape X_BASE_SHAPE;
     private static final VoxelShape CAULDRON_SHAPE;
 
-    public CampfireCauldronBlock(AbstractBlock.Settings settings) {
+    public CampfireCauldronBlock(BlockBehaviour.Properties settings) {
         super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(LEVEL, 0));
+        this.registerDefaultState(this.stateDefinition.any().setValue(LEVEL, 0));
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new CampfireCauldronEntity(pos, state);
     }
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return world.isClient() ? null : checkType(type, BlockInit.CAMPFIRE_CAULDRON_ENTITY, CampfireCauldronEntity::serverTick);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+        return world.isClientSide() ? null : checkType(type, BlockInit.CAMPFIRE_CAULDRON_ENTITY, CampfireCauldronEntity::serverTick);
     }
 
     @Override
-    public BlockState getPlacementState(ItemPlacementContext itemPlacementContext) {
-        return this.getDefaultState().with(FACING, itemPlacementContext.getHorizontalPlayerFacing().rotateYClockwise());
+    public BlockState getStateForPlacement(BlockPlaceContext itemPlacementContext) {
+        return this.defaultBlockState().setValue(FACING, itemPlacementContext.getHorizontalDirection().getClockWise());
     }
 
     @Override
-    public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return state.with(FACING, rotation.rotate(state.get(FACING)));
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        Direction direction = state.get(FACING);
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        Direction direction = state.getValue(FACING);
         return direction.getAxis() == Direction.Axis.X ? X_BASE_SHAPE : Z_BASE_SHAPE;
     }
 
     @Override
-    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        return world.getBlockState(pos.down()).isIn(BlockTags.CAMPFIRES);
+    public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+        return world.getBlockState(pos.below()).is(BlockTags.CAMPFIRES);
     }
 
     @Override
-    protected BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-        if (direction == Direction.DOWN && !state.canPlaceAt(world, pos)) {
-            return Blocks.AIR.getDefaultState();
+    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+        if (direction == Direction.DOWN && !state.canSurvive(world, pos)) {
+            return Blocks.AIR.defaultBlockState();
         }
-        return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
+        return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
     }
 
     @Override
-    public ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (!player.getStackInHand(hand).isEmpty()) {
-            Storage<FluidVariant> storage = FluidStorage.SIDED.find(world, pos, hit.getSide().getOpposite());
+    public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!player.getItemInHand(hand).isEmpty()) {
+            Storage<FluidVariant> storage = FluidStorage.SIDED.find(world, pos, hit.getDirection().getOpposite());
             if (storage != null && FluidStorageUtil.interactWithFluidStorage(storage, player, hand)) {
-                return ItemActionResult.success(world.isClient());
+                return ItemInteractionResult.sidedSuccess(world.isClientSide());
             }
         }
-        return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
-    public void setLevel(World world, BlockPos pos, BlockState state, int level) {
-        world.setBlockState(pos, state.with(LEVEL, MathHelper.clamp(level, 0, 4)), 2);
-        world.updateComparators(pos, this);
+    public void setLevel(Level world, BlockPos pos, BlockState state, int level) {
+        world.setBlock(pos, state.setValue(LEVEL, Mth.clamp(level, 0, 4)), 2);
+        world.updateNeighbourForOutputSignal(pos, this);
     }
 
     @Override
-    public void precipitationTick(BlockState state, World world, BlockPos pos, Biome.Precipitation precipitation) {
+    public void handlePrecipitation(BlockState state, Level world, BlockPos pos, Biome.Precipitation precipitation) {
         if (CopperCauldronBlock.canFillWithPrecipitation(world, precipitation)) {
-            if (state.get(LEVEL) < 4) {
-                this.setLevel(world, pos, state, state.get(LEVEL) + 1);
-                world.emitGameEvent(null, GameEvent.FLUID_PLACE, pos);
+            if (state.getValue(LEVEL) < 4) {
+                this.setLevel(world, pos, state, state.getValue(LEVEL) + 1);
+                world.gameEvent(null, GameEvent.FLUID_PLACE, pos);
             }
         }
     }
 
     @Override
-    public boolean hasComparatorOutput(BlockState state) {
+    public boolean hasAnalogOutputSignal(BlockState state) {
         return true;
     }
 
     @Override
-    public int getComparatorOutput(BlockState state, World world, BlockPos pos) {
-        return state.get(LEVEL);
+    public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+        return state.getValue(LEVEL);
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(LEVEL);
         builder.add(FACING);
     }
 
     @Override
-    protected boolean canPathfindThrough(BlockState state, NavigationType type) {
+    protected boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
     }
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        if (random.nextInt(12) == 0 && this.isFireBurning(world, pos) && state.get(LEVEL) > 0) {
-            world.playSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, SoundInit.CAULDRON_BUBBLE_EVENT, SoundCategory.BLOCKS, 0.5F,
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource random) {
+        if (random.nextInt(12) == 0 && this.isFireBurning(world, pos) && state.getValue(LEVEL) > 0) {
+            world.playLocalSound((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, SoundInit.CAULDRON_BUBBLE_EVENT, SoundSource.BLOCKS, 0.5F,
                     random.nextFloat() * 0.4F + 0.8F, false);
         }
     }
 
     public boolean isFull(BlockState state) {
-        return state.get(LEVEL) == 4;
+        return state.getValue(LEVEL) == 4;
     }
 
-    public boolean isFireBurning(World world, BlockPos pos) {
-        return world.getBlockState(pos.down()).getBlock() instanceof CampfireBlock && CampfireBlock.isLitCampfire(world.getBlockState(pos.down()));
+    public boolean isFireBurning(Level world, BlockPos pos) {
+        return world.getBlockState(pos.below()).getBlock() instanceof CampfireBlock && CampfireBlock.isLitCampfire(world.getBlockState(pos.below()));
     }
 
-    public boolean isPurifiedWater(World world, BlockPos pos) {
+    public boolean isPurifiedWater(Level world, BlockPos pos) {
         if (world.getBlockEntity(pos) instanceof CampfireCauldronEntity campfireCauldronEntity) {
             return campfireCauldronEntity.isBoiled;
         } else {
@@ -175,10 +183,10 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
     }
 
     @Override
-    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        BlockPos blockPos = PointedDripstoneBlock.getDripPos(world, pos);
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+        BlockPos blockPos = PointedDripstoneBlock.findStalactiteTipAboveCauldron(world, pos);
         if (blockPos != null) {
-            Fluid fluid = PointedDripstoneBlock.getDripFluid(world, (BlockPos) blockPos);
+            Fluid fluid = PointedDripstoneBlock.getCauldronFillFluidType(world, (BlockPos) blockPos);
             if (fluid != Fluids.EMPTY && this.canBeFilledByDripstone(fluid)) {
                 this.fillFromDripstone(state, world, pos, fluid);
             }
@@ -189,23 +197,23 @@ public class CampfireCauldronBlock extends Block implements BlockEntityProvider 
         return fluid == Fluids.WATER;
     }
 
-    protected void fillFromDripstone(BlockState state, World world, BlockPos pos, Fluid fluid) {
+    protected void fillFromDripstone(BlockState state, Level world, BlockPos pos, Fluid fluid) {
         if (!this.isFull(state)) {
-            world.setBlockState(pos, state.with(LEVEL, state.get(LEVEL) + 1));
-            world.syncWorldEvent(WorldEvents.POINTED_DRIPSTONE_DRIPS_WATER_INTO_CAULDRON, pos, 0);
+            world.setBlockAndUpdate(pos, state.setValue(LEVEL, state.getValue(LEVEL) + 1));
+            world.levelEvent(LevelEvent.SOUND_DRIP_WATER_INTO_CAULDRON, pos, 0);
         }
     }
 
     static {
-        LEVEL = IntProperty.of("level", 0, 4);
-        FACING = HorizontalFacingBlock.FACING;
-        CAULDRON_SHAPE = VoxelShapes.union(createCuboidShape(11, 1, 4, 12, 6, 5), createCuboidShape(4, 0, 4, 12, 1, 12), createCuboidShape(3, 1, 4, 4, 6, 12), createCuboidShape(12, 1, 4, 13, 6, 12),
-                createCuboidShape(4, 1, 12, 12, 6, 13), createCuboidShape(4, 1, 3, 12, 6, 4), createCuboidShape(4, 1, 4, 5, 6, 5), createCuboidShape(11, 1, 11, 12, 6, 12),
-                Block.createCuboidShape(4, 1, 11, 5, 6, 12));
-        Z_BASE_SHAPE = VoxelShapes.union(CAULDRON_SHAPE, createCuboidShape(7, -15, 0, 9, 14, 1), createCuboidShape(7, 14, -1, 9, 16, 1), createCuboidShape(7, 14, 15, 9, 16, 17),
-                createCuboidShape(7, -15, 15, 9, 14, 16), Block.createCuboidShape(7, 14, 1, 9, 15, 15));
-        X_BASE_SHAPE = VoxelShapes.union(CAULDRON_SHAPE, createCuboidShape(15, -15, 7, 16, 14, 9), createCuboidShape(15, 14, 7, 17, 16, 9), createCuboidShape(-1, 14, 7, 1, 16, 9),
-                createCuboidShape(0, -15, 7, 1, 14, 9), Block.createCuboidShape(1, 14, 7, 15, 15, 9));
+        LEVEL = IntegerProperty.create("level", 0, 4);
+        FACING = HorizontalDirectionalBlock.FACING;
+        CAULDRON_SHAPE = Shapes.or(box(11, 1, 4, 12, 6, 5), box(4, 0, 4, 12, 1, 12), box(3, 1, 4, 4, 6, 12), box(12, 1, 4, 13, 6, 12),
+                box(4, 1, 12, 12, 6, 13), box(4, 1, 3, 12, 6, 4), box(4, 1, 4, 5, 6, 5), box(11, 1, 11, 12, 6, 12),
+                Block.box(4, 1, 11, 5, 6, 12));
+        Z_BASE_SHAPE = Shapes.or(CAULDRON_SHAPE, box(7, -15, 0, 9, 14, 1), box(7, 14, -1, 9, 16, 1), box(7, 14, 15, 9, 16, 17),
+                box(7, -15, 15, 9, 14, 16), Block.box(7, 14, 1, 9, 15, 15));
+        X_BASE_SHAPE = Shapes.or(CAULDRON_SHAPE, box(15, -15, 7, 16, 14, 9), box(15, 14, 7, 17, 16, 9), box(-1, 14, 7, 1, 16, 9),
+                box(0, -15, 7, 1, 14, 9), Block.box(1, 14, 7, 15, 15, 9));
     }
 
 }

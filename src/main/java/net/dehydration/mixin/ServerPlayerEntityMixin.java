@@ -14,14 +14,14 @@ import net.dehydration.access.ServerPlayerAccess;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.network.ThirstServerPacket;
 import net.dehydration.thirst.ThirstManager;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
-@Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntity implements ServerPlayerAccess {
+@Mixin(ServerPlayer.class)
+public abstract class ServerPlayerEntityMixin extends Player implements ServerPlayerAccess {
 
     @Unique
     private ThirstManager thirstManager = ((ThirstManagerAccess) this).getThirstManager();
@@ -30,26 +30,26 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Se
     @Unique
     private int compatSyncTicks = 0;
 
-    public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
+    public ServerPlayerEntityMixin(Level world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super(world, pos, yaw, gameProfile);
     }
 
-    @Inject(method = "playerTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;tick()V", shift = Shift.AFTER))
+    @Inject(method = "doTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;tick()V", shift = Shift.AFTER))
     private void playerTickMixin(CallbackInfo info) {
         if (this.syncedThirstLevel != this.thirstManager.getThirstLevel() && this.thirstManager.hasThirst()) {
-            ThirstServerPacket.writeS2CThirstUpdatePacket((ServerPlayerEntity) (Object) this);
+            ThirstServerPacket.writeS2CThirstUpdatePacket((ServerPlayer) (Object) this);
             this.syncedThirstLevel = thirstManager.getThirstLevel();
         }
         if (compatSyncTicks > 0) {
             compatSyncTicks--;
             if (compatSyncTicks == 1) {
-                ThirstServerPacket.writeS2CExcludedSyncPacket((ServerPlayerEntity) (Object) this, thirstManager.hasThirst());
+                ThirstServerPacket.writeS2CExcludedSyncPacket((ServerPlayer) (Object) this, thirstManager.hasThirst());
             }
         }
     }
 
-    @Inject(method = "Lnet/minecraft/server/network/ServerPlayerEntity;teleport(Lnet/minecraft/server/world/ServerWorld;DDDFF)V", at = @At("TAIL"))
-    private void teleportMixin(ServerWorld targetWorld, double x, double y, double z, float yaw, float pitch, CallbackInfo info) {
+    @Inject(method = "teleportTo(Lnet/minecraft/server/level/ServerLevel;DDDFF)V", at = @At("TAIL"))
+    private void teleportMixin(ServerLevel targetWorld, double x, double y, double z, float yaw, float pitch, CallbackInfo info) {
         this.syncedThirstLevel = -1;
     }
 

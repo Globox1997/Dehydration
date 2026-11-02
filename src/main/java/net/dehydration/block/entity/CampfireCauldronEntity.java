@@ -3,14 +3,14 @@ package net.dehydration.block.entity;
 import net.dehydration.block.CampfireCauldronBlock;
 import net.dehydration.init.BlockInit;
 import net.dehydration.init.ConfigInit;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.registry.RegistryWrapper.WrapperLookup;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class CampfireCauldronEntity extends BlockEntity {
     public boolean isBoiled;
@@ -21,76 +21,76 @@ public class CampfireCauldronEntity extends BlockEntity {
     }
 
     @Override
-    public void readNbt(NbtCompound tag, WrapperLookup registryLookup) {
-        super.readNbt(tag, registryLookup);
+    public void loadAdditional(CompoundTag tag, Provider registryLookup) {
+        super.loadAdditional(tag, registryLookup);
         this.isBoiled = tag.getBoolean("Boiled");
         this.ticker = tag.getInt("BoilingTicks");
-        if (this.world != null && this.world.isClient()) {
-            this.world.updateListeners(this.pos, this.getCachedState(), this.getCachedState(), Block.NOTIFY_LISTENERS);
+        if (this.level != null && this.level.isClientSide()) {
+            this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
         }
     }
 
     @Override
-    public void writeNbt(NbtCompound tag, WrapperLookup registryLookup) {
-        super.writeNbt(tag, registryLookup);
+    public void saveAdditional(CompoundTag tag, Provider registryLookup) {
+        super.saveAdditional(tag, registryLookup);
         tag.putBoolean("Boiled", isBoiled);
         tag.putInt("BoilingTicks", ticker);
     }
 
-    public static void serverTick(World world, BlockPos pos, BlockState state, CampfireCauldronEntity blockEntity) {
+    public static void serverTick(Level world, BlockPos pos, BlockState state, CampfireCauldronEntity blockEntity) {
         blockEntity.update();
     }
 
     public void update() {
-        if (this.world == null) {
+        if (this.level == null) {
             return;
         }
-        if (this.getCachedState().get(CampfireCauldronBlock.LEVEL) <= 0) {
+        if (this.getBlockState().getValue(CampfireCauldronBlock.LEVEL) <= 0) {
             if (this.isBoiled || this.ticker != 0) {
                 this.isBoiled = false;
                 this.ticker = 0;
-                this.markDirty();
+                this.setChanged();
             }
             return;
         }
-        CampfireCauldronBlock campfireCauldronBlock = (CampfireCauldronBlock) this.getCachedState().getBlock();
-        if (!this.isBoiled && campfireCauldronBlock.isFireBurning(world, pos)) {
+        CampfireCauldronBlock campfireCauldronBlock = (CampfireCauldronBlock) this.getBlockState().getBlock();
+        if (!this.isBoiled && campfireCauldronBlock.isFireBurning(level, worldPosition)) {
             this.ticker++;
             if (this.ticker >= ConfigInit.CONFIG.water_boiling_time) {
                 this.isBoiled = true;
                 this.ticker = 0;
-                this.markDirty();
+                this.setChanged();
             }
         }
     }
 
     @Override
-    public void markDirty() {
-        super.markDirty();
+    public void setChanged() {
+        super.setChanged();
         sendUpdate();
     }
 
     private void sendUpdate() {
-        if (this.world != null) {
-            BlockState state = this.world.getBlockState(this.pos);
-            (this.world).updateListeners(this.pos, state, state, 3);
+        if (this.level != null) {
+            BlockState state = this.level.getBlockState(this.worldPosition);
+            (this.level).sendBlockUpdated(this.worldPosition, state, state, 3);
         }
     }
 
     @Override
-    public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt(WrapperLookup registryLookup) {
-        return this.createNbt(registryLookup);
+    public CompoundTag getUpdateTag(Provider registryLookup) {
+        return this.saveWithoutMetadata(registryLookup);
     }
 
     public void onFillingCauldron() {
         this.isBoiled = false;
         this.ticker = 0;
-        this.markDirty();
+        this.setChanged();
     }
 
 }

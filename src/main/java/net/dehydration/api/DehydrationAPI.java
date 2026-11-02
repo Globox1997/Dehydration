@@ -3,8 +3,8 @@ package net.dehydration.api;
 import net.dehydration.access.ThirstManagerAccess;
 import net.dehydration.thirst.ThirstManager;
 import net.dehydration.util.ThirstHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * The {@link DehydrationAPI} interface, when implemented, allows you to access the main functions provided by the API. <br>
@@ -24,10 +24,10 @@ public interface DehydrationAPI {
      * The default implementation gets the {@link ThirstManager}, runs {@link DehydrationAPI#calculateDrinkThirst} and applies that thirst
      *
      * @param stack        The {@link ItemStack} of the {@link DrinkItem} being consumed
-     * @param playerEntity The {@link PlayerEntity} consuming the {@link DrinkItem}
+     * @param playerEntity The {@link Player} consuming the {@link DrinkItem}
      */
-    default void onDrink(ItemStack stack, PlayerEntity playerEntity) {
-        if (playerEntity.getWorld().isClient()) {
+    default void onDrink(ItemStack stack, Player playerEntity) {
+        if (playerEntity.level().isClientSide()) {
             return;
         }
         // Get the ThirstManager using a convenient utility called ThirstManagerAccess
@@ -44,10 +44,10 @@ public interface DehydrationAPI {
      * You are free to handle this however you want.
      *
      * @param stack        The consumed {@link DrinkItem}'s {@link ItemStack}
-     * @param playerEntity The consumer {@link PlayerEntity}
+     * @param playerEntity The consumer {@link Player}
      * @return Calculated thirst
      */
-    int calculateDrinkThirst(ItemStack stack, PlayerEntity playerEntity);
+    int calculateDrinkThirst(ItemStack stack, Player playerEntity);
 
     /**
      * Override this to register custom fluid behaviors for cauldrons,

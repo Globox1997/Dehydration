@@ -3,9 +3,9 @@ package net.dehydration.mixin;
 import net.dehydration.init.ConfigInit;
 import net.dehydration.misc.ThirstTooltipData;
 import net.dehydration.util.ThirstHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipData;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,8 +16,8 @@ import java.util.Optional;
 @Mixin(Item.class)
 public class ItemMixin {
 
-    @Inject(method = "getTooltipData", at = @At("HEAD"), cancellable = true)
-    private void getTooltipDataMixin(ItemStack stack, CallbackInfoReturnable<Optional<TooltipData>> info) {
+    @Inject(method = "getTooltipImage", at = @At("HEAD"), cancellable = true)
+    private void getTooltipDataMixin(ItemStack stack, CallbackInfoReturnable<Optional<TooltipComponent>> info) {
         if (ConfigInit.CONFIG.thirst_preview) {
             int thirstQuench = ThirstHelper.getThirstQuench(stack, true);
             if (thirstQuench > 0) {

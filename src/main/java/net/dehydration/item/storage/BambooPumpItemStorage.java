@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class BambooPumpItemStorage extends SingleStackStorage {
 
@@ -24,12 +24,12 @@ public class BambooPumpItemStorage extends SingleStackStorage {
 
     @Override
     protected ItemStack getStack() {
-        return pumpEntity.getStack(0);
+        return pumpEntity.getItem(0);
     }
 
     @Override
     protected void setStack(ItemStack stack) {
-        pumpEntity.setStack(0, stack);
+        pumpEntity.setItem(0, stack);
     }
 
     @Override

@@ -7,27 +7,27 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.EmptyItemFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.PotionContentsComponent;
-import net.minecraft.fluid.FlowableFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
 
 public class FluidInit {
 
-    public static final FlowableFluid PURIFIED_FLOWING_WATER = register("dehydration:purified_flowing_water", new PurifiedWaterFluid.Flowing());
-    public static final FlowableFluid PURIFIED_WATER = register("dehydration:purified_water", new PurifiedWaterFluid.Still());
+    public static final FlowingFluid PURIFIED_FLOWING_WATER = register("dehydration:purified_flowing_water", new PurifiedWaterFluid.Flowing());
+    public static final FlowingFluid PURIFIED_WATER = register("dehydration:purified_water", new PurifiedWaterFluid.Still());
 
     public static void init() {
         // BucketItem storages are added by Fabric
         // Register empty bottle storage for purified water
         FluidStorage.combinedItemApiProvider(Items.GLASS_BOTTLE).register(context -> new EmptyItemFluidStorage(context, emptyBottle -> {
             ItemStack newStack = emptyBottle.toStack();
-            newStack.set(DataComponentTypes.POTION_CONTENTS, new PotionContentsComponent(ItemInit.PURIFIED_WATER));
-            return ItemVariant.of(Items.POTION, newStack.getComponentChanges());
+            newStack.set(DataComponents.POTION_CONTENTS, new PotionContents(ItemInit.PURIFIED_WATER));
+            return ItemVariant.of(Items.POTION, newStack.getComponentsPatch());
         }, FluidInit.PURIFIED_WATER, FluidConstants.BOTTLE));
         // Register purified water potion storage
         FluidStorage.combinedItemApiProvider(Items.POTION).register(PurifiedWaterPotionStorage::find);
@@ -44,6 +44,6 @@ public class FluidInit {
     }
 
     private static <T extends Fluid> T register(String id, T value) {
-        return (T) Registry.register(Registries.FLUID, id, value);
+        return (T) Registry.register(BuiltInRegistries.FLUID, id, value);
     }
 }

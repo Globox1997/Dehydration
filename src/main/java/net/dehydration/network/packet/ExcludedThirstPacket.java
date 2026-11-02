@@ -1,21 +1,21 @@
 package net.dehydration.network.packet;
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 
-public record ExcludedThirstPacket(int playerId, boolean excludingThirst) implements CustomPayload {
+public record ExcludedThirstPacket(int playerId, boolean excludingThirst) implements CustomPacketPayload {
 
-    public static final CustomPayload.Id<ExcludedThirstPacket> PACKET_ID = new CustomPayload.Id<>(Identifier.of("dehydration", "excluded_thirst_packet"));
+    public static final CustomPacketPayload.Type<ExcludedThirstPacket> PACKET_ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath("dehydration", "excluded_thirst_packet"));
 
-    public static final PacketCodec<RegistryByteBuf, ExcludedThirstPacket> PACKET_CODEC = PacketCodec.of((value, buf) -> {
+    public static final StreamCodec<RegistryFriendlyByteBuf, ExcludedThirstPacket> PACKET_CODEC = StreamCodec.ofMember((value, buf) -> {
         buf.writeInt(value.playerId);
         buf.writeBoolean(value.excludingThirst);
     }, buf -> new ExcludedThirstPacket(buf.readInt(), buf.readBoolean()));
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 

@@ -1,24 +1,23 @@
 package net.dehydration.network.packet;
 
 import java.util.List;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+public record HydrationTemplatePacket(List<Integer> templateList, List<ResourceLocation> templateIdentifiers) implements CustomPacketPayload {
 
-public record HydrationTemplatePacket(List<Integer> templateList, List<Identifier> templateIdentifiers) implements CustomPayload {
+    public static final CustomPacketPayload.Type<HydrationTemplatePacket> PACKET_ID = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath("dehydration", "hydration_template_packet"));
 
-    public static final CustomPayload.Id<HydrationTemplatePacket> PACKET_ID = new CustomPayload.Id<>(Identifier.of("dehydration", "hydration_template_packet"));
-
-    public static final PacketCodec<RegistryByteBuf, HydrationTemplatePacket> PACKET_CODEC = PacketCodec.of((value, buf) -> {
-        buf.writeCollection(value.templateList, PacketByteBuf::writeInt);
-        buf.writeCollection(value.templateIdentifiers, PacketByteBuf::writeIdentifier);
-    }, buf -> new HydrationTemplatePacket(buf.readList(PacketByteBuf::readInt), buf.readList(PacketByteBuf::readIdentifier)));
+    public static final StreamCodec<RegistryFriendlyByteBuf, HydrationTemplatePacket> PACKET_CODEC = StreamCodec.ofMember((value, buf) -> {
+        buf.writeCollection(value.templateList, FriendlyByteBuf::writeInt);
+        buf.writeCollection(value.templateIdentifiers, FriendlyByteBuf::writeResourceLocation);
+    }, buf -> new HydrationTemplatePacket(buf.readList(FriendlyByteBuf::readInt), buf.readList(FriendlyByteBuf::readResourceLocation)));
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return PACKET_ID;
     }
 

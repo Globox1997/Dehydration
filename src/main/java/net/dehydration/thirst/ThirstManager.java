@@ -1,22 +1,22 @@
 package net.dehydration.thirst;
 
 import net.dehydration.init.ConfigInit;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageType;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 
 public class ThirstManager {
 
     // Damage Type
-    public static final RegistryKey<DamageType> THIRST = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of("dehydration", "thirst"));
+    public static final ResourceKey<DamageType> THIRST = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath("dehydration", "thirst"));
 
     public float dehydration;
     private boolean hasThirst = true;
@@ -27,8 +27,8 @@ public class ThirstManager {
         this.thirstLevel = Math.min(thirst + this.thirstLevel, 20);
     }
 
-    public void update(PlayerEntity player) {
-        Difficulty difficulty = player.getWorld().getDifficulty();
+    public void update(Player player) {
+        Difficulty difficulty = player.level().getDifficulty();
         if (this.dehydration > 4.0F) {
             this.dehydration -= 4.0F;
             if (difficulty != Difficulty.PEACEFUL) {
@@ -39,7 +39,7 @@ public class ThirstManager {
             ++this.dehydrationTimer;
             if (this.dehydrationTimer >= 90) {
                 if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD || (player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL)) {
-                    player.damage(createDamageSource(player), ConfigInit.CONFIG.thirst_damage);
+                    player.hurt(createDamageSource(player), ConfigInit.CONFIG.thirst_damage);
                 }
                 this.dehydrationTimer = 0;
             }
@@ -47,17 +47,17 @@ public class ThirstManager {
             this.dehydrationTimer = 0;
         }
         if (!player.isCreative() && ConfigInit.CONFIG.special_effects) {
-            if (thirstLevel == 2 && !player.hasStatusEffect(StatusEffects.HASTE)) {
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.HASTE, 409, 0, false, false, false));
+            if (thirstLevel == 2 && !player.hasEffect(MobEffects.DIG_SPEED)) {
+                player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 409, 0, false, false, false));
             }
-            if (thirstLevel == 0 && player.getHungerManager().getFoodLevel() == 0 && !player.hasStatusEffect(StatusEffects.MINING_FATIGUE)) {
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.MINING_FATIGUE, 409, 2, false, false, false));
+            if (thirstLevel == 0 && player.getFoodData().getFoodLevel() == 0 && !player.hasEffect(MobEffects.DIG_SLOWDOWN)) {
+                player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 409, 2, false, false, false));
             }
         }
 
     }
 
-    public void readNbt(NbtCompound tag) {
+    public void readNbt(CompoundTag tag) {
         if (tag.contains("ThirstLevel", 99)) {
             this.thirstLevel = tag.getInt("ThirstLevel");
             this.dehydrationTimer = tag.getInt("ThirstTickTimer");
@@ -66,7 +66,7 @@ public class ThirstManager {
         }
     }
 
-    public void writeNbt(NbtCompound tag) {
+    public void writeNbt(CompoundTag tag) {
         tag.putInt("ThirstLevel", this.thirstLevel);
         tag.putInt("ThirstTickTimer", this.dehydrationTimer);
         tag.putFloat("ThirstExhaustionLevel", this.dehydration);
@@ -98,7 +98,7 @@ public class ThirstManager {
     }
 
     private DamageSource createDamageSource(Entity entity) {
-        return entity.getDamageSources().create(THIRST, null);
+        return entity.damageSources().source(THIRST, null);
     }
 
 }
