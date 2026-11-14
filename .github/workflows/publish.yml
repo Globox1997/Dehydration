@@ -42,7 +42,7 @@ jobs:
           loaders: fabric
 
           name: '${{ steps.properties.outputs.archives_base_name }}-fabric-${{ steps.properties.outputs.mod_version }}+${{ steps.properties.outputs.minecraft_version }}'
-          version: '${{ steps.properties.outputs.mod_version }}+${{ steps.properties.outputs.minecraft_version }}'
+          version: '${{ steps.properties.outputs.mod_version }}+${{ steps.properties.outputs.minecraft_version }}-fabric'
           game-versions: |
             ${{ steps.properties.outputs.minecraft_version }}
 
