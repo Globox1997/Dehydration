@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "ingredient": {
+    "neoforge:ingredient_type": "neoforge:components",
+    "items": "minecraft:potion",
+    "components": {
+      "minecraft:potion_contents": {
+        "potion": "minecraft:water"
+      }
+    }
+  },
+  "result": {
+    "id": "minecraft:potion",
+    "count": 1,
+    "components": {
+      "minecraft:potion_contents": {
+        "potion": "minecraft:purified_water"
+      }
+    }
+  },
+  "experience": 0.25,
+  "cookingtime": 1000
+}

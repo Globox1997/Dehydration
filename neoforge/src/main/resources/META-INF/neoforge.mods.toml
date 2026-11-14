@@ -1,0 +1,44 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "GPLv3, ARR (Assets)"
+issueTrackerURL = "https://github.com/Globox1997/Dehydration/issues"
+
+[[mods]]
+modId = "dehydration"
+version = "${version}"
+displayName = "Dehydration"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/dehydration"
+iconFile = "assets/dehydration/icon.png"
+authors = "Globox_Z"
+description = '''Stay hydrated and keep calm'''
+
+[[mixins]]
+config = "dehydration.mixins.json"
+
+[[dependencies.dehydration]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neoforge_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.dehydration]]
+modId = "minecraft"
+type = "required"
+versionRange = "[${minecraft_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.dehydration]]
+modId = "cloth_config"
+type = "required"
+versionRange = "[${cloth_config_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.dehydration]]
+modId = "patchouli"
+type = "optional"
+versionRange = "*"
+ordering = "NONE"
+side = "BOTH"

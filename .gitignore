@@ -24,6 +24,7 @@ bin/
 .classpath
 .project
 
-# fabric
+# fabric / neoforge
 
 run/
+runs/

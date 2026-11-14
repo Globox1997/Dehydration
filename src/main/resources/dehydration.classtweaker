@@ -1,2 +1,0 @@
-classTweaker	v1	official
-accessible	method	net/minecraft/core/cauldron/CauldronInteraction$Dispatcher	put	(Lnet/minecraft/world/item/Item;Lnet/minecraft/core/cauldron/CauldronInteraction;)V
