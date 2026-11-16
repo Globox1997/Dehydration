@@ -17,7 +17,7 @@ public class CommandInit {
     public static void init() {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated, environment) -> {
             dispatcher.register((CommandManager.literal("thirst").requires((serverCommandSource) -> {
-                return serverCommandSource.hasPermissionLevel(3);
+                return serverCommandSource.hasPermissionLevel(2);
             })).then((CommandManager.argument("targets", EntityArgumentType.players()).then(CommandManager.literal("true").executes((commandContext) -> {
                 return executeThirstCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), true);
             })).then(CommandManager.literal("false").executes((commandContext) -> {
